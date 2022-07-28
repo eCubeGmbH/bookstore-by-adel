@@ -6,7 +6,9 @@ Name: Adel Kharbout, Luc Schulze
 
 ## Kurzbeschreibung
 
-> Mit dieser Anwendung, soll eine Art Online-Buchhandel aufgebaut werden. Es soll die Möglichkeit bestehen, Bücher nach Artikelnummern, Autoren und evtl. Genre zu filtern und sortieren. Es soll natürlich auch in die andere vice versa möglich sein. Es ist in erster Linie ein Lernprojekt, um sich mit den Aufgaben und Möglichkeiten eines Fachinformatikers vertraut zu machen. Außerdem soll man natürlich agiles Arbeiten lernen. Es werden auch natürlich die Arbeitsweise von eCube vermittelt, die uns diese Möglichkeit zur Verfügung stellt. 
+> Die Health API kann von der Kommandozeile mit dem "cURL"-Command aufgerufen werden:
+curl localhost:9988/actuator/health
+Dort wird dann der Status der Health API angezeigt.
 
 **Hinweise**: Adel studiert im Moment und Luc macht eine Ausbildung.
 

@@ -1,0 +1,128 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a sample Petstore server.  You can find \nout more about Swagger at \n[http://swagger.io](http://swagger.io) or on \n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n"
+  version: 1.0.0
+  title: Swagger Bookstore
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /LUCSCHULZE/Bookstore/1.0.0
+tags:
+  - name: author
+    description: Everything about your Authors
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+schemes:
+  - https
+  - http
+paths:
+  /author:
+    post:
+      tags:
+        - author
+      summary: Add a new author to the store
+      operationId: addAuthor
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Author object that needs to be added to the store
+          required: true
+          schema:
+            $ref: '#/definitions/Author'
+      responses:
+        "404":
+          description: Author not found
+  /author/{authorId}:
+    get:
+      tags:
+        - author
+      summary: Find author by ID
+      description: Returns a single author
+      operationId: getAuthorById
+      produces:
+        - application/json
+      parameters:
+        - name: authorId
+          in: path
+          description: ID of author to return
+          required: true
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Author'
+        "404":
+          description: Author not found
+    put:
+      tags:
+        - author
+      summary: Update an existing author
+      operationId: updateAuthor
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: authorId
+          description: Author object that needs to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Author'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Author'
+        "404":
+          description: Author not found
+    delete:
+      tags:
+        - author
+      summary: Deletes a author
+      operationId: deleteAuthor
+      produces:
+        - application/json
+      parameters:
+        - name: api_key
+          in: header
+          required: false
+          type: string
+        - name: authorId
+          in: path
+          description: Author id to delete
+          required: true
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Author'
+        "404":
+          description: Author not found
+definitions:
+  Author:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      country:
+        type: string
+      birthDate:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io

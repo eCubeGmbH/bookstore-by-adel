@@ -9,14 +9,14 @@ class AuthorController {
 
     @PostMapping(consumes = {"application/json"},
                 produces = {"application/json"})
-    Author addAuthor(@RequestBody Author author) {
+    Authors addAuthor(@RequestBody Authors author) {
         return DatenBank.postAuthors(author);
     }
 
     @ResponseBody
     @GetMapping(value = {"/{authorId}"},
                 produces = {"application/json"})
-    Author getAuthor(@PathVariable String authorId){
+    Authors getAuthor(@PathVariable String authorId){
         return DatenBank.getAuthors(authorId);
     }
 
@@ -31,7 +31,7 @@ class AuthorController {
     @PutMapping(value = {"/{authorId}"},
                 consumes = {"application/json"},
                 produces = {"application/json"})
-    Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser){
+    Authors updateAuthor(@PathVariable String authorId, @RequestBody Authors authorFromUser){
         return DatenBank.putAuthors(authorId, authorFromUser);
     }
 }

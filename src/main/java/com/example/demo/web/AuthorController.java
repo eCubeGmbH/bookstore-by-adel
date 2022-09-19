@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = {"/api/author"})
 class AuthorController {
 
-    AuthorRepository repository = new AuthorRepository();
+    final AuthorRepository repository;
+
+    AuthorController() {
+        this.repository = new AuthorRepositoryMapImpl();
+    }
 
     @PostMapping(consumes = {"application/json"},
                 produces = {"application/json"})

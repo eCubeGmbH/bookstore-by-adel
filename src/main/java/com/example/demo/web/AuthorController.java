@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @ResponseBody
-@RequestMapping(value = {"/api/author"})
+@RequestMapping(value = {"/api/authors"})
 class AuthorController {
 
     final AuthorRepository repository;
@@ -15,29 +15,29 @@ class AuthorController {
 
     @PostMapping(consumes = {"application/json"},
                 produces = {"application/json"})
-    Authors addAuthor(@RequestBody Authors author) {
-        return repository.postAuthors(author);
+    Author addAuthor(@RequestBody Author author) {
+        return repository.addAuthor(author);
     }
 
     @ResponseBody
     @GetMapping(value = {"/{authorId}"},
                 produces = {"application/json"})
-    Authors getAuthor(@PathVariable String authorId){
-        return repository.getAuthors(authorId);
+    Author getAuthor(@PathVariable String authorId){
+        return repository.getAuthor(authorId);
     }
 
     @ResponseBody
     @DeleteMapping(value = {"/{authorId}"},
                    consumes = {"application/json"})
     void removeAuthor(@PathVariable String authorId){
-        repository.deleteAuthors(authorId);
+        repository.deleteAuthor(authorId);
     }
 
     @ResponseBody
     @PutMapping(value = {"/{authorId}"},
                 consumes = {"application/json"},
                 produces = {"application/json"})
-    Authors updateAuthor(@PathVariable String authorId, @RequestBody Authors authorFromUser){
-        return repository.putAuthors(authorId, authorFromUser);
+    Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser){
+        return repository.updateAuthor(authorId, authorFromUser);
     }
 }

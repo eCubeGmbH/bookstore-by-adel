@@ -1,11 +1,11 @@
 package com.example.demo.web;
 
 public interface AuthorRepository {
-     Authors postAuthors(Authors author);
+     Author addAuthor(Author author);
 
-     Authors getAuthors(String authorId);
+     Author getAuthor(String authorId);
 
-     void deleteAuthors(String authorId);
+     void deleteAuthor(String authorId);
 
-     Authors putAuthors(String authorId, Authors authorFromUser);
+     Author updateAuthor(String authorId, Author authorFromUser);
 }

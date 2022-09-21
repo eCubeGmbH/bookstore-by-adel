@@ -3,7 +3,7 @@ package com.example.demo.web;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Authors {
+public class Author {
     private String id;
     private String name;
     private String country;
@@ -12,7 +12,7 @@ public class Authors {
     public static void main(String[] args) {
     }
 
-    public Authors() {
+    public Author() {
     }
 
     public String getId() {
@@ -50,10 +50,10 @@ public class Authors {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (!(o instanceof Authors)) {
+        } else if (!(o instanceof Author)) {
             return false;
         } else {
-            Authors author = (Authors) o;
+            Author author = (Author) o;
             return Objects.equals(this.id, author.id) && Objects.equals(this.name, author.name) && Objects.equals(this.country, author.country) && Objects.equals(this.birthDate, author.birthDate);
         }
     }

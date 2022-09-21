@@ -9,7 +9,7 @@ import java.util.*;
 
 public class AuthorRepositoryMapImpl implements AuthorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepositoryMapImpl.class);
-    private Map<String, Authors> authorMap = new HashMap<>();
+    private Map<String, Author> authorMap = new HashMap<>();
 
     private String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
@@ -20,26 +20,26 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
         return new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
     }
 
-    public Authors postAuthors(Authors author) {
+    public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
         author.setId(authorId);
         authorMap.put(authorId, author);
         return author;
     }
 
-    public Authors getAuthors(String authorId) {
+    public Author getAuthor(String authorId) {
         LOGGER.info("coming from map");
         errorChecking(authorId);
-        Authors getAuthor = authorMap.get(authorId);
+        Author getAuthor = authorMap.get(authorId);
         return getAuthor;
     }
 
-    public void deleteAuthors(String authorId) {
+    public void deleteAuthor(String authorId) {
         errorChecking(authorId);
         authorMap.remove(authorId);
     }
 
-    public Authors putAuthors(String authorId, Authors authorFromUser) {
+    public Author updateAuthor(String authorId, Author authorFromUser) {
         errorChecking(authorId);
         authorFromUser.setId(authorId);
         authorMap.replace(authorId, authorFromUser);

@@ -27,6 +27,7 @@ public class AuthorRepositoryListImpl implements AuthorRepository {
     }
 
     public Author addAuthor(Author author) {
+        //read file from storage with name author.name, first line is my birthday
         String authorId = UUID.randomUUID().toString();
         author.setId(authorId);
         authorList.add(author);

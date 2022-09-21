@@ -27,11 +27,20 @@ public class AuthorRepositoryListImpl implements AuthorRepository {
     }
 
     public Author addAuthor(Author author) {
-        //read file from storage with name author.name, first line is my birthday
         String authorId = UUID.randomUUID().toString();
         author.setId(authorId);
         authorList.add(author);
         return author;
+    }
+
+    public List getAll() {
+        if(authorList.size() > 0 ) {
+            authorList.toArray();
+            List<Author> getAll = authorList;
+            return getAll;
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
+        }
     }
 
     public Author getAuthor(String authorId) {

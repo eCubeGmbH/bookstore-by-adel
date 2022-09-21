@@ -2,6 +2,8 @@ package com.example.demo.web;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @ResponseBody
 @RequestMapping(value = {"/api/authors"})
@@ -17,6 +19,12 @@ class AuthorController {
                 produces = {"application/json"})
     Author addAuthor(@RequestBody Author author) {
         return repository.addAuthor(author);
+    }
+
+    @ResponseBody
+    @GetMapping(produces = {"application/json"})
+    List<Author> getAllAuthors(){
+        return repository.getAll();
     }
 
     @ResponseBody

@@ -1,5 +1,7 @@
 package com.example.demo.web;
 
+import java.util.List;
+
 public interface AuthorRepository {
      Author addAuthor(Author author);
 
@@ -8,4 +10,6 @@ public interface AuthorRepository {
      void deleteAuthor(String authorId);
 
      Author updateAuthor(String authorId, Author authorFromUser);
+
+     List<Author> getAll();
 }

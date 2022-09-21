@@ -27,6 +27,15 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
         return author;
     }
 
+    public List<Author> getAll() {
+        if(authorMap.size() > 0 ) {
+            List<Author> getAll = new ArrayList<Author>(authorMap.values());
+            return getAll;
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
+        }
+    }
+
     public Author getAuthor(String authorId) {
         LOGGER.info("coming from map");
         errorChecking(authorId);

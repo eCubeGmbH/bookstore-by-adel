@@ -1,7 +1,11 @@
 ---
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "This is a sample Petstore server.  You can find \nout more about Swagger at \n[http://swagger.io](http://swagger.io) or on \n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n"
+  description: |
+    This is a sample Petstore server.  You can find 
+    out more about Swagger at 
+    [http://swagger.io](http://swagger.io) or on 
+    [irc.freenode.net, #swagger](http://swagger.io/irc/).
   version: 1.0.0
   title: Swagger Bookstore
   termsOfService: http://swagger.io/terms/
@@ -10,19 +14,19 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-host: virtserver.swaggerhub.com
-basePath: /LUCSCHULZE/Bookstore/1.0.0
+# host: petstore.swagger.io
+# basePath: /v2
 tags:
   - name: author
     description: Everything about your Authors
     externalDocs:
       description: Find out more
       url: http://swagger.io
-schemes:
-  - https
-  - http
+
+# schemes:
+# - http
 paths:
-  /author:
+  /authors:
     post:
       tags:
         - author
@@ -40,9 +44,53 @@ paths:
           schema:
             $ref: '#/definitions/Author'
       responses:
-        "404":
+        404:
           description: Author not found
-  /author/{authorId}:
+    get:
+      tags:
+        - author
+      summary: Get all authors in repository
+      description: Returns all authors
+      operationId: getAllAuthors
+      produces:
+        - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AuthorList'
+        404:
+          description: Author not found
+
+  /authors/{authorId}:
+    put:
+      tags:
+        - author
+      summary: Update an existing author
+      operationId: updateAuthor
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: authorId
+          description: Author object that needs to be updated
+          required: true
+          type: string
+        - in: body
+          name: author
+          description: Author object that needs to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Author'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Author'
+        404:
+          description: Author not found
     get:
       tags:
         - author
@@ -58,34 +106,11 @@ paths:
           required: true
           type: string
       responses:
-        "200":
+        200:
           description: successful operation
           schema:
             $ref: '#/definitions/Author'
-        "404":
-          description: Author not found
-    put:
-      tags:
-        - author
-      summary: Update an existing author
-      operationId: updateAuthor
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: authorId
-          description: Author object that needs to be updated
-          required: true
-          schema:
-            $ref: '#/definitions/Author'
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            $ref: '#/definitions/Author'
-        "404":
+        404:
           description: Author not found
     delete:
       tags:
@@ -95,23 +120,36 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: api_key
-          in: header
-          required: false
-          type: string
         - name: authorId
           in: path
           description: Author id to delete
           required: true
           type: string
       responses:
-        "200":
+        200:
           description: successful operation
           schema:
             $ref: '#/definitions/Author'
-        "404":
+        404:
           description: Author not found
+
+
 definitions:
+
+  AuthorList:
+    type: array
+    items:
+      $ref: '#/definitions/Author'
+    example:
+      - id: string
+        name: string
+        country: string
+        birthDate: string
+      - id: string
+        name: string
+        country: string
+        birthDate: string
+
   Author:
     type: object
     properties:
@@ -123,6 +161,7 @@ definitions:
         type: string
       birthDate:
         type: string
+
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io

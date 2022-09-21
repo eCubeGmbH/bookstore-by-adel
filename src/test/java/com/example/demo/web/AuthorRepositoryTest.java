@@ -39,4 +39,15 @@ class AuthorRepositoryTest {
         assertEquals(authorFromAddAuthor.getId(), actual.getId(), "ids should match");
         assertEquals( "Luc", actual.getName(), "names should match");
     }
+    @Test
+    void deleteAuthorShouldRemoveFromRepository() {
+        //setup, Vorbereitung (sut) system under test
+        AuthorRepository sut = new AuthorRepositoryMapImpl();
+
+        //when, Ausführen
+
+
+        //then, Verifizieren
+
+    }
 }

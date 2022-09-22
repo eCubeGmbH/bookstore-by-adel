@@ -29,6 +29,18 @@ curl --location --request POST 'localhost:9988/api/authors' \
 
 in " --data-raw '{   }' " müssen die jeweiligen Parameter, als String, eingetragen werden.
 
+**Response**
+Das ist eine zu erwartende Antwort an dem Beispiel "Friedrich Nietzsche":
+
+{
+    "id": "7a5e21a5-7dae-47ff-99a7-79403ba96d67",
+    "name": "Friedrich Nietzsche",
+    "country": "De",
+    "birthDate": "1844-10-15"
+}
+
+Die ID ist eine auto-generierte UUID.
+
 ## Get a specific Author
 **Get-Request**
 Um einen spezifischen Autor auszugeben:
@@ -38,6 +50,16 @@ curl --location --request GET 'localhost:9988/api/authors/{authorId}' \
 --data-raw ''
 
 in diesem Fall, muss in der URL " {authorId} " durch eine valide ID des gewünschten Autors ersetzt werden.
+
+**Response**
+Das ist eine zu erwartende Antwort an dem Beispiel "Friedrich Nietzsche":
+
+{
+    "id": "7a5e21a5-7dae-47ff-99a7-79403ba96d67",
+    "name": "Friedrich Nietzsche",
+    "country": "De",
+    "birthDate": "1844-10-15"
+}
 
 Falls der Autor nicht gefunden wird:
 
@@ -55,6 +77,26 @@ Um die gesamte Liste der Autoren auszugeben:
 
 curl --location --request GET 'localhost:9988/api/authors/' \
 --header 'Content-Type: application/json'
+
+**Response**
+Das ist eine zu erwartende Antwort an dem Beispiel einer Liste mit zwei Objekten:
+
+[
+    {
+        "id": "3b2f6628-d023-47b1-9f31-5c7ae7117cc5",
+        "name": "Franz Kafka",
+        "country": "CZ",
+        "birthDate": "1883-07-03"
+    },
+    {
+        "id": "edb64885-a5d0-468d-ac3b-d9cc5522d460",
+        "name": "Friedrich Nietzsche",
+        "country": "De",
+        "birthDate": "1844-10-15"
+    }
+]
+
+Die Liste ist aktuell noch in keiner bestimmten Reihenfolge, und kann auch noch nicht sortiert werden.
 
 Falls die Liste leer ist:
 
@@ -80,6 +122,26 @@ curl --location --request PUT 'localhost:9988/api/authors/2d038750-6d1e-4a92-b52
 }'
 
 in " --data-raw '{   }' " müssen die jeweiligen Parameter, als String, eingetragen werden.
+
+**Response**
+Das ist eine zu erwartende Antwort an dem Beispiel Franz Kafka:
+Vorher ("Franz Schafka"):
+
+{
+    "id": "3b2f6628-d023-47b1-9f31-5c7ae7117cc5",
+    "name": "Franz Schafka",
+    "country": "CZ",
+    "birthDate": "1883-07-03"
+}
+
+Nachher ("Franz Kafka"):
+
+{
+    "id": "3b2f6628-d023-47b1-9f31-5c7ae7117cc5",
+    "name": "Franz Kafka",
+    "country": "CZ",
+    "birthDate": "1883-07-03"
+}
 
 Falls der Autor nicht gefunden wird:
 

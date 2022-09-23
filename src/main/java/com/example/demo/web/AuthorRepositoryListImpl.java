@@ -36,8 +36,14 @@ public class AuthorRepositoryListImpl implements AuthorRepository {
     public List getAll() {
         if(authorList.size() > 0 ) {
             authorList.toArray();
-            List<Author> getAll = authorList;
-            return getAll;
+            List<Author> filteredList = new ArrayList<>();
+            String nameFromUser = "Kafka";
+            Author c = authorList.stream()
+                    .filter(x -> x.getName() == nameFromUser)
+                    .findAny()
+                    .get();
+            filteredList.add(c);
+            return filteredList;
         }else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
         }

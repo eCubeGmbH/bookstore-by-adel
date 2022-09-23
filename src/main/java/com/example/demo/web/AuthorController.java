@@ -12,7 +12,7 @@ class AuthorController {
     final AuthorRepository repository;
 
     AuthorController() {
-        this.repository = new AuthorRepositoryMapImpl();
+        this.repository = new AuthorRepositoryListImpl();
     }
 
     @PostMapping(consumes = {"application/json"},

@@ -61,7 +61,6 @@ paths:
             $ref: '#/definitions/AuthorList'
         404:
           description: Author not found
-
   /authors/{authorId}:
     put:
       tags:
@@ -161,6 +160,8 @@ definitions:
         type: string
       birthDate:
         type: string
+
+
 
 externalDocs:
   description: Find out more about Swagger

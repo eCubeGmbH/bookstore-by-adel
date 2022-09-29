@@ -3,12 +3,14 @@ package com.example.demo.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class AuthorRepositoryListImpl implements AuthorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepositoryListImpl.class);
 
@@ -37,9 +39,7 @@ public class AuthorRepositoryListImpl implements AuthorRepository {
         if(authorList.size() > 0 ) {
             authorList.toArray();
             List<Author> filteredList = new ArrayList<>();
-            String nameFromUser = "Kafka";
             Author c = authorList.stream()
-                    .filter(x -> x.getName() == nameFromUser)
                     .findAny()
                     .get();
             filteredList.add(c);

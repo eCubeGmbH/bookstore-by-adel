@@ -3,10 +3,12 @@ package com.example.demo.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
+@Repository
 public class AuthorRepositoryMapImpl implements AuthorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepositoryMapImpl.class);
     private Map<String, Author> authorMap = new HashMap<>();

@@ -9,10 +9,14 @@ public class Author {
     private String country;
     private LocalDate birthDate;
 
-    public static void main(String[] args) {
+    public Author() {
     }
 
-    public Author() {
+    public Author(String id, String name, String country, LocalDate birthDate) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.birthDate = birthDate;
     }
 
     public String getId() {

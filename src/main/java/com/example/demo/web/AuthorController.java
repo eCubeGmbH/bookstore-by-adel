@@ -1,5 +1,6 @@
 package com.example.demo.web;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,41 +12,41 @@ class AuthorController {
 
     final AuthorRepository repository;
 
-    AuthorController() {
-        this.repository = new AuthorRepositoryListImpl();
+    AuthorController(@Qualifier("authorRepositoryMapImpl") AuthorRepository repository) {
+        this.repository = repository;
     }
 
     @PostMapping(consumes = {"application/json"},
-                produces = {"application/json"})
+            produces = {"application/json"})
     Author addAuthor(@RequestBody Author author) {
         return repository.addAuthor(author);
     }
 
     @ResponseBody
     @GetMapping(produces = {"application/json"})
-    List<Author> getAllAuthors(){
+    List<Author> getAllAuthors() {
         return repository.getAll();
     }
 
     @ResponseBody
     @GetMapping(value = {"/{authorId}"},
-                produces = {"application/json"})
-    Author getAuthor(@PathVariable String authorId){
+            produces = {"application/json"})
+    Author getAuthor(@PathVariable String authorId) {
         return repository.getAuthor(authorId);
     }
 
     @ResponseBody
     @DeleteMapping(value = {"/{authorId}"},
-                   consumes = {"application/json"})
-    void removeAuthor(@PathVariable String authorId){
+            consumes = {"application/json"})
+    void removeAuthor(@PathVariable String authorId) {
         repository.deleteAuthor(authorId);
     }
 
     @ResponseBody
     @PutMapping(value = {"/{authorId}"},
-                consumes = {"application/json"},
-                produces = {"application/json"})
-    Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser){
+            consumes = {"application/json"},
+            produces = {"application/json"})
+    Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser) {
         return repository.updateAuthor(authorId, authorFromUser);
     }
 }

@@ -50,10 +50,10 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
         authorMap.remove(authorId);
     }
 
-    public Author updateAuthor(String authorId, Author authorFromUser) {
+    public Author updateAuthor(String authorId, Author author) {
         errorChecking(authorId);
-        authorFromUser.setId(authorId);
-        authorMap.replace(authorId, authorFromUser);
-        return authorFromUser;
+        author.setId(authorId);
+        authorMap.replace(authorId, author);
+        return author;
     }
 }

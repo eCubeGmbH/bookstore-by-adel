@@ -1,5 +1,6 @@
 package com.example.demo.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,33 +13,34 @@ class AuthorController {
 
     final AuthorRepository repository;
 
-    AuthorController(@Qualifier("authorRepositoryMapImpl") AuthorRepository repository) {
+    @Autowired
+    public AuthorController(@Qualifier("authorRepositoryMapImpl") AuthorRepository repository) {
         this.repository = repository;
     }
 
     @PostMapping(consumes = {"application/json"},
             produces = {"application/json"})
-    Author addAuthor(@RequestBody Author author) {
+    public Author addAuthor(@RequestBody Author author) {
         return repository.addAuthor(author);
     }
 
     @ResponseBody
     @GetMapping(produces = {"application/json"})
-    List<Author> getAllAuthors() {
+    public List<Author> getAllAuthors() {
         return repository.getAll();
     }
 
     @ResponseBody
     @GetMapping(value = {"/{authorId}"},
             produces = {"application/json"})
-    Author getAuthor(@PathVariable String authorId) {
+    public Author getAuthor(@PathVariable String authorId) {
         return repository.getAuthor(authorId);
     }
 
     @ResponseBody
     @DeleteMapping(value = {"/{authorId}"},
             consumes = {"application/json"})
-    void removeAuthor(@PathVariable String authorId) {
+    public void removeAuthor(@PathVariable String authorId) {
         repository.deleteAuthor(authorId);
     }
 
@@ -46,7 +48,7 @@ class AuthorController {
     @PutMapping(value = {"/{authorId}"},
             consumes = {"application/json"},
             produces = {"application/json"})
-    Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser) {
+    public Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser) {
         return repository.updateAuthor(authorId, authorFromUser);
     }
 }

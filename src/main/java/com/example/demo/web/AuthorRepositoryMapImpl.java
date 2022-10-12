@@ -16,7 +16,7 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
     private String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     private Object errorChecking(String authorId) {
-        if(authorMap.get(authorId) == null) {
+        if (authorMap.get(authorId) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
         }
         return new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
@@ -30,10 +30,10 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
     }
 
     public List<Author> getAll() {
-        if(authorMap.size() > 0 ) {
+        if (authorMap.size() > 0) {
             List<Author> getAll = new ArrayList<Author>(authorMap.values());
             return getAll;
-        }else {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
         }
     }

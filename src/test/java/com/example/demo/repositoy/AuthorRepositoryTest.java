@@ -1,187 +1,80 @@
 package com.example.demo.repositoy;
 
-import com.example.demo.repository.AuthorRepository;
-import com.example.demo.repository.AuthorRepositoryListImpl;
-import com.example.demo.repository.AuthorRepositoryMapImpl;
 import com.example.demo.model.Author;
+import com.example.demo.repository.AuthorRepository;
+import org.assertj.core.data.Index;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthorRepositoryTest {
-
     @Test
-    void addAuthorShouldAddAuthorToRepositoryListImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryListImpl();
-        Author author1 = new Author();
-        author1.setName("Luc");
+    void Test_addAuthor() {
+        AuthorRepository repositoryMap = new AuthorRepository();
+        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
 
-        //when, Ausführen
-        Author authorFromAddAuthor = sut.addAuthor(author1);
-        Author actual = sut.getAuthor(authorFromAddAuthor.getId());
-
-        //then, Verifizieren
-        assertNotNull(actual, "response should not be null");
-        assertEquals(authorFromAddAuthor.getId(), actual.getId(), "ids should match");
-        assertEquals( "Luc", actual.getName(), "names should match");
-    }
-
-    @Test
-    void addAuthorShouldAddAuthorToRepositoryMapImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryMapImpl();
-        Author author1 = new Author();
-        author1.setName("Luc");
-
-        //when, Ausführen
-        Author authorFromAddAuthor = sut.addAuthor(author1);
-        Author actual = sut.getAuthor(authorFromAddAuthor.getId());
-
-        //then, Verifizieren
-        assertNotNull(actual, "response should not be null");
-        assertEquals(authorFromAddAuthor.getId(), actual.getId(), "ids should match");
-        assertEquals( "Luc", actual.getName(), "names should match");
-    }
-
-    @Test
-    void deleteAuthorShouldRemoveFromRepositoryListImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryListImpl();
-        Author author1 = new Author();
-        author1.setName("Luc");
-
-        //when, Ausführen
-        Author authorFromAddAuthor = sut.addAuthor(author1);
-        sut.deleteAuthor(authorFromAddAuthor.getId());
-
-        //then, Verifizieren
-        Exception exception = assertThrows(ResponseStatusException.class, () -> {
-            sut.deleteAuthor(authorFromAddAuthor.getId());
+        assertThat(repositoryMap.addAuthor(author)).satisfies(addedAuthor -> {
+            assertThat(addedAuthor.getId()).isEqualTo("id");
+            assertThat(addedAuthor.getName()).isEqualTo("name");
+            assertThat(addedAuthor.getCountry()).isEqualTo("country");
+            assertThat(addedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
         });
-        String expectedMessage = "The author you requested doesn't exist. Please review your parameters!";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void deleteAuthorShouldRemoveFromRepositoryMapImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryMapImpl();
-        Author author1 = new Author();
-        author1.setName("Luc");
+    void Test_getAllAuthors() {
+        AuthorRepository repositoryMap = new AuthorRepository();
+        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
+        repositoryMap.addAuthor(author);
 
-        //when, Ausführen
-        Author authorFromAddAuthor = sut.addAuthor(author1);
-        sut.deleteAuthor(authorFromAddAuthor.getId());
+        assertThat(repositoryMap.getAll())
+                .isNotEmpty()
+                .hasSize(1)
+                .satisfies(author1 -> {
+                    assertThat(author1.getId()).isEqualTo("id");
+                    assertThat(author1.getName()).isEqualTo("name");
+                    assertThat(author1.getCountry()).isEqualTo("country");
+                    assertThat(author1.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
 
-        //then, Verifizieren
-        Exception exception = assertThrows(ResponseStatusException.class, () -> {
-            sut.deleteAuthor(authorFromAddAuthor.getId());
+                }, Index.atIndex(0));
+    }
+
+    @Test
+    void Test_getAuthor() {
+        AuthorRepository repositoryMap = new AuthorRepository();
+        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
+        Author addedAuthor = repositoryMap.addAuthor(author);
+
+        assertThat(repositoryMap.getAuthor(addedAuthor.getId())).satisfies(foundAuthor -> {
+            assertThat(foundAuthor.getId()).isEqualTo("id");
+            assertThat(foundAuthor.getName()).isEqualTo("name");
+            assertThat(foundAuthor.getCountry()).isEqualTo("country");
+            assertThat(foundAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
         });
-        String expectedMessage = "The author you requested doesn't exist. Please review your parameters!";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void updateAuthorShouldUpdateAuthorInRepositoryListImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryListImpl();
-        Author author1 = new Author();
-        author1.setName("Luc");
+    void Test_removeAuthor() {
+        AuthorRepository repositoryMap = new AuthorRepository();
+        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
+        Author addAuthor = repositoryMap.addAuthor(author);
 
-        //when, Ausführen
-        Author authorFromAddAuthor = sut.addAuthor(author1);
-        Author actual = sut.getAuthor(authorFromAddAuthor.getId());
-        actual.setId(authorFromAddAuthor.getId());
-        actual.setName("David");
-
-        //then, Verifizieren
-        assertNotNull(actual, "response should not be null");
-        assertEquals(authorFromAddAuthor.getId(), actual.getId(), "ids should match");
-        assertNotEquals( "Luc", actual.getName(), "names should not match");
+        repositoryMap.deleteAuthor(addAuthor);
     }
 
     @Test
-    void updateAuthorShouldUpdateAuthorInRepositoryMapImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryMapImpl();
-        Author author1 = new Author();
-        author1.setName("Luc");
+    void Test_updateAuthor() {
+        AuthorRepository repositoryMap = new AuthorRepository();
+        Author updateAuthor = new Author("id", "name", "country", LocalDate.of(1997, 1, 5));
 
-        //when, Ausführen
-        Author authorFromAddAuthor = sut.addAuthor(author1);
-        Author actual = sut.getAuthor(authorFromAddAuthor.getId());
-        actual.setId(authorFromAddAuthor.getId());
-        actual.setName("David");
-
-        //then, Verifizieren
-        assertNotNull(actual, "response should not be null");
-        assertEquals(authorFromAddAuthor.getId(), actual.getId(), "ids should match");
-        assertNotEquals( "Luc", actual.getName(), "names should not match");
-    }
-
-    @Test
-    void getAllAuthorsShouldUpdateAuthorInRepositoryListImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryListImpl();
-        Author author1 = new Author();
-        author1.setName("Dee");
-        Author author2 = new Author();
-        author2.setName("Dux");
-        Author author3 = new Author();
-        author3.setName("Doo");
-        Author author4 = new Author();
-        author4.setName("Dum");
-        Author author5 = new Author();
-        author5.setName("Dam");
-
-        //when, Ausführen
-        sut.addAuthor(author1);
-        sut.addAuthor(author2);
-        sut.addAuthor(author3);
-        sut.addAuthor(author4);
-        sut.addAuthor(author5);
-
-        List<Author> list = sut.getAll();
-
-        //then, Verifizieren
-        assertNotNull(list, "response should not be null");
-        assertEquals(5, list.size(), "list size should match");
-    }
-
-    @Test
-    void getAllAuthorsShouldUpdateAuthorInRepositoryMapImpl() {
-        //setup, Vorbereitung (sut) system under test
-        AuthorRepository sut = new AuthorRepositoryMapImpl();
-        Author author1 = new Author();
-        author1.setName("Dee");
-        Author author2 = new Author();
-        author2.setName("Dux");
-        Author author3 = new Author();
-        author3.setName("Doo");
-        Author author4 = new Author();
-        author4.setName("Dum");
-        Author author5 = new Author();
-        author5.setName("Dam");
-
-        //when, Ausführen
-        sut.addAuthor(author1);
-        sut.addAuthor(author2);
-        sut.addAuthor(author3);
-        sut.addAuthor(author4);
-        sut.addAuthor(author5);
-
-        List<Author> list = sut.getAll();
-
-        //then, Verifizieren
-        assertNotNull(list, "response should not be null");
-        assertEquals(5, list.size(), "list size should match");
+        assertThat(repositoryMap.updateAuthor(updateAuthor))
+                .satisfies(updatedAuthor -> {
+                    assertThat(updatedAuthor.getId()).isEqualTo("id");
+                    assertThat(updatedAuthor.getName()).isEqualTo("name");
+                    assertThat(updatedAuthor.getCountry()).isEqualTo("country");
+                    assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 5));
+                });
     }
 }
-
-

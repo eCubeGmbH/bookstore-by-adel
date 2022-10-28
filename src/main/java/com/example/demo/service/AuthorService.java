@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.model.Author;
 import com.example.demo.repository.AuthorRepository;
-import com.example.demo.repository.AuthorRepositoryMapImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,30 +13,32 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.UUID;
 
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
 
     @Autowired
-    public AuthorService(@Qualifier("authorRepositoryMapImpl") AuthorRepository authorRepository) {
-
+    public AuthorService(@Qualifier("authorRepository") AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepositoryMapImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepository.class);
     private Map<String, Author> authorMap = new HashMap<>();
     private String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
-    private Object errorChecking(String authorId) {
-        if (authorMap.get(authorId) == null) {
+    private Author findAuthorAndValidate(String authorId) {
+        Author author = authorMap.get(authorId);
+        if (author == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
         }
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
+        return author;
     }
 
     public Author addAuthor(Author author) {
+        String authorId = UUID.randomUUID().toString();
+        author.setId(authorId);
         return authorRepository.addAuthor(author);
     }
 
@@ -51,20 +52,17 @@ public class AuthorService {
     }
 
     public Author getAuthor(String authorId) {
-        LOGGER.info("coming from map");
-        errorChecking(authorId);
-        return getAuthor(authorId);
+        return findAuthorAndValidate(authorId);
     }
 
     public void deleteAuthor(String authorId) {
-        errorChecking(authorId);
-        authorRepository.deleteAuthor(authorId);
+        Author author = findAuthorAndValidate(authorId);
+        authorRepository.deleteAuthor(author);
     }
 
     public Author updateAuthor(String authorId, Author authorFromUser) {
-        errorChecking(authorId);
-        return authorRepository.updateAuthor(authorId, authorFromUser);
+        Author author = findAuthorAndValidate(authorId);
+        authorFromUser.setId(author.getId());
+        return authorRepository.updateAuthor(authorFromUser);
     }
 }
-
-

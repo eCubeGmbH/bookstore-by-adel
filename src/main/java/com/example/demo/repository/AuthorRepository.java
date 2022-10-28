@@ -1,17 +1,37 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Author;
+import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public interface AuthorRepository {
-     Author addAuthor(Author author);
+@Repository
+public class AuthorRepository {
 
-     Author getAuthor(String authorId);
+    private final Map<String, Author> authorMap = new HashMap<>();
 
-     void deleteAuthor(String authorId);
+    public Author addAuthor(Author author) {
+        authorMap.put(author.getId(), author);
+        return author;
+    }
 
-     Author updateAuthor(String authorId, Author authorFromUser);
+    public List<Author> getAll() {
+        return new ArrayList<>(authorMap.values());
+    }
 
-     List<Author> getAll();
+    public Author getAuthor(String authorId) {
+        return authorMap.get(authorId);
+    }
+
+    public void deleteAuthor(Author author) {
+        authorMap.remove(author.getId());
+    }
+
+    public Author updateAuthor(Author author) {
+        authorMap.replace(author.getId(), author);
+        return author;
+    }
 }

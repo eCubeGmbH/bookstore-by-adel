@@ -2,18 +2,16 @@ package com.example.demo.service;
 
 import com.example.demo.model.Author;
 import com.example.demo.repository.AuthorRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
@@ -24,12 +22,10 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepository.class);
-    private Map<String, Author> authorMap = new HashMap<>();
-    private String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
+    private final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     private Author findAuthorAndValidate(String authorId) {
-        Author author = authorMap.get(authorId);
+        Author author = authorRepository.getAuthor(authorId);
         if (author == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
         }
@@ -42,10 +38,14 @@ public class AuthorService {
         return authorRepository.addAuthor(author);
     }
 
-    public List<Author> getAll() {
+    public List<Author> getAll(String authorName) {
         List<Author> authors = authorRepository.getAll();
         if (authors.size() > 0) {
-            return authors;
+            return StringUtils.hasText(authorName)
+                    ? authors.stream()
+                        .filter(author -> author.getName().equalsIgnoreCase(authorName.trim()))
+                        .collect(Collectors.toList())
+                    : authors;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
         }

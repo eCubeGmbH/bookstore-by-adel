@@ -45,15 +45,15 @@ class AuthorControllerTest {
     }
 
     @Test
-    void getAllAuthors() {
+    void getAllAuthors_emptyAuthorName() {
         // prep
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
 
         // when
-        Mockito.when(authorService.getAll()).thenReturn(List.of(author));
+        Mockito.when(authorService.getAll("")).thenReturn(List.of(author));
 
         // act + assert
-        assertThat(controller.getAllAuthors())
+        assertThat(controller.getAllAuthors(""))
                 .isNotEmpty()
                 .hasSize(1)
                 .satisfies(createdAuthor -> {
@@ -64,7 +64,7 @@ class AuthorControllerTest {
                 }, atIndex(0));
 
         // verify
-        Mockito.verify(authorService).getAll();
+        Mockito.verify(authorService).getAll("");
         Mockito.verifyNoMoreInteractions(authorService);
     }
 

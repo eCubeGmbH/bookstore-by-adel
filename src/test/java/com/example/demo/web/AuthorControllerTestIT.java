@@ -46,13 +46,12 @@ class AuthorControllerTestIT {
 
         // preparation
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
-        restTemplate.postForEntity("/api/authors/", author, Author.class).getBody();
-
+        assertThat(restTemplate.postForEntity("/api/authors/", author, Author.class))
+                .satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
         // act
 
         ResponseEntity<List<Author>> responseEntity = restTemplate.exchange("/api/authors/", HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
-
 
         //
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
@@ -103,22 +102,25 @@ class AuthorControllerTestIT {
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(authorResponseEntity.getBody()).isNull();
         });
     }
+
 
     @Test
     void test_removeAuthor() {
         // preparation
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
-        restTemplate.postForEntity("/api/authors/", author, Author.class).getBody();
+        Author createdAuthor = restTemplate.postForEntity("/api/authors/", author, Author.class).getBody();
+        assertThat(createdAuthor).isNotNull();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
         // act
-        ResponseEntity<Void> responseEntity = restTemplate.exchange("/api/authors/", HttpMethod.DELETE, new HttpEntity<>(""), Void.class);
+        ResponseEntity<Void> responseEntity = restTemplate.exchange("/api/authors/" + createdAuthor.getId(), HttpMethod.DELETE, new HttpEntity<>("", headers), Void.class);
         //assert
-        assertThat(responseEntity).satisfies(authorResponseEntity -> {
-            assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-        });
+        assertThat(responseEntity).satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
     }
 
     @Test
@@ -135,10 +137,7 @@ class AuthorControllerTestIT {
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(authorResponseEntity.getBody()).satisfies(responseAuthor -> {
-                assertThat(responseAuthor.getBirthDate()).isNotEqualTo(LocalDate.of(1985,4,15));
-
-            });
+            assertThat(authorResponseEntity.getBody()).satisfies(responseAuthor -> assertThat(responseAuthor.getBirthDate()).isNotEqualTo(LocalDate.of(1985, 4, 15)));
         });
     }
 }

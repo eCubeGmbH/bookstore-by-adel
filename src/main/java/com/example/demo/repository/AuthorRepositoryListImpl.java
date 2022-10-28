@@ -1,5 +1,6 @@
-package com.example.demo.web;
+package com.example.demo.repository;
 
+import com.example.demo.model.Author;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

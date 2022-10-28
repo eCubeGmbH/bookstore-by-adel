@@ -1,4 +1,6 @@
-package com.example.demo.web;
+package com.example.demo.repository;
+
+import com.example.demo.model.Author;
 
 import java.util.List;
 

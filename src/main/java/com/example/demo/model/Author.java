@@ -1,4 +1,4 @@
-package com.example.demo.web;
+package com.example.demo.model;
 
 import java.time.LocalDate;
 import java.util.Objects;

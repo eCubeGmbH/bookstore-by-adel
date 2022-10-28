@@ -1,18 +1,33 @@
-package com.example.demo.web;
+package com.example.demo.service;
 
+import com.example.demo.model.Author;
+import com.example.demo.repository.AuthorRepository;
+import com.example.demo.repository.AuthorRepositoryMapImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@Repository
-public class AuthorRepositoryMapImpl implements AuthorRepository {
+
+@Service
+public class AuthorService {
+    private final AuthorRepository authorRepository;
+
+    @Autowired
+    public AuthorService(@Qualifier("authorRepositoryMapImpl") AuthorRepository authorRepository) {
+
+        this.authorRepository = authorRepository;
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepositoryMapImpl.class);
     private Map<String, Author> authorMap = new HashMap<>();
-
     private String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     private Object errorChecking(String authorId) {
@@ -23,16 +38,13 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
     }
 
     public Author addAuthor(Author author) {
-        String authorId = UUID.randomUUID().toString();
-        author.setId(authorId);
-        authorMap.put(authorId, author);
-        return author;
+        return authorRepository.addAuthor(author);
     }
 
     public List<Author> getAll() {
-        if (authorMap.size() > 0) {
-            List<Author> getAll = new ArrayList<Author>(authorMap.values());
-            return getAll;
+        List<Author> authors = authorRepository.getAll();
+        if (authors.size() > 0) {
+            return authors;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
         }
@@ -41,19 +53,18 @@ public class AuthorRepositoryMapImpl implements AuthorRepository {
     public Author getAuthor(String authorId) {
         LOGGER.info("coming from map");
         errorChecking(authorId);
-        Author getAuthor = authorMap.get(authorId);
-        return getAuthor;
+        return getAuthor(authorId);
     }
 
     public void deleteAuthor(String authorId) {
         errorChecking(authorId);
-        authorMap.remove(authorId);
+        authorRepository.deleteAuthor(authorId);
     }
 
-    public Author updateAuthor(String authorId, Author author) {
+    public Author updateAuthor(String authorId, Author authorFromUser) {
         errorChecking(authorId);
-        author.setId(authorId);
-        authorMap.replace(authorId, author);
-        return author;
+        return authorRepository.updateAuthor(authorId, authorFromUser);
     }
 }
+
+

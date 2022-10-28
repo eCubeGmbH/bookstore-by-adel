@@ -1,7 +1,8 @@
 package com.example.demo.web;
 
+import com.example.demo.model.Author;
+import com.example.demo.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,37 +12,37 @@ import java.util.List;
 @RequestMapping(value = {"/api/authors"})
 class AuthorController {
 
-    final AuthorRepository repository;
+    private final AuthorService authorService;
 
     @Autowired
-    public AuthorController(@Qualifier("authorRepositoryMapImpl") AuthorRepository repository) {
-        this.repository = repository;
+    public AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
     }
 
     @PostMapping(consumes = {"application/json"},
             produces = {"application/json"})
     public Author addAuthor(@RequestBody Author author) {
-        return repository.addAuthor(author);
+        return authorService.addAuthor(author);
     }
 
     @ResponseBody
     @GetMapping(produces = {"application/json"})
     public List<Author> getAllAuthors() {
-        return repository.getAll();
+        return authorService.getAll();
     }
 
     @ResponseBody
     @GetMapping(value = {"/{authorId}"},
             produces = {"application/json"})
     public Author getAuthor(@PathVariable String authorId) {
-        return repository.getAuthor(authorId);
+        return authorService.getAuthor(authorId);
     }
 
     @ResponseBody
     @DeleteMapping(value = {"/{authorId}"},
             consumes = {"application/json"})
     public void removeAuthor(@PathVariable String authorId) {
-        repository.deleteAuthor(authorId);
+        authorService.deleteAuthor(authorId);
     }
 
     @ResponseBody
@@ -49,6 +50,6 @@ class AuthorController {
             consumes = {"application/json"},
             produces = {"application/json"})
     public Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser) {
-        return repository.updateAuthor(authorId, authorFromUser);
+        return authorService.updateAuthor(authorId, authorFromUser);
     }
 }

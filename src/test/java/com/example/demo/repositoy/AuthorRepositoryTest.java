@@ -1,5 +1,9 @@
-package com.example.demo.web;
+package com.example.demo.repositoy;
 
+import com.example.demo.repository.AuthorRepository;
+import com.example.demo.repository.AuthorRepositoryListImpl;
+import com.example.demo.repository.AuthorRepositoryMapImpl;
+import com.example.demo.model.Author;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 

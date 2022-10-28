@@ -1,5 +1,7 @@
-package com.example.demo.web;
+package com.example.demo.repositoy;
 
+import com.example.demo.repository.AuthorRepositoryMapImpl;
+import com.example.demo.model.Author;
 import org.assertj.core.data.Index;
 import org.junit.jupiter.api.Test;
 

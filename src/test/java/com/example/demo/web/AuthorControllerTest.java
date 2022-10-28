@@ -1,5 +1,7 @@
 package com.example.demo.web;
 
+import com.example.demo.model.Author;
+import com.example.demo.repository.AuthorRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,5 +1,6 @@
-package com.example.demo.web;
+package com.example.demo.model;
 
+import com.example.demo.model.Author;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

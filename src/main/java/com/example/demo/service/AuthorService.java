@@ -6,12 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
@@ -40,16 +39,19 @@ public class AuthorService {
 
     public List<Author> getAll(String authorName) {
         List<Author> authors = authorRepository.getAll();
-        if (authors.size() > 0) {
-            return StringUtils.hasText(authorName)
-                    ? authors.stream()
-                        .filter(author -> author.getName().equalsIgnoreCase(authorName.trim()))
-                        .collect(Collectors.toList())
-                    : authors;
+        if (authorName == null || authorName.isBlank()) {
+            return authors;
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The List you requested appears to be empty. Please add at least one Object before requesting it");
+            List<Author> foundAuthors = new ArrayList<>();
+            for (Author author : authors) {
+                if (author.getName().equalsIgnoreCase(authorName.trim())) {
+                    foundAuthors.add(author);
+                }
+            }
+            return foundAuthors;
         }
     }
+
 
     public Author getAuthor(String authorId) {
         return findAuthorAndValidate(authorId);

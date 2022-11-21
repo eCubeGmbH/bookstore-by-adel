@@ -54,10 +54,9 @@ public class Author {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (!(o instanceof Author)) {
+        } else if (!(o instanceof Author author)) {
             return false;
         } else {
-            Author author = (Author) o;
             return Objects.equals(this.id, author.id) && Objects.equals(this.name, author.name) && Objects.equals(this.country, author.country) && Objects.equals(this.birthDate, author.birthDate);
         }
     }

@@ -53,7 +53,7 @@ class AuthorControllerTest {
         Mockito.when(authorService.getAll("")).thenReturn(List.of(author));
 
         // act + assert
-        assertThat(controller.getAllAuthors(""))
+        assertThat(controller.getAllAuthors("", 0, 5))
                 .isNotEmpty()
                 .hasSize(1)
                 .satisfies(createdAuthor -> {
@@ -67,6 +67,7 @@ class AuthorControllerTest {
         Mockito.verify(authorService).getAll("");
         Mockito.verifyNoMoreInteractions(authorService);
     }
+
 
     @Test
     void getAuthor() {

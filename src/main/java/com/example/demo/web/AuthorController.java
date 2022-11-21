@@ -27,7 +27,11 @@ class AuthorController {
 
     @ResponseBody
     @GetMapping(produces = {"application/json"})
-    public List<Author> getAllAuthors(@RequestParam(value = "authorName", required = false, defaultValue = "") String authorName) {
+    public List<Author> getAllAuthors(
+            @RequestParam(value = "authorName", required = false, defaultValue = "") String authorName,
+            @RequestParam(value = "from", required = false) Integer from,
+            @RequestParam(value = "to", required = false) Integer to
+    ) {
         return authorService.getAll(authorName);
     }
 

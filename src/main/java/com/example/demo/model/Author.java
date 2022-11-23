@@ -1,4 +1,4 @@
-package com.example.demo.web;
+package com.example.demo.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -9,10 +9,14 @@ public class Author {
     private String country;
     private LocalDate birthDate;
 
-    public static void main(String[] args) {
+    public Author() {
     }
 
-    public Author() {
+    public Author(String id, String name, String country, LocalDate birthDate) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.birthDate = birthDate;
     }
 
     public String getId() {
@@ -50,10 +54,9 @@ public class Author {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (!(o instanceof Author)) {
+        } else if (!(o instanceof Author author)) {
             return false;
         } else {
-            Author author = (Author) o;
             return Objects.equals(this.id, author.id) && Objects.equals(this.name, author.name) && Objects.equals(this.country, author.country) && Objects.equals(this.birthDate, author.birthDate);
         }
     }

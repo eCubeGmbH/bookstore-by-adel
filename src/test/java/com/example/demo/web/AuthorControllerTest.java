@@ -4,16 +4,20 @@ import com.example.demo.model.Author;
 import com.example.demo.service.AuthorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.atIndex;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
@@ -22,6 +26,16 @@ class AuthorControllerTest {
     private AuthorService authorService;
     @InjectMocks
     private AuthorController controller;
+
+    private static final List<Author> allAuthors = List.of(
+            new Author("1", "John", "USA", LocalDate.of(1997, 1, 2)),
+            new Author("2", "Müller", "USA", LocalDate.of(1997, 1, 2)),
+            new Author("3", "müller", "USA", LocalDate.of(1997, 1, 2)),
+            new Author("4", "Meier", "USA", LocalDate.of(1997, 1, 2)),
+            new Author("5", "Rein", "DÄN", LocalDate.of(1920, 1, 2)),
+            new Author("6", "Weg", "SWE", LocalDate.of(1911, 11, 9)),
+            new Author("7", "Frank", "SYR", LocalDate.of(1997, 1, 2))
+    );
 
     @Test
     void addAuthor() {
@@ -41,7 +55,44 @@ class AuthorControllerTest {
 
         // verify
         Mockito.verify(authorService).addAuthor(author);
-        Mockito.verifyNoMoreInteractions(authorService);
+        verifyNoMoreInteractions(authorService);
+    }
+
+    @Test
+    void getAllAuthors_pagination() {
+        Author author = new Author("AXX2213", "FM", "SWE", LocalDate.of(1877, 2, 1));
+
+        // when
+        Mockito.when(authorService.getAll("", 1, 5)).thenReturn(List.of(author));
+
+        // act + assert
+        assertThat(controller.getAllAuthors("", 1, 5))
+                .hasSize(1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-1, 0",
+            "0, -1",
+            "-1, -2"
+    })
+    void getAllAuthors_paginationWithNegativeNumber(int from, int to) {
+        assertThatThrownBy(() -> controller.getAllAuthors("", from, to))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessage("400 BAD_REQUEST \"parameters from and to must be greater than 0\"");
+        verifyNoMoreInteractions(authorService);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "10, 0",
+            "5, 4"
+    })
+    void getAllAuthors_paginationWithFromGreaterTo(int from, int to) {
+        assertThatThrownBy(() -> controller.getAllAuthors("", from, to))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessage("400 BAD_REQUEST \"parameter from must be greater than to\"");
+        verifyNoMoreInteractions(authorService);
     }
 
     @Test
@@ -50,7 +101,7 @@ class AuthorControllerTest {
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
 
         // when
-        Mockito.when(authorService.getAll("")).thenReturn(List.of(author));
+        Mockito.when(authorService.getAll("", 0, 5)).thenReturn(List.of(author));
 
         // act + assert
         assertThat(controller.getAllAuthors("", 0, 5))
@@ -64,8 +115,8 @@ class AuthorControllerTest {
                 }, atIndex(0));
 
         // verify
-        Mockito.verify(authorService).getAll("");
-        Mockito.verifyNoMoreInteractions(authorService);
+        Mockito.verify(authorService).getAll("", 0, 5);
+        verifyNoMoreInteractions(authorService);
     }
 
 
@@ -87,7 +138,7 @@ class AuthorControllerTest {
 
         // verify
         Mockito.verify(authorService).getAuthor("XD123");
-        Mockito.verifyNoMoreInteractions(authorService);
+        verifyNoMoreInteractions(authorService);
     }
 
     @Test
@@ -100,7 +151,7 @@ class AuthorControllerTest {
 
         // verify
         Mockito.verify(authorService).getAuthor("XD123");
-        Mockito.verifyNoMoreInteractions(authorService);
+        verifyNoMoreInteractions(authorService);
     }
 
     @Test

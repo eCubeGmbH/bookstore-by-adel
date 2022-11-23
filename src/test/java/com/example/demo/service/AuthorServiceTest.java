@@ -33,8 +33,56 @@ class AuthorServiceTest {
             new Author("3", "müller", "USA", LocalDate.of(1997, 1, 2)),
             new Author("4", "Meier", "USA", LocalDate.of(1997, 1, 2)),
             new Author("5", "Rein", "DÄN", LocalDate.of(1920, 1, 2)),
-            new Author("6", "Weg", "SWE", LocalDate.of(1911, 11, 9))
+            new Author("6", "Weg", "SWE", LocalDate.of(1911, 11, 9)),
+            new Author("7", "Frank", "SYR", LocalDate.of(1991, 2, 2)),
+            new Author("8", "FNG", "CHI", LocalDate.of(1755, 2, 22))
     );
+
+
+    @Test
+    void paginationTest1() {
+        when(authorRepository.getAll()).thenReturn(allAuthors);
+
+        // act
+        assertThat(authorService.getAll("", 0, 2))
+                .extracting(Author::getName).contains("John", "Müller");
+        // act
+        assertThat(authorService.getAll("", 3, 5))
+                .extracting(Author::getName).contains("Meier", "Rein");
+        // act
+        assertThat(authorService.getAll("", 6, 8))
+                .extracting(Author::getName).contains("Frank", "FNG");
+        // act
+        assertThat(authorService.getAll("", 9, 11))
+                .isEmpty();
+
+
+    }
+    @Test
+    void paginationTestWithFiltering() {
+        when(authorRepository.getAll()).thenReturn(allAuthors);
+
+        // act
+        assertThat(authorService.getAll("John",0,2))
+                .extracting(Author::getName).contains("John");
+        // act
+        assertThat(authorService.getAll("John",9,11))
+                .isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"John", "john", "JOHn", "  John ", "\njohn\t"})
+    void paginationTestWithFiltering2(String authorName) {
+        when(authorRepository.getAll()).thenReturn(allAuthors);
+
+        // act
+        assertThat(authorService.getAll(authorName,0,2))
+                .extracting(Author::getName).contains("John");
+        // act
+        assertThat(authorService.getAll(authorName,9,11))
+                .isEmpty();
+
+    }
 
 
     @ParameterizedTest
@@ -44,9 +92,9 @@ class AuthorServiceTest {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act + assert
-        assertThat(authorService.getAll(authorName))
+        assertThat(authorService.getAll(authorName, 0, 11))
                 .isNotEmpty()
-                .hasSize(6);
+                .hasSize(8);
     }
 
     @Test
@@ -54,7 +102,7 @@ class AuthorServiceTest {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act + assert
-        assertThat(authorService.getAll("steve"))
+        assertThat(authorService.getAll("steve", 0, 11))
                 .isEmpty();
         //
         verify(authorRepository).getAll();
@@ -66,7 +114,7 @@ class AuthorServiceTest {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act + assert
-        assertThat(authorService.getAll(authorName))
+        assertThat(authorService.getAll(authorName, 0, 11))
                 .hasSize(1)
                 .extracting(Author::getName).containsExactly("Meier");
     }
@@ -76,7 +124,7 @@ class AuthorServiceTest {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act + assert
-        assertThat(authorService.getAll("MülLer"))
+        assertThat(authorService.getAll("MülLer", 0, 11))
                 .hasSize(2)
                 .extracting(Author::getName).containsExactlyInAnyOrder("Müller", "müller");
     }

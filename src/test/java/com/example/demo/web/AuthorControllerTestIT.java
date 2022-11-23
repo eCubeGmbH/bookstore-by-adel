@@ -50,8 +50,12 @@ class AuthorControllerTestIT {
                 .satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
         // act
 
-        ResponseEntity<List<Author>> responseEntity = restTemplate.exchange("/api/authors/", HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-        });
+        ResponseEntity<List<Author>> responseEntity = restTemplate.exchange("/api/authors?from=0&to=10",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {
+                }
+        );
 
         //
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
@@ -140,4 +144,6 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getBody()).satisfies(responseAuthor -> assertThat(responseAuthor.getBirthDate()).isNotEqualTo(LocalDate.of(1985, 4, 15)));
         });
     }
+
+
 }

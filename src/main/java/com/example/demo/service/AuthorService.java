@@ -37,19 +37,26 @@ public class AuthorService {
         return authorRepository.addAuthor(author);
     }
 
-    public List<Author> getAll(String authorName) {
+    public List<Author> getAll(String authorName, int from, int to) {
         List<Author> authors = authorRepository.getAll();
+        List<Author> foundAuthors = new ArrayList<>();
+
+        // filter
         if (authorName == null || authorName.isBlank()) {
-            return authors;
+            foundAuthors.addAll(authors);
         } else {
-            List<Author> foundAuthors = new ArrayList<>();
             for (Author author : authors) {
                 if (author.getName().equalsIgnoreCase(authorName.trim())) {
                     foundAuthors.add(author);
                 }
             }
-            return foundAuthors;
         }
+
+        // pagination
+        if (from > foundAuthors.size()) {
+            return List.of();
+        }
+        return foundAuthors.subList(from, Math.min(to, foundAuthors.size()));
     }
 
 
@@ -67,4 +74,5 @@ public class AuthorService {
         authorFromUser.setId(author.getId());
         return authorRepository.updateAuthor(authorFromUser);
     }
+
 }

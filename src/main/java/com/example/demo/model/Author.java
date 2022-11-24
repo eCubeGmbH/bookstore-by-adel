@@ -51,21 +51,30 @@ public class Author {
         this.birthDate = birthDate;
     }
 
-    public boolean equals(Object o) {
+    @Override
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (!(o instanceof Author author)) {
-            return false;
-        } else {
-            return Objects.equals(this.id, author.id) && Objects.equals(this.name, author.name) && Objects.equals(this.country, author.country) && Objects.equals(this.birthDate, author.birthDate);
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Author author = (Author) o;
+        return Objects.equals(id, author.id);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hash(new Object[]{this.id, this.name, this.country, this.birthDate});
+        return Objects.hash(id);
     }
 
+    @Override
     public String toString() {
-        return "Author{id=" + this.id + ", name='" + this.name + "', country='" + this.country + "', birthDate='" + this.birthDate + "'}";
+        return "Author{" +
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", country='" + country + '\'' +
+            ", birthDate=" + birthDate +
+            '}';
     }
 }

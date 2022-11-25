@@ -52,6 +52,16 @@ public class AuthorService {
             }
         }
 
+        // sorting
+        foundAuthors.sort((author1, author2) -> {
+            int compareTo = author1.getName().compareToIgnoreCase(author2.getName());
+            if (compareTo == 0) {
+                return author1.getId().compareTo(author2.getId());
+            } else {
+                return compareTo;
+            }
+        });
+
         // pagination
         if (from > foundAuthors.size()) {
             return List.of();
@@ -74,5 +84,4 @@ public class AuthorService {
         authorFromUser.setId(author.getId());
         return authorRepository.updateAuthor(authorFromUser);
     }
-
 }

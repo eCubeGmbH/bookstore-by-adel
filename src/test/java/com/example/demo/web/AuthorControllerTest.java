@@ -17,7 +17,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
@@ -26,16 +25,6 @@ class AuthorControllerTest {
     private AuthorService authorService;
     @InjectMocks
     private AuthorController controller;
-
-    private static final List<Author> allAuthors = List.of(
-            new Author("1", "John", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("2", "Müller", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("3", "müller", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("4", "Meier", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("5", "Rein", "DÄN", LocalDate.of(1920, 1, 2)),
-            new Author("6", "Weg", "SWE", LocalDate.of(1911, 11, 9)),
-            new Author("7", "Frank", "SYR", LocalDate.of(1997, 1, 2))
-    );
 
     @Test
     void addAuthor() {
@@ -69,7 +58,7 @@ class AuthorControllerTest {
         assertThat(controller.getAllAuthors("", 1, 5))
                 .hasSize(1);
     }
-
+    // pagination
     @ParameterizedTest
     @CsvSource({
             "-1, 0",
@@ -82,7 +71,7 @@ class AuthorControllerTest {
                 .hasMessage("400 BAD_REQUEST \"parameters from and to must be greater than 0\"");
         verifyNoMoreInteractions(authorService);
     }
-
+    // pagination
     @ParameterizedTest
     @CsvSource({
             "10, 0",
@@ -118,7 +107,6 @@ class AuthorControllerTest {
         Mockito.verify(authorService).getAll("", 0, 5);
         verifyNoMoreInteractions(authorService);
     }
-
 
     @Test
     void getAuthor() {
@@ -173,7 +161,6 @@ class AuthorControllerTest {
             assertThat(updatedAuthor.getName()).isEqualTo("lara");
             assertThat(updatedAuthor.getCountry()).isEqualTo("USA");
             assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
-
         });
     }
 }

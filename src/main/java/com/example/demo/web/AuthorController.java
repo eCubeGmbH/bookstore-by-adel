@@ -53,22 +53,11 @@ class AuthorController {
                                     schema = @Schema(implementation = Author.class)
                             )}),
             @ApiResponse(responseCode = "400",
-                    description = "parameters from and to must be greater than 0",
-                    content = {@Content
-                            (mediaType = "application/json",
-                                    schema = @Schema(implementation = Author.class))
-                    }),
+                    description = "parameters from and to must be greater than 0"),
             @ApiResponse(responseCode = "400",
-                    description = "parameter from must be greater than to",
-                    content = {@Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Author.class))
-                    }),
+                    description = "parameter from must be greater than to"),
             @ApiResponse(responseCode = "400",
-                    description = "result can  contains maximum 1000 elements",
-                    content = {@Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Author.class))})
+                    description = "result can  contains maximum 1000 elements")
     })
     @ResponseBody
     @GetMapping(produces = {"application/json"})

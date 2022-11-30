@@ -38,35 +38,33 @@ class AuthorServiceTest {
             new Author("8", "FNG", "CHI", LocalDate.of(1755, 2, 22))
     );
 
-
     @Test
     void paginationTest1() {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act
-        assertThat(authorService.getAll("", 0, 2))
-                .extracting(Author::getName).contains("John", "Müller");
+        assertThat(authorService.getAll("", 0, 3))
+                .extracting(Author::getName).contains("FNG", "Frank", "John");
         // act
-        assertThat(authorService.getAll("", 3, 5))
-                .extracting(Author::getName).contains("Meier", "Rein");
+        assertThat(authorService.getAll("", 3, 6))
+                .extracting(Author::getName).contains("Meier", "Müller", "müller");
         // act
-        assertThat(authorService.getAll("", 6, 8))
-                .extracting(Author::getName).contains("Frank", "FNG");
+        assertThat(authorService.getAll("", 6, 9))
+                .extracting(Author::getName).contains("Rein", "Weg");
         // act
-        assertThat(authorService.getAll("", 9, 11))
+        assertThat(authorService.getAll("", 9, 12))
                 .isEmpty();
-
-
     }
+
     @Test
     void paginationTestWithFiltering() {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act
-        assertThat(authorService.getAll("John",0,2))
+        assertThat(authorService.getAll("John", 0, 2))
                 .extracting(Author::getName).contains("John");
         // act
-        assertThat(authorService.getAll("John",9,11))
+        assertThat(authorService.getAll("John", 9, 11))
                 .isEmpty();
     }
 
@@ -76,10 +74,10 @@ class AuthorServiceTest {
         when(authorRepository.getAll()).thenReturn(allAuthors);
 
         // act
-        assertThat(authorService.getAll(authorName,0,2))
+        assertThat(authorService.getAll(authorName, 0, 2))
                 .extracting(Author::getName).contains("John");
         // act
-        assertThat(authorService.getAll(authorName,9,11))
+        assertThat(authorService.getAll(authorName, 9, 11))
                 .isEmpty();
 
     }

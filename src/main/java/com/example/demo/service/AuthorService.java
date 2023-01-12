@@ -63,7 +63,7 @@ public class AuthorService {
         });
 
         // pagination
-        if (from > foundAuthors.size()) {
+        if (from > foundAuthors.size()) { //from > Anzahl authoren => leere Liste
             return List.of();
         }
         return foundAuthors.subList(from, Math.min(to, foundAuthors.size()));

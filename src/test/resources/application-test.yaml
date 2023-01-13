@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: "jdbc:tc:mysql:8://IGNORED:0/bookstore?TC_DAEMON=true&useSSL=false"
+    username: "bookstore"
+    password: "bookstore"
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver

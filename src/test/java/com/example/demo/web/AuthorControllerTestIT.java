@@ -5,15 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.test.context.ActiveProfiles;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.atIndex;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuthorControllerTestIT {
 
@@ -21,7 +26,7 @@ class AuthorControllerTestIT {
     private TestRestTemplate restTemplate;
 
     @Test
-    void test_addAuthor() {
+    void test_addAuthor() throws URISyntaxException {
         // preparation
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
 

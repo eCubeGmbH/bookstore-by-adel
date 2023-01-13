@@ -1,22 +1,36 @@
 package com.example.demo.repositoy;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.assertj.core.data.Index;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
+@SpringBootTest
 class AuthorRepositoryTest {
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
     @Test
     void Test_addAuthor() {
-        AuthorRepository repositoryMap = new AuthorRepository();
-        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
 
-        assertThat(repositoryMap.addAuthor(author)).satisfies(addedAuthor -> {
-            assertThat(addedAuthor.getId()).isEqualTo("id");
+        assertThat(authorRepository.save(author)).satisfies(addedAuthor -> {
+            assertThat(addedAuthor.getId()).isEqualTo(uuid);
             assertThat(addedAuthor.getName()).isEqualTo("name");
             assertThat(addedAuthor.getCountry()).isEqualTo("country");
             assertThat(addedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
@@ -25,15 +39,18 @@ class AuthorRepositoryTest {
 
     @Test
     void Test_getAllAuthors() {
-        AuthorRepository repositoryMap = new AuthorRepository();
-        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
-        repositoryMap.addAuthor(author);
 
-        assertThat(repositoryMap.getAll())
+        authorRepository.deleteAll();
+
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        authorRepository.save(author);
+
+        assertThat(authorRepository.findAll())
                 .isNotEmpty()
                 .hasSize(1)
                 .satisfies(author1 -> {
-                    assertThat(author1.getId()).isEqualTo("id");
+                    assertThat(author1.getId()).isEqualTo(uuid);
                     assertThat(author1.getName()).isEqualTo("name");
                     assertThat(author1.getCountry()).isEqualTo("country");
                     assertThat(author1.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
@@ -43,38 +60,42 @@ class AuthorRepositoryTest {
 
     @Test
     void Test_getAuthor() {
-        AuthorRepository repositoryMap = new AuthorRepository();
-        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
-        Author addedAuthor = repositoryMap.addAuthor(author);
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        authorRepository.save(author);
 
-        assertThat(repositoryMap.getAuthor(addedAuthor.getId())).satisfies(foundAuthor -> {
-            assertThat(foundAuthor.getId()).isEqualTo("id");
-            assertThat(foundAuthor.getName()).isEqualTo("name");
-            assertThat(foundAuthor.getCountry()).isEqualTo("country");
-            assertThat(foundAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
-        });
+        assertThat(authorRepository.findById(uuid))
+                .isPresent()
+                .get().satisfies(foundAuthor -> {
+                    assertThat(foundAuthor.getId()).isEqualTo(uuid);
+                    assertThat(foundAuthor.getName()).isEqualTo("name");
+                    assertThat(foundAuthor.getCountry()).isEqualTo("country");
+                    assertThat(foundAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
+                });
     }
 
     @Test
     void Test_removeAuthor() {
-        AuthorRepository repositoryMap = new AuthorRepository();
-        Author author = new Author("id", "name", "country", LocalDate.of(1997, 1, 1));
-        Author addAuthor = repositoryMap.addAuthor(author);
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        authorRepository.save(author);
 
-        repositoryMap.deleteAuthor(addAuthor);
+        authorRepository.delete(author);
     }
 
     @Test
     void Test_updateAuthor() {
-        AuthorRepository repositoryMap = new AuthorRepository();
-        Author updateAuthor = new Author("id", "name", "country", LocalDate.of(1997, 1, 5));
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        authorRepository.save(author);
 
-        assertThat(repositoryMap.updateAuthor(updateAuthor))
-                .satisfies(updatedAuthor -> {
-                    assertThat(updatedAuthor.getId()).isEqualTo("id");
+        assertThat(authorRepository.findById(uuid))
+                .isPresent()
+                .get().satisfies(updatedAuthor -> {
+                    assertThat(updatedAuthor.getId()).isEqualTo(uuid);
                     assertThat(updatedAuthor.getName()).isEqualTo("name");
                     assertThat(updatedAuthor.getCountry()).isEqualTo("country");
-                    assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 5));
+                    assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
                 });
     }
 }

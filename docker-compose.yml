@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  pics-mysql:
+  mysql-bookstore:
     image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: 's3cr3t'
@@ -9,15 +9,15 @@ services:
       MYSQL_USER: 'bookstore'
       MYSQL_PASSWORD: 'bookstore'
     ports:
-      - "127.0.0.1:3306:3306"
+      - "3306:3306"
     volumes:
-      - mysql-pics:/var/lib/mysql
+      - mysql-bookstore:/var/lib/mysql
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp --disable-log-bin
 
 networks:
   default:
     name: bookstore
 volumes:
-  mysql-pics:
+  mysql-bookstore:
     name: mysql-bookstore
     external: true

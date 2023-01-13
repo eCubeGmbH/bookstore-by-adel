@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -27,20 +29,20 @@ class AuthorServiceTest {
     @InjectMocks
     private AuthorService authorService;
 
-    private static final List<Author> allAuthors = List.of(
-            new Author("1", "John", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("2", "Müller", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("3", "müller", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("4", "Meier", "USA", LocalDate.of(1997, 1, 2)),
-            new Author("5", "Rein", "DÄN", LocalDate.of(1920, 1, 2)),
-            new Author("6", "Weg", "SWE", LocalDate.of(1911, 11, 9)),
-            new Author("7", "Frank", "SYR", LocalDate.of(1991, 2, 2)),
-            new Author("8", "FNG", "CHI", LocalDate.of(1755, 2, 22))
+    private static final List<AuthorEntity> allAuthors = List.of(
+            new AuthorEntity(UUID.randomUUID().toString(), "John", "USA", LocalDate.of(1997, 1, 2)),
+            new AuthorEntity(UUID.randomUUID().toString(), "Müller", "USA", LocalDate.of(1997, 1, 2)),
+            new AuthorEntity(UUID.randomUUID().toString(), "müller", "USA", LocalDate.of(1997, 1, 2)),
+            new AuthorEntity(UUID.randomUUID().toString(), "Meier", "USA", LocalDate.of(1997, 1, 2)),
+            new AuthorEntity(UUID.randomUUID().toString(), "Rein", "DÄN", LocalDate.of(1920, 1, 2)),
+            new AuthorEntity(UUID.randomUUID().toString(), "Weg", "SWE", LocalDate.of(1911, 11, 9)),
+            new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2)),
+            new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22))
     );
 
     @Test
     void paginationTest1() {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act
         assertThat(authorService.getAll("", 0, 3))
@@ -58,7 +60,7 @@ class AuthorServiceTest {
 
     @Test
     void paginationTestWithFiltering() {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act
         assertThat(authorService.getAll("John", 0, 2))
@@ -71,7 +73,7 @@ class AuthorServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"John", "john", "JOHn", "  John ", "\njohn\t"})
     void paginationTestWithFiltering2(String authorName) {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act
         assertThat(authorService.getAll(authorName, 0, 2))
@@ -87,7 +89,7 @@ class AuthorServiceTest {
     @NullSource
     @ValueSource(strings = {"", " ", "   ", "\t", " \n "})
     void test_empty(String authorName) {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act + assert
         assertThat(authorService.getAll(authorName, 0, 11))
@@ -97,19 +99,19 @@ class AuthorServiceTest {
 
     @Test
     void allAuthors_nameNotFound() {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act + assert
         assertThat(authorService.getAll("steve", 0, 11))
                 .isEmpty();
         //
-        verify(authorRepository).getAll();
+        verify(authorRepository).findAll();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Meier", "meier", "mEier", "  Meier ", "\nMeier\t"})
     void allAuthors_authorFound(String authorName) {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act + assert
         assertThat(authorService.getAll(authorName, 0, 11))
@@ -119,7 +121,7 @@ class AuthorServiceTest {
 
     @Test
     void allAuthors_authorFoundTwice() {
-        when(authorRepository.getAll()).thenReturn(allAuthors);
+        when(authorRepository.findAll()).thenReturn(allAuthors);
 
         // act + assert
         assertThat(authorService.getAll("MülLer", 0, 11))

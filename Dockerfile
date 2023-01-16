@@ -1,4 +1,4 @@
-FROM maven:3-jdk-11 as build
+FROM maven:3-openjdk-17 as build
 
 WORKDIR /usr/src/app
 

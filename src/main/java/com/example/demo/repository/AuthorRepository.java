@@ -13,7 +13,18 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, String> {
 
     List<AuthorEntity> findByNameIgnoreCase(String name);
 
-    @Query("SELECT author FROM AuthorEntity author WHERE LOWER(author.name) = LOWER(:name)")
+    @Query("""
+            SELECT author
+              FROM AuthorEntity author
+             WHERE LOWER(author.name) = LOWER(:name)
+            """)
     List<AuthorEntity> findByName(@Param("name") String name);
+
+    @Query(value = """
+            SELECT *
+              FROM author
+             WHERE LOWER(name) = LOWER(:name)
+            """, nativeQuery = true)
+    List<AuthorEntity> findByNameNative(@Param("name") String name);
 
 }

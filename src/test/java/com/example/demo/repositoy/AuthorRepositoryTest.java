@@ -92,7 +92,19 @@ class AuthorRepositoryTest {
         assertThat(authorRepository.findByName(name))
                 .isNotEmpty()
                 .hasSize(1);
+    }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
+    void test_findByNameNative(String name) {
+
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11));
+        authorRepository.save(author);
+
+        assertThat(authorRepository.findByNameNative(name))
+                .isNotEmpty()
+                .hasSize(1);
     }
 
 

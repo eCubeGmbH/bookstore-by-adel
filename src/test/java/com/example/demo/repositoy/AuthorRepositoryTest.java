@@ -4,10 +4,13 @@ import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.assertj.core.data.Index;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.shaded.org.bouncycastle.util.Strings;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -55,7 +58,33 @@ class AuthorRepositoryTest {
     }
 
     @Test
-    void Test_getAuthor() {
+    void test_findByNameIgnoreCase() {
+
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11));
+        authorRepository.save(author);
+
+        assertThat(authorRepository.findByNameIgnoreCase("NaMe"))
+                .isNotEmpty()
+                .hasSize(1);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
+    void test_findByNameIgnoreCase2(String name) {
+        String uuid = UUID.randomUUID().toString();
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1977, 1, 22));
+        authorRepository.save(author);
+
+        assertThat(authorRepository.findByNameIgnoreCase(name))
+                .isNotEmpty()
+                .hasSize(1);
+    }
+
+
+    @Test
+    void test_getAuthor() {
         String uuid = UUID.randomUUID().toString();
         AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
         authorRepository.save(author);

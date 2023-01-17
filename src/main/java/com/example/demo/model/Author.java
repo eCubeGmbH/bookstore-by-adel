@@ -23,32 +23,16 @@ public class Author {
         return this.id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
         return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getCountry() {
         return this.country;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     public LocalDate getBirthDate() {
         return this.birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
     }
 
     @Override
@@ -71,10 +55,10 @@ public class Author {
     @Override
     public String toString() {
         return "Author{" +
-            "id='" + id + '\'' +
-            ", name='" + name + '\'' +
-            ", country='" + country + '\'' +
-            ", birthDate=" + birthDate +
-            '}';
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", country='" + country + '\'' +
+                ", birthDate=" + birthDate +
+                '}';
     }
 }

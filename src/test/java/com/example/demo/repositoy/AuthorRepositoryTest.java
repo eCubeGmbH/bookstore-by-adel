@@ -1,16 +1,12 @@
 package com.example.demo.repositoy;
 
-import com.example.demo.model.Author;
 import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.assertj.core.data.Index;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -89,13 +85,14 @@ class AuthorRepositoryTest {
         AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
         authorRepository.save(author);
 
-        assertThat(authorRepository.findById(uuid))
-                .isPresent()
-                .get().satisfies(updatedAuthor -> {
+        author.setBirthDate(LocalDate.of(1997, 12, 24));
+
+        assertThat(authorRepository.save(author))
+                .satisfies(updatedAuthor -> {
                     assertThat(updatedAuthor.getId()).isEqualTo(uuid);
                     assertThat(updatedAuthor.getName()).isEqualTo("name");
                     assertThat(updatedAuthor.getCountry()).isEqualTo("country");
-                    assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 1, 1));
+                    assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1997, 12, 24));
                 });
     }
 }

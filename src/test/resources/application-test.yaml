@@ -4,3 +4,5 @@ spring:
     username: "bookstore"
     password: "bookstore"
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+#  jpa:
+#    show-sql: true

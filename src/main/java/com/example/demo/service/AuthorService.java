@@ -25,22 +25,11 @@ public class AuthorService {
 
     private final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
-    private Author findAuthorAndValidate(String authorId) {
-        Optional<AuthorEntity> maybeAuthorEntity = authorRepository.findById(authorId);
-        if (maybeAuthorEntity.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
-        } else {
-            AuthorEntity authorEntity = maybeAuthorEntity.get();
-            return new Author(authorEntity.getId(), authorEntity.getName(), authorEntity.getCountry(), authorEntity.getBirthDate());
-        }
-    }
-
     public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
-        author.setId(authorId);
         AuthorEntity authorEntity = new AuthorEntity(authorId, author.getName(), author.getCountry(), author.getBirthDate());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
-        return new Author(savedAuthorEntity.getId(), savedAuthorEntity.getName(), savedAuthorEntity.getCountry(), savedAuthorEntity.getBirthDate());
+        return toAuthor(savedAuthorEntity);
     }
 
     public List<Author> getAll(String authorName, int from, int to) {
@@ -50,12 +39,12 @@ public class AuthorService {
         // filter
         if (authorName == null || authorName.isBlank()) {
             for (AuthorEntity authorEntity : authorEntities) {
-                foundAuthors.add(new Author(authorEntity.getId(), authorEntity.getName(), authorEntity.getCountry(), authorEntity.getBirthDate()));
+                foundAuthors.add(toAuthor(authorEntity));
             }
         } else {
             for (AuthorEntity authorEntity : authorEntities) {
                 if (authorEntity.getName().equalsIgnoreCase(authorName.trim())) {
-                    foundAuthors.add(new Author(authorEntity.getId(), authorEntity.getName(), authorEntity.getCountry(), authorEntity.getBirthDate()));
+                    foundAuthors.add(toAuthor(authorEntity));
                 }
             }
         }
@@ -79,29 +68,33 @@ public class AuthorService {
 
 
     public Author getAuthor(String authorId) {
-        return findAuthorAndValidate(authorId);
+        return toAuthor(findAuthorAndValidate(authorId));
     }
 
     public void deleteAuthor(String authorId) {
-        Optional<AuthorEntity> maybeAuthorEntity = authorRepository.findById(authorId);
-        if(maybeAuthorEntity.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
-        } else {
-            authorRepository.delete(maybeAuthorEntity.get());
-        }
+        AuthorEntity foundAuthor = findAuthorAndValidate(authorId);
+        authorRepository.delete(foundAuthor);
     }
 
     public Author updateAuthor(String authorId, Author authorFromUser) {
+        AuthorEntity foundAuthor = findAuthorAndValidate(authorId);
+        foundAuthor.setName(authorFromUser.getName());
+        foundAuthor.setCountry(authorFromUser.getCountry());
+        foundAuthor.setBirthDate(authorFromUser.getBirthDate());
+        AuthorEntity savedAuthorEntity = authorRepository.save(foundAuthor);
+        return toAuthor(savedAuthorEntity);
+    }
+
+    private AuthorEntity findAuthorAndValidate(String authorId) {
         Optional<AuthorEntity> maybeAuthorEntity = authorRepository.findById(authorId);
-        if(maybeAuthorEntity.isEmpty()){
+        if (maybeAuthorEntity.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
         } else {
-            AuthorEntity authorEntity = maybeAuthorEntity.get();
-            authorEntity.setName(authorFromUser.getName());
-            authorEntity.setCountry(authorFromUser.getCountry());
-            authorEntity.setBirthDate(authorFromUser.getBirthDate());
-            AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
-            return new Author(savedAuthorEntity.getId(), savedAuthorEntity.getName(), savedAuthorEntity.getCountry(), savedAuthorEntity.getBirthDate());
+            return maybeAuthorEntity.get();
         }
+    }
+
+    private Author toAuthor(AuthorEntity authorEntity) {
+        return new Author(authorEntity.getId(), authorEntity.getName(), authorEntity.getCountry(), authorEntity.getBirthDate());
     }
 }

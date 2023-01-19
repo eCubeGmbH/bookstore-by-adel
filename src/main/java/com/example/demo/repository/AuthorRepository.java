@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.entity.AuthorEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +29,7 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, String> {
             """, nativeQuery = true)
     List<AuthorEntity> findByNameNative(@Param("name") String name);
 
+    List<AuthorEntity> findByName(String name, Sort sort);
+
+//    List<AuthorEntity> findByName(String name, Sort sort, Pageable pageable);
 }

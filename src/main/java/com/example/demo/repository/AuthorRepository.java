@@ -31,5 +31,5 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, String> {
 
     List<AuthorEntity> findByName(String name, Sort sort);
 
-//    List<AuthorEntity> findByName(String name, Sort sort, Pageable pageable);
+    List<AuthorEntity> findByName(String name, Pageable pageable);
 }

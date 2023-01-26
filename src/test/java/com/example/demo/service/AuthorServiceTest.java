@@ -10,13 +10,19 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,15 +35,24 @@ class AuthorServiceTest {
     @InjectMocks
     private AuthorService authorService;
 
-    private static final List<AuthorEntity> allAuthors = List.of(
-            new AuthorEntity(UUID.randomUUID().toString(), "John", "USA", LocalDate.of(1997, 1, 2)),
-            new AuthorEntity(UUID.randomUUID().toString(), "Müller", "USA", LocalDate.of(1997, 1, 2)),
-            new AuthorEntity(UUID.randomUUID().toString(), "müller", "USA", LocalDate.of(1997, 1, 2)),
-            new AuthorEntity(UUID.randomUUID().toString(), "Meier", "USA", LocalDate.of(1997, 1, 2)),
-            new AuthorEntity(UUID.randomUUID().toString(), "Rein", "DÄN", LocalDate.of(1920, 1, 2)),
-            new AuthorEntity(UUID.randomUUID().toString(), "Weg", "SWE", LocalDate.of(1911, 11, 9)),
-            new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2)),
-            new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22))
+    private AuthorEntity AuthorEntity1 = new AuthorEntity(UUID.randomUUID().toString(), "John", "USA", LocalDate.of(1997, 1, 2));
+    private AuthorEntity AuthorEntity2 = new AuthorEntity(UUID.randomUUID().toString(), "Müller", "USA", LocalDate.of(1997, 1, 2));
+    private AuthorEntity AuthorEntity3 = new AuthorEntity(UUID.randomUUID().toString(), "müller", "USA", LocalDate.of(1997, 1, 2));
+    private AuthorEntity AuthorEntity4 = new AuthorEntity(UUID.randomUUID().toString(), "Meier", "USA", LocalDate.of(1997, 1, 2));
+    private AuthorEntity AuthorEntity5 = new AuthorEntity(UUID.randomUUID().toString(), "Rein", "DÄN", LocalDate.of(1920, 1, 2));
+    private AuthorEntity AuthorEntity6 = new AuthorEntity(UUID.randomUUID().toString(), "Weg", "SWE", LocalDate.of(1911, 11, 9));
+    private AuthorEntity AuthorEntity7 = new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2));
+    private AuthorEntity AuthorEntity8 = new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22));
+
+    private List<AuthorEntity> allAuthors = List.of(
+            AuthorEntity1,
+            AuthorEntity2,
+            AuthorEntity3,
+            AuthorEntity4,
+            AuthorEntity5,
+            AuthorEntity6,
+            AuthorEntity7,
+            AuthorEntity8
     );
 
     @Test
@@ -60,7 +75,13 @@ class AuthorServiceTest {
 
     @Test
     void paginationTestWithFiltering() {
-        when(authorRepository.findAll()).thenReturn(allAuthors);
+
+        Sort sortOrder = Sort.by("name").ascending()
+                .and(Sort.by("id").ascending());
+
+        when(authorRepository.findByName(eq("John"), any(Pageable.class)))
+                .thenReturn(List.of(AuthorEntity1))
+                .thenReturn(List.of());
 
         // act
         assertThat(authorService.getAll("John", 0, 2))

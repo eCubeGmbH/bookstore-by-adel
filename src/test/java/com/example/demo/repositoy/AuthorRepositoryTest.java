@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,30 +133,80 @@ class AuthorRepositoryTest {
         ;
     }
 
-//    @Test
-//    void test_findByNamePageable() {
-//        String uuid = "0000";
-//        String uuid1 = "2222";
-//        String uuid2 = "1111";
-//        String uuid3 = "4444";
-//        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11));
-//        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11));
-//        AuthorEntity author2= new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11));
-//        AuthorEntity author3= new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11));
-//        authorRepository.save(author);
-//        authorRepository.save(author1);
-//        authorRepository.save(author2);
-//        authorRepository.save(author3);
-//
-//        Pageable pageable = Pageable.ofSize(1);
-//
-//        Sort sortOrder = Sort.by("name").ascending().and(Sort.by("id").ascending());
-//
-//
-//        assertThat(authorRepository.findByName("adel", sortOrder, pageable))
-//                .isNotEmpty()
-//                .hasSize(1);
-//    }
+    @Test
+    void test_findByNamePageable() {
+        String uuid = "0000";
+        String uuid1 = "2222";
+        String uuid2 = "1111";
+        String uuid3 = "4444";
+        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11));
+        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11));
+        AuthorEntity author2= new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author3= new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11));
+        authorRepository.save(author);
+        authorRepository.save(author1);
+        authorRepository.save(author2);
+        authorRepository.save(author3);
+
+        Sort sortOrder = Sort.by("name").ascending()
+                .and(Sort.by("id").ascending());
+
+        // page 1
+        PageRequest pageRequest = PageRequest.of(0, 2).withSort(sortOrder);
+        assertThat(authorRepository.findByName("adel", pageRequest))
+                .isNotEmpty()
+                .hasSize(2)
+                .extracting(AuthorEntity::getId).containsExactly(uuid, uuid2)
+        ;
+
+        // page 2
+        pageRequest = PageRequest.of(1, 2).withSort(sortOrder);
+        assertThat(authorRepository.findByName("adel", pageRequest))
+                .isNotEmpty()
+                .hasSize(1)
+                .extracting(AuthorEntity::getId).containsExactly(uuid1)
+        ;
+    }
+    @Test
+    void test_findPageable() {
+        String uuid = "0000";
+        String uuid1 = "2222";
+        String uuid2 = "1111";
+        String uuid3 = "4444";
+        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11));
+        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11));
+        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11));
+        authorRepository.save(author);
+        authorRepository.save(author1);
+        authorRepository.save(author2);
+        authorRepository.save(author3);
+
+        Sort sortOrder = Sort.by("name").ascending()
+                .and(Sort.by("id").ascending());
+
+        // page 1
+        PageRequest pageRequest = PageRequest.of(0, 2).withSort(sortOrder);
+        assertThat(authorRepository.findAll(pageRequest))
+                .isNotEmpty()
+                .hasSize(2)
+                .extracting(AuthorEntity::getId).containsExactly(uuid, uuid2)
+        ;
+
+        // page 2
+        pageRequest = PageRequest.of(1, 2).withSort(sortOrder);
+        assertThat(authorRepository.findAll(pageRequest))
+                .isNotEmpty()
+                .hasSize(2)
+                .extracting(AuthorEntity::getId).containsExactly(uuid1, uuid3)
+        ;
+
+        // page 3
+        pageRequest = PageRequest.of(2, 2).withSort(sortOrder);
+        assertThat(authorRepository.findAll(pageRequest))
+                .isEmpty()
+        ;
+    }
 
     @Test
     void test_getAuthor() {

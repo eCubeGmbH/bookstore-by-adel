@@ -5,11 +5,12 @@ import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,37 +34,21 @@ public class AuthorService {
     }
 
     public List<Author> getAll(String authorName, int from, int to) {
-        List<AuthorEntity> authorEntities = authorRepository.findAll();
-        List<Author> foundAuthors = new ArrayList<>();
 
-        // filter
-        if (authorName == null || authorName.isBlank()) {
-            for (AuthorEntity authorEntity : authorEntities) {
-                foundAuthors.add(toAuthor(authorEntity));
-            }
-        } else {
-            for (AuthorEntity authorEntity : authorEntities) {
-                if (authorEntity.getName().equalsIgnoreCase(authorName.trim())) {
-                    foundAuthors.add(toAuthor(authorEntity));
-                }
-            }
-        }
+        Sort sortOrder = Sort.by("name").ascending()
+                .and(Sort.by("id").ascending());
 
-        // sorting
-        foundAuthors.sort((author1, author2) -> {
-            int compareTo = author1.getName().compareToIgnoreCase(author2.getName());
-            if (compareTo == 0) {
-                return author1.getId().compareTo(author2.getId());
-            } else {
-                return compareTo;
-            }
-        });
+        int pageSize = to - from;
+        int pageNumber = from / pageSize;
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
 
-        // pagination
-        if (from > foundAuthors.size()) { //from > Anzahl authoren => leere Liste
-            return List.of();
-        }
-        return foundAuthors.subList(from, Math.min(to, foundAuthors.size()));
+        List<AuthorEntity> authorEntities = (authorName == null || authorName.isBlank())
+                ? authorRepository.findAll(pageRequest).getContent()
+                : authorRepository.findByName(authorName, pageRequest);
+
+        return authorEntities.stream()
+                .map(authorEntity -> toAuthor(authorEntity))
+                .toList();
     }
 
 

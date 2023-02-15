@@ -28,16 +28,16 @@ public class AuthorService {
 
     public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
-        AuthorEntity authorEntity = new AuthorEntity(authorId, author.getName(), author.getCountry(), author.getBirthDate());
+        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name(), author.country(), author.birthDate());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);
     }
 
     public List<Author> getAll(String authorName, int from, int to) {
-
+// Sorting
         Sort sortOrder = Sort.by("name").ascending()
                 .and(Sort.by("id").ascending());
-
+// Pagination + Sorting
         int pageSize = to - from;
         int pageNumber = from / pageSize;
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
@@ -63,9 +63,9 @@ public class AuthorService {
 
     public Author updateAuthor(String authorId, Author authorFromUser) {
         AuthorEntity foundAuthor = findAuthorAndValidate(authorId);
-        foundAuthor.setName(authorFromUser.getName());
-        foundAuthor.setCountry(authorFromUser.getCountry());
-        foundAuthor.setBirthDate(authorFromUser.getBirthDate());
+        foundAuthor.setName(authorFromUser.name());
+        foundAuthor.setCountry(authorFromUser.country());
+        foundAuthor.setBirthDate(authorFromUser.birthDate());
         AuthorEntity savedAuthorEntity = authorRepository.save(foundAuthor);
         return toAuthor(savedAuthorEntity);
     }

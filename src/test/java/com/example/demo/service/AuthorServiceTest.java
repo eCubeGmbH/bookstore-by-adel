@@ -10,9 +10,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -61,13 +59,13 @@ class AuthorServiceTest {
 
         // act
         assertThat(authorService.getAll("", 0, 3))
-                .extracting(Author::getName).contains("FNG", "Frank", "John");
+                .extracting(Author::name).contains("FNG", "Frank", "John");
         // act
         assertThat(authorService.getAll("", 3, 6))
-                .extracting(Author::getName).contains("Meier", "Müller", "müller");
+                .extracting(Author::name).contains("Meier", "Müller", "müller");
         // act
         assertThat(authorService.getAll("", 6, 9))
-                .extracting(Author::getName).contains("Rein", "Weg");
+                .extracting(Author::name).contains("Rein", "Weg");
         // act
         assertThat(authorService.getAll("", 9, 12))
                 .isEmpty();
@@ -85,7 +83,7 @@ class AuthorServiceTest {
 
         // act
         assertThat(authorService.getAll("John", 0, 2))
-                .extracting(Author::getName).contains("John");
+                .extracting(Author::name).contains("John");
         // act
         assertThat(authorService.getAll("John", 9, 11))
                 .isEmpty();
@@ -98,7 +96,7 @@ class AuthorServiceTest {
 
         // act
         assertThat(authorService.getAll(authorName, 0, 2))
-                .extracting(Author::getName).contains("John");
+                .extracting(Author::name).contains("John");
         // act
         assertThat(authorService.getAll(authorName, 9, 11))
                 .isEmpty();
@@ -137,7 +135,7 @@ class AuthorServiceTest {
         // act + assert
         assertThat(authorService.getAll(authorName, 0, 11))
                 .hasSize(1)
-                .extracting(Author::getName).containsExactly("Meier");
+                .extracting(Author::name).containsExactly("Meier");
     }
 
     @Test
@@ -147,6 +145,6 @@ class AuthorServiceTest {
         // act + assert
         assertThat(authorService.getAll("MülLer", 0, 11))
                 .hasSize(2)
-                .extracting(Author::getName).containsExactlyInAnyOrder("Müller", "müller");
+                .extracting(Author::name).containsExactlyInAnyOrder("Müller", "müller");
     }
 }

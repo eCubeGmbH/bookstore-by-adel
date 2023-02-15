@@ -36,10 +36,10 @@ class AuthorControllerTest {
 
         // act + assert
         assertThat(controller.addAuthor(author)).satisfies(createdAuthor -> {
-            assertThat(createdAuthor.getId()).isEqualTo("ABC123");
-            assertThat(createdAuthor.getName()).isEqualTo("steve");
-            assertThat(createdAuthor.getCountry()).isEqualTo("france");
-            assertThat(createdAuthor.getBirthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
+            assertThat(createdAuthor.id()).isEqualTo("ABC123");
+            assertThat(createdAuthor.name()).isEqualTo("steve");
+            assertThat(createdAuthor.country()).isEqualTo("france");
+            assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
         });
 
         // verify
@@ -99,10 +99,10 @@ class AuthorControllerTest {
                 .isNotEmpty()
                 .hasSize(1)
                 .satisfies(createdAuthor -> {
-                    assertThat(createdAuthor.getId()).isEqualTo("ABC123");
-                    assertThat(createdAuthor.getName()).isEqualTo("steve");
-                    assertThat(createdAuthor.getCountry()).isEqualTo("france");
-                    assertThat(createdAuthor.getBirthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
+                    assertThat(createdAuthor.id()).isEqualTo("ABC123");
+                    assertThat(createdAuthor.name()).isEqualTo("steve");
+                    assertThat(createdAuthor.country()).isEqualTo("france");
+                    assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
                 }, atIndex(0));
 
         // verify
@@ -120,10 +120,10 @@ class AuthorControllerTest {
 
         // act + assert
         assertThat(controller.getAuthor("XD123")).satisfies(createdAuthor -> {
-            assertThat(createdAuthor.getId()).isEqualTo("XD123");
-            assertThat(createdAuthor.getName()).isEqualTo("steve");
-            assertThat(createdAuthor.getCountry()).isEqualTo("france");
-            assertThat(createdAuthor.getBirthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
+            assertThat(createdAuthor.id()).isEqualTo("XD123");
+            assertThat(createdAuthor.name()).isEqualTo("steve");
+            assertThat(createdAuthor.country()).isEqualTo("france");
+            assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
         });
 
         // verify
@@ -159,10 +159,10 @@ class AuthorControllerTest {
         Mockito.when(authorService.updateAuthor("FN123", author)).thenReturn(author);
 
         assertThat(controller.updateAuthor("FN123", author)).satisfies(updatedAuthor -> {
-            assertThat(updatedAuthor.getId()).isEqualTo("FN123");
-            assertThat(updatedAuthor.getName()).isEqualTo("lara");
-            assertThat(updatedAuthor.getCountry()).isEqualTo("USA");
-            assertThat(updatedAuthor.getBirthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
+            assertThat(updatedAuthor.id()).isEqualTo("FN123");
+            assertThat(updatedAuthor.name()).isEqualTo("lara");
+            assertThat(updatedAuthor.country()).isEqualTo("USA");
+            assertThat(updatedAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
         });
     }
 }

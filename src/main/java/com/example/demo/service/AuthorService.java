@@ -43,7 +43,7 @@ public class AuthorService {
 
         List<AuthorEntity> authorEntities = (authorName == null || authorName.isBlank())
             ? authorRepository.findAll(pageRequest).getContent()
-            : authorRepository.findByName(authorName, pageRequest);
+            : authorRepository.findByName(authorName.trim(), pageRequest);
 
         return authorEntities.stream()
             .map(authorEntity -> toAuthor(authorEntity))

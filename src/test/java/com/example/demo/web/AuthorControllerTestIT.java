@@ -79,7 +79,6 @@ class AuthorControllerTestIT {
         // act
         ResponseEntity<Author> responseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(valueAsString, headers), Author.class);
 
-
         // assert
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -106,7 +105,6 @@ class AuthorControllerTestIT {
         };
         ResponseEntity<Map<String, String>> responseEntity = restTemplate.exchange(uri, HttpMethod.POST, new HttpEntity<>(valueAsString, headers), responseType);
 
-
         // assert
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -130,7 +128,6 @@ class AuthorControllerTestIT {
         };
         ResponseEntity<Map<String, String>> responseEntity = restTemplate.exchange(uri, HttpMethod.POST, new HttpEntity<>(valueAsString, headers), responseType);
 
-
         // assert
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -153,7 +150,6 @@ class AuthorControllerTestIT {
         ParameterizedTypeReference<Map<String, String>> responseType = new ParameterizedTypeReference<>() {
         };
         ResponseEntity<Map<String, String>> responseEntity = restTemplate.exchange(uri, HttpMethod.POST, new HttpEntity<>(valueAsString, headers), responseType);
-
 
         // assert
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
@@ -179,7 +175,6 @@ class AuthorControllerTestIT {
         ParameterizedTypeReference<Map<String, String>> responseType = new ParameterizedTypeReference<>() {
         };
         ResponseEntity<Map<String, String>> responseEntity = restTemplate.exchange(uri, HttpMethod.POST, new HttpEntity<>(valueAsString, headers), responseType);
-
 
         // assert
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
@@ -257,7 +252,6 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
         });
     }
-
 
     @Test
     void test_removeAuthor() {

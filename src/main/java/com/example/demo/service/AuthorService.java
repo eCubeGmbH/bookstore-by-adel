@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,23 +33,22 @@ public class AuthorService {
     }
 
     public List<Author> getAll(String authorName, int from, int to) {
-// Sorting
+        // Sorting
         Sort sortOrder = Sort.by("name").ascending()
-                .and(Sort.by("id").ascending());
-// Pagination + Sorting
+            .and(Sort.by("id").ascending());
+        // Pagination + Sorting
         int pageSize = to - from;
         int pageNumber = from / pageSize;
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
 
         List<AuthorEntity> authorEntities = (authorName == null || authorName.isBlank())
-                ? authorRepository.findAll(pageRequest).getContent()
-                : authorRepository.findByName(authorName, pageRequest);
+            ? authorRepository.findAll(pageRequest).getContent()
+            : authorRepository.findByName(authorName, pageRequest);
 
         return authorEntities.stream()
-                .map(authorEntity -> toAuthor(authorEntity))
-                .toList();
+            .map(authorEntity -> toAuthor(authorEntity))
+            .toList();
     }
-
 
     public Author getAuthor(String authorId) {
         return toAuthor(findAuthorAndValidate(authorId));

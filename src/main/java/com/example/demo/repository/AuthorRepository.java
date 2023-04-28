@@ -1,37 +1,34 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.Author;
+import com.example.demo.model.entity.AuthorEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
-public class AuthorRepository {
+public interface AuthorRepository extends JpaRepository<AuthorEntity, String> {
 
-    private final Map<String, Author> authorMap = new HashMap<>();
+    List<AuthorEntity> findByNameIgnoreCase(String name);
 
-    public Author addAuthor(Author author) {
-        authorMap.put(author.getId(), author);
-        return author;
-    }
+    @Query("""
+        SELECT author
+          FROM AuthorEntity author
+         WHERE LOWER(author.name) = LOWER(:name)
+        """)
+    List<AuthorEntity> findByName(@Param("name") String name);
 
-    public List<Author> getAll() {
-        return new ArrayList<>(authorMap.values());
-    }
+    @Query(value = """
+        SELECT *
+          FROM author
+         WHERE LOWER(name) = LOWER(:name)
+        """, nativeQuery = true)
+    List<AuthorEntity> findByNameNative(@Param("name") String name);
 
-    public Author getAuthor(String authorId) {
-        return authorMap.get(authorId);
-    }
+    List<AuthorEntity> findByName(String name, Sort sort);
 
-    public void deleteAuthor(Author author) {
-        authorMap.remove(author.getId());
-    }
-
-    public Author updateAuthor(Author author) {
-        authorMap.replace(author.getId(), author);
-        return author;
-    }
+    List<AuthorEntity> findByName(String name, Pageable pageable);
 }

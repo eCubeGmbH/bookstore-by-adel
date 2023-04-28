@@ -13,11 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,14 +41,14 @@ class AuthorServiceTest {
     private AuthorEntity AuthorEntity8 = new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22));
 
     private List<AuthorEntity> allAuthors = List.of(
-            AuthorEntity1,
-            AuthorEntity2,
-            AuthorEntity3,
-            AuthorEntity4,
-            AuthorEntity5,
-            AuthorEntity6,
-            AuthorEntity7,
-            AuthorEntity8
+        AuthorEntity1,
+        AuthorEntity2,
+        AuthorEntity3,
+        AuthorEntity4,
+        AuthorEntity5,
+        AuthorEntity6,
+        AuthorEntity7,
+        AuthorEntity8
     );
 
     @Test
@@ -59,34 +57,34 @@ class AuthorServiceTest {
 
         // act
         assertThat(authorService.getAll("", 0, 3))
-                .extracting(Author::name).contains("FNG", "Frank", "John");
+            .extracting(Author::name).contains("FNG", "Frank", "John");
         // act
         assertThat(authorService.getAll("", 3, 6))
-                .extracting(Author::name).contains("Meier", "Müller", "müller");
+            .extracting(Author::name).contains("Meier", "Müller", "müller");
         // act
         assertThat(authorService.getAll("", 6, 9))
-                .extracting(Author::name).contains("Rein", "Weg");
+            .extracting(Author::name).contains("Rein", "Weg");
         // act
         assertThat(authorService.getAll("", 9, 12))
-                .isEmpty();
+            .isEmpty();
     }
 
     @Test
     void paginationTestWithFiltering() {
 
         Sort sortOrder = Sort.by("name").ascending()
-                .and(Sort.by("id").ascending());
+            .and(Sort.by("id").ascending());
 
         when(authorRepository.findByName(eq("John"), any(Pageable.class)))
-                .thenReturn(List.of(AuthorEntity1))
-                .thenReturn(List.of());
+            .thenReturn(List.of(AuthorEntity1))
+            .thenReturn(List.of());
 
         // act
         assertThat(authorService.getAll("John", 0, 2))
-                .extracting(Author::name).contains("John");
+            .extracting(Author::name).contains("John");
         // act
         assertThat(authorService.getAll("John", 9, 11))
-                .isEmpty();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -96,10 +94,10 @@ class AuthorServiceTest {
 
         // act
         assertThat(authorService.getAll(authorName, 0, 2))
-                .extracting(Author::name).contains("John");
+            .extracting(Author::name).contains("John");
         // act
         assertThat(authorService.getAll(authorName, 9, 11))
-                .isEmpty();
+            .isEmpty();
 
     }
 
@@ -112,8 +110,8 @@ class AuthorServiceTest {
 
         // act + assert
         assertThat(authorService.getAll(authorName, 0, 11))
-                .isNotEmpty()
-                .hasSize(8);
+            .isNotEmpty()
+            .hasSize(8);
     }
 
     @Test
@@ -122,7 +120,7 @@ class AuthorServiceTest {
 
         // act + assert
         assertThat(authorService.getAll("steve", 0, 11))
-                .isEmpty();
+            .isEmpty();
         //
         verify(authorRepository).findAll();
     }
@@ -134,8 +132,8 @@ class AuthorServiceTest {
 
         // act + assert
         assertThat(authorService.getAll(authorName, 0, 11))
-                .hasSize(1)
-                .extracting(Author::name).containsExactly("Meier");
+            .hasSize(1)
+            .extracting(Author::name).containsExactly("Meier");
     }
 
     @Test
@@ -144,7 +142,7 @@ class AuthorServiceTest {
 
         // act + assert
         assertThat(authorService.getAll("MülLer", 0, 11))
-                .hasSize(2)
-                .extracting(Author::name).containsExactlyInAnyOrder("Müller", "müller");
+            .hasSize(2)
+            .extracting(Author::name).containsExactlyInAnyOrder("Müller", "müller");
     }
 }

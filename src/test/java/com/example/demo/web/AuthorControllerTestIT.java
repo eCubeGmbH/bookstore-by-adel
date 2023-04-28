@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.atIndex;
 
@@ -50,14 +53,14 @@ class AuthorControllerTestIT {
         // preparation
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
         assertThat(restTemplate.postForEntity("/api/authors/", author, Author.class))
-                .satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
+            .satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
         // act
 
         ResponseEntity<List<Author>> responseEntity = restTemplate.exchange("/api/authors?from=0&to=10",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {
-                }
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<>() {
+            }
         );
 
         //
@@ -65,15 +68,15 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody())
-                    .isNotEmpty()
-                    .hasSize(1)
-                    .satisfies(author1 -> {
-                        assertThat(author1.id()).isNotEqualTo("ABC123");
-                        assertThat(author1.name()).isEqualTo("steve");
-                        assertThat(author1.country()).isEqualTo("france");
-                        assertThat(author1.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
+                .isNotEmpty()
+                .hasSize(1)
+                .satisfies(author1 -> {
+                    assertThat(author1.id()).isNotEqualTo("ABC123");
+                    assertThat(author1.name()).isEqualTo("steve");
+                    assertThat(author1.country()).isEqualTo("france");
+                    assertThat(author1.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
 
-                    }, atIndex(0));
+                }, atIndex(0));
         });
     }
 

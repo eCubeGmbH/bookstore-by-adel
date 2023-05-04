@@ -14,5 +14,4 @@ class AuthorTest {
         assertEquals("farnce", author.country());
         assertEquals(LocalDate.of(1958, Month.APRIL, 11), author.birthDate());
     }
-
 }

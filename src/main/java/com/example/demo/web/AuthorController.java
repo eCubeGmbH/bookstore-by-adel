@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,14 +45,12 @@ class AuthorController {
                 schema = @Schema(implementation = Author.class)
             )}
         )
-
     })
     @PostMapping(consumes = {"application/json"}, produces = {"application/json"})
-    public Author addAuthor(@RequestBody Author author) {
+    public Author addAuthor(@Valid @RequestBody Author author) {
         return authorService.addAuthor(author);
     }
 
-    @Operation(summary = "Find All Authors")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
@@ -95,6 +94,7 @@ class AuthorController {
         })
     @ResponseBody
     @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
+
     public Author getAuthor(@PathVariable String authorId) {
         return authorService.getAuthor(authorId);
     }
@@ -108,6 +108,7 @@ class AuthorController {
         })
     @ResponseBody
     @DeleteMapping(value = {"/{authorId}"}, consumes = {"application/json"})
+
     public void removeAuthor(@PathVariable String authorId) {
         authorService.deleteAuthor(authorId);
     }
@@ -121,7 +122,8 @@ class AuthorController {
         })
     @ResponseBody
     @PutMapping(value = {"/{authorId}"}, consumes = {"application/json"}, produces = {"application/json"})
-    public Author updateAuthor(@PathVariable String authorId, @RequestBody Author authorFromUser) {
+
+    public Author updateAuthor(@PathVariable String authorId, @Valid @RequestBody Author authorFromUser) {
         return authorService.updateAuthor(authorId, authorFromUser);
     }
 }

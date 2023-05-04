@@ -27,29 +27,28 @@ public class AuthorService {
 
     public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
-        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name(), author.country(), author.birthDate());
+        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name().trim(), author.country(), author.birthDate());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);
     }
 
     public List<Author> getAll(String authorName, int from, int to) {
-// Sorting
+        // Sorting
         Sort sortOrder = Sort.by("name").ascending()
             .and(Sort.by("id").ascending());
-// Pagination + Sorting
+        // Pagination + Sorting
         int pageSize = to - from;
         int pageNumber = from / pageSize;
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
 
         List<AuthorEntity> authorEntities = (authorName == null || authorName.isBlank())
             ? authorRepository.findAll(pageRequest).getContent()
-            : authorRepository.findByName(authorName, pageRequest);
+            : authorRepository.findByName(authorName.trim(), pageRequest);
 
         return authorEntities.stream()
             .map(authorEntity -> toAuthor(authorEntity))
             .toList();
     }
-
 
     public Author getAuthor(String authorId) {
         return toAuthor(findAuthorAndValidate(authorId));

@@ -42,16 +42,6 @@ class AuthorServiceTest {
     private final AuthorEntity AuthorEntity7 = new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2));
     private final AuthorEntity AuthorEntity8 = new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22));
 
-    private final List<AuthorEntity> allAuthors = List.of(
-        AuthorEntity1,
-        AuthorEntity2,
-        AuthorEntity3,
-        AuthorEntity4,
-        AuthorEntity5,
-        AuthorEntity6,
-        AuthorEntity7,
-        AuthorEntity8
-    );
 
     @Test
     void paginationTest1() {
@@ -160,11 +150,21 @@ class AuthorServiceTest {
     @NullSource
     @ValueSource(strings = {"", " ", "   ", "\t", " \n "})
     void test_empty(String authorName) {
-        when(authorRepository.findAll()).thenReturn(allAuthors);
+        PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name", "id").ascending());
+        PageImpl page1 = new PageImpl(
+            List.of(
+                AuthorEntity1,
+                AuthorEntity2,
+                AuthorEntity3)
+            , pageRequest1
+            , 3L
+        );
+
+        when(authorRepository.findAll(pageRequest1)).thenReturn(page1);
 
         // act + assert
-        assertThat(authorService.getAll(authorName, 0, 11))
-            .isEmpty();
+        assertThat(authorService.getAll(authorName, 0, 3))
+            .extracting(Author::name).contains("John", "Müller", "müller");
     }
 
     @Test
@@ -182,13 +182,15 @@ class AuthorServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"Meier", "meier", "mEier", "  Meier ", "\nMeier\t"})
     void allAuthors_authorFound(String authorName) {
-        when(authorRepository.findByName("Meier", PageRequest.of(0, 11, Sort.by("name", "id").ascending())))
+        when(authorRepository.findByName(authorName.trim(), PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending())))
             .thenReturn(List.of(AuthorEntity4));
 
         // act + assert
         assertThat(authorService.getAll(authorName, 0, 11))
             .hasSize(1)
             .extracting(Author::name).containsExactly("Meier");
+        assertThat(authorService.getAll(authorName, 6, 9))
+            .isEmpty();
     }
 
     @Test

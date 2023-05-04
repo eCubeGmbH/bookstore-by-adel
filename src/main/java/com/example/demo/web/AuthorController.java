@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @ResponseBody
-@RequestMapping(value = { "/api/authors" })
+@RequestMapping(value = {"/api/authors"})
 class AuthorController {
 
     private final AuthorService authorService;
@@ -40,13 +40,13 @@ class AuthorController {
         @ApiResponse(
             responseCode = "200",
             description = "Added the Author",
-            content = { @Content(
+            content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = Author.class)
-            ) }
+            )}
         )
     })
-    @PostMapping(consumes = { "application/json" }, produces = { "application/json" })
+    @PostMapping(consumes = {"application/json"}, produces = {"application/json"})
     public Author addAuthor(@Valid @RequestBody Author author) {
         return authorService.addAuthor(author);
     }
@@ -55,10 +55,10 @@ class AuthorController {
         @ApiResponse(
             responseCode = "200",
             description = "Found the Authors",
-            content = { @Content
+            content = {@Content
                 (mediaType = "application/json",
                     schema = @Schema(implementation = Author.class)
-                ) }),
+                )}),
         @ApiResponse(responseCode = "400",
             description = "parameters from and to must be greater than 0"),
         @ApiResponse(responseCode = "400",
@@ -67,7 +67,7 @@ class AuthorController {
             description = "result can  contains maximum 1000 elements")
     })
     @ResponseBody
-    @GetMapping(produces = { "application/json" })
+    @GetMapping(produces = {"application/json"})
     public List<Author> getAllAuthors(
         @RequestParam(value = "authorName", required = false, defaultValue = "") String authorName,
         @RequestParam(value = "from") int from,
@@ -88,12 +88,12 @@ class AuthorController {
     @Operation(summary = "Find Author by it´s Id")
     @ApiResponse(responseCode = "200",
         description = "succeed",
-        content = { @Content
+        content = {@Content
             (mediaType = "application/json",
                 schema = @Schema(implementation = Author.class))
         })
     @ResponseBody
-    @GetMapping(value = { "/{authorId}" }, produces = { "application/json" })
+    @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
 
     public Author getAuthor(@PathVariable String authorId) {
         return authorService.getAuthor(authorId);
@@ -102,12 +102,12 @@ class AuthorController {
     @Operation(summary = "Delete Author")
     @ApiResponse(responseCode = "200",
         description = "succeed",
-        content = { @Content(
+        content = {@Content(
             mediaType = "application/json",
             schema = @Schema(implementation = Author.class))
         })
     @ResponseBody
-    @DeleteMapping(value = { "/{authorId}" }, consumes = { "application/json" })
+    @DeleteMapping(value = {"/{authorId}"}, consumes = {"application/json"})
 
     public void removeAuthor(@PathVariable String authorId) {
         authorService.deleteAuthor(authorId);
@@ -116,12 +116,12 @@ class AuthorController {
     @Operation(summary = "Update Author")
     @ApiResponse(responseCode = "200",
         description = "Author has been deleted",
-        content = { @Content(
+        content = {@Content(
             mediaType = "application/json",
             schema = @Schema(implementation = Author.class))
         })
     @ResponseBody
-    @PutMapping(value = { "/{authorId}" }, consumes = { "application/json" }, produces = { "application/json" })
+    @PutMapping(value = {"/{authorId}"}, consumes = {"application/json"}, produces = {"application/json"})
 
     public Author updateAuthor(@PathVariable String authorId, @Valid @RequestBody Author authorFromUser) {
         return authorService.updateAuthor(authorId, authorFromUser);

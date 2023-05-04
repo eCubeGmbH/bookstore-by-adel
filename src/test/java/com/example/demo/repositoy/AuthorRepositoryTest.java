@@ -70,7 +70,7 @@ class AuthorRepositoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Name", "nAme", "namE", "nAMe" })
+    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByNameIgnoreCase2(String name) {
         String uuid = UUID.randomUUID().toString();
         AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1977, 1, 22));
@@ -82,7 +82,7 @@ class AuthorRepositoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Name", "nAme", "namE", "nAMe" })
+    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByName(String name) {
 
         String uuid = UUID.randomUUID().toString();
@@ -95,7 +95,7 @@ class AuthorRepositoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Name", "nAme", "namE", "nAMe" })
+    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByNameNative(String name) {
 
         String uuid = UUID.randomUUID().toString();

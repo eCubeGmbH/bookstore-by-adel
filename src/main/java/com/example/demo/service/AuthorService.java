@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.Author;
 import com.example.demo.model.entity.AuthorEntity;
+import com.example.demo.model.entity.BookEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +29,7 @@ public class AuthorService {
 
     public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
-        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name().trim(), author.country(), author.birthDate());
+        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name().trim(), author.country(), author.birthDate(), new ArrayList<>());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);
     }

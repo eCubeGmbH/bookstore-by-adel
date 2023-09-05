@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.model.Author;
 import com.example.demo.model.entity.AuthorEntity;
-import com.example.demo.model.entity.BookEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +24,7 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    private final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
+    final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
@@ -33,6 +32,7 @@ public class AuthorService {
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);
     }
+
 
     public List<Author> getAll(String authorName, int from, int to) {
         // Sorting

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +28,7 @@ class AuthorRepositoryTest {
     @Test
     void Test_addAuthor() {
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1), new ArrayList<>());
 
         assertThat(authorRepository.save(author)).satisfies(addedAuthor -> {
             assertThat(addedAuthor.getId()).isEqualTo(uuid);
@@ -41,7 +42,7 @@ class AuthorRepositoryTest {
     void Test_getAllAuthors() {
 
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1),new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findAll())
@@ -60,7 +61,7 @@ class AuthorRepositoryTest {
     void test_findByNameIgnoreCase() {
 
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findByNameIgnoreCase("NaMe"))
@@ -73,7 +74,7 @@ class AuthorRepositoryTest {
     @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByNameIgnoreCase2(String name) {
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1977, 1, 22));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1977, 1, 22), new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findByNameIgnoreCase(name))
@@ -86,7 +87,7 @@ class AuthorRepositoryTest {
     void test_findByName(String name) {
 
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findByName(name))
@@ -99,7 +100,7 @@ class AuthorRepositoryTest {
     void test_findByNameNative(String name) {
 
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findByNameNative(name))
@@ -113,10 +114,10 @@ class AuthorRepositoryTest {
         String uuid1 = "2222";
         String uuid2 = "1111";
         String uuid3 = "4444";
-        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11));
-        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11));
-        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11));
-        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11), new ArrayList<>());
+        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11), new ArrayList<>());
+        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
         authorRepository.save(author1);
         authorRepository.save(author2);
@@ -137,10 +138,10 @@ class AuthorRepositoryTest {
         String uuid1 = "2222";
         String uuid2 = "1111";
         String uuid3 = "4444";
-        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11));
-        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11));
-        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11));
-        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11), new ArrayList<>());
+        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11), new ArrayList<>());
+        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
         authorRepository.save(author1);
         authorRepository.save(author2);
@@ -172,10 +173,10 @@ class AuthorRepositoryTest {
         String uuid1 = "2222";
         String uuid2 = "1111";
         String uuid3 = "4444";
-        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11));
-        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11));
-        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11));
-        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11));
+        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11), new ArrayList<>());
+        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11), new ArrayList<>());
+        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
         authorRepository.save(author1);
         authorRepository.save(author2);
@@ -210,7 +211,7 @@ class AuthorRepositoryTest {
     @Test
     void test_getAuthor() {
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1), new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findById(uuid))
@@ -226,7 +227,7 @@ class AuthorRepositoryTest {
     @Test
     void Test_removeAuthor() {
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1), new ArrayList<>());
         authorRepository.save(author);
 
         authorRepository.delete(author);
@@ -235,7 +236,7 @@ class AuthorRepositoryTest {
     @Test
     void Test_updateAuthor() {
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1));
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1), new ArrayList<>());
         authorRepository.save(author);
 
         author.setBirthDate(LocalDate.of(1997, 12, 24));

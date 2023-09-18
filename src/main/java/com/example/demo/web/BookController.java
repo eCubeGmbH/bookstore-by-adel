@@ -1,7 +1,9 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.entity.BookEntity;
 import com.example.demo.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,13 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@ResponseBody
 @RequestMapping(value = {"/api/books"})
 public class BookController {
     private final BookService bookService;
@@ -29,12 +29,12 @@ public class BookController {
     }
 
     @PostMapping()
-    public Book addBook(@RequestBody Book book) {
+    public Book addBook(@Valid @RequestBody Book book) {
         return bookService.addBook(book);
     }
 
     @GetMapping()
-    public List<Book> getAllBooks(
+    public List<Book> getBooks(
         @RequestParam(value = "bookName", required = false, defaultValue = "") String bookName,
         @RequestParam(value = "from") int from,
         @RequestParam(value = "to") int to
@@ -53,12 +53,12 @@ public class BookController {
 
 
     @GetMapping("/{bookId}")
-    public Book getBook(@PathVariable long bookId) {
+    public Book getBook(@PathVariable Long bookId) {
         return bookService.getBook(bookId);
     }
 
-    @GetMapping("/{authorId}")
-    public List<Book> getBooksForAuthor(@PathVariable String authorId) {
+    @GetMapping("/byAuthorId/{authorId}")
+    public List<BookEntity> getBooksForAuthor(@PathVariable String authorId) {
         return bookService.getBooksForAuthor(authorId);
     }
 

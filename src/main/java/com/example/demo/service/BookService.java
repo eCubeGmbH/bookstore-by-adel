@@ -16,7 +16,6 @@ import java.util.Random;
 public class BookService {
 
     private final BookRepository bookRepository;
-    //private final Map<Long, Book> bookMap = new HashMap<>();
 
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
@@ -24,14 +23,12 @@ public class BookService {
 
     final static String errorMessage = "The book you requested doesn't exist. Please review your parameters!";
 
-
     public Book addBook(Book book) {
         Long bookId = generateRandomLong();
-        BookEntity bookEntity = new BookEntity(bookId, book.name(), book.authorId(), book.publishDate());
+        BookEntity bookEntity = new BookEntity(bookId, book.authorId(), book.name(), book.publishDate());
         BookEntity savedBookEntity = bookRepository.save(bookEntity);
         return toBook(savedBookEntity);
-        //bookMap.put(book.id(), book);
-        //return book;
+
     }
 
     private Long generateRandomLong() {
@@ -50,45 +47,26 @@ public class BookService {
 
         List<BookEntity> bookEntities = (bookName == null || bookName.isBlank())
             ? bookRepository.findAll(pageRequest).getContent()
-            : bookRepository.findByName(bookName.trim(), pageRequest);
+            : bookRepository.findByNameIgnoreCase(bookName.trim(), pageRequest);
 
         return bookEntities.stream()
             .map(this::toBook)
             .toList();
     }
-    //public List<Book> getAll() {
-    //return new ArrayList<>(bookMap.values());
-    //}
 
     public Book getBook(Long bookId) {
         return toBook(findBookAndValidate(bookId));
     }
 
-    public List<Book> getBooksForAuthor(String authorId) {
+    public List<BookEntity> getBooksForAuthor(String authorId) {
         return bookRepository.findByAuthorId(authorId);
     }
-    //public Book getBook(long bookId) {
-    //  return bookMap.get(bookId);
-    //}
-
-    //public List<Book> getBooksForAuthor(String authorId) {
-    //List<Book> booksForAuthor = new ArrayList<>();
-    //for (Book book : bookMap.values()) {
-    //  if (book.authorId().equals(authorId)) {
-    //     booksForAuthor.add(book);
-    //}
-    //}
-    //return booksForAuthor;
-    //}
 
     public void deleteBook(Long bookId) {
         BookEntity foundBook = findBookAndValidate(bookId);
         bookRepository.delete(foundBook);
     }
 
-    //public void deleteBook(long bookId) {
-    //    bookMap.remove(bookId);
-    //}
     public Book updateBook(Long bookId, Book bookFromUser) {
         BookEntity foundBook = findBookAndValidate(bookId);
         foundBook.setName(bookFromUser.name());
@@ -96,11 +74,6 @@ public class BookService {
         BookEntity savedBookEntity = bookRepository.save(foundBook);
         return toBook(savedBookEntity);
     }
-
-    //public Book updateBook(long bookId, Book book) {
-    //    bookMap.replace(bookId, book);
-    //    return book;
-    //}
 
     private BookEntity findBookAndValidate(Long bookId) {
         Optional<BookEntity> maybeBookEntity = bookRepository.findById(bookId);
@@ -112,8 +85,6 @@ public class BookService {
     }
 
     private Book toBook(BookEntity bookEntity) {
-        return new Book(bookEntity.getId(), bookEntity.getName(), bookEntity.getAuthorId(), bookEntity.getPublishDate());
+        return new Book(bookEntity.getId(), bookEntity.getAuthorId(), bookEntity.getName(), bookEntity.getPublishDate());
     }
-
-
 }

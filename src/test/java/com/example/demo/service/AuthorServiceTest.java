@@ -56,7 +56,7 @@ class AuthorServiceTest {
             .hasSize(4)
             .containsExactly(authorEntity1, AuthorEntity2, AuthorEntity3, AuthorEntity4);
 
-    //    requiredAuthors.add(AuthorEntity8);
+        //    requiredAuthors.add(AuthorEntity8);
     }
 
     @Test
@@ -83,7 +83,7 @@ class AuthorServiceTest {
         assertThat(requiredAuthors)
             .hasSize(5);
 
-     //  requiredAuthors.add(AuthorEntity8);
+        //  requiredAuthors.add(AuthorEntity8);
     }
 
     @Test

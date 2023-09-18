@@ -42,7 +42,7 @@ class AuthorRepositoryTest {
     void Test_getAllAuthors() {
 
         String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1),new ArrayList<>());
+        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 1), new ArrayList<>());
         authorRepository.save(author);
 
         assertThat(authorRepository.findAll())

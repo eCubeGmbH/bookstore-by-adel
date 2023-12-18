@@ -49,7 +49,8 @@ class AuthorControllerTestIT {
     @Test
     void test_addAuthor() {
         // preparation
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        String authorID = "ABC123";
+        Author author = new Author(authorID, "steve", "france", LocalDate.of(1985, 4, 15));
 
         // act
         ResponseEntity<Author> responseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
@@ -59,7 +60,7 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody()).satisfies(createdAuthor -> {
-                assertThat(createdAuthor.id()).isNotEqualTo("ABC123");
+                assertThat(createdAuthor.id()).isNotEqualTo(authorID);
                 assertThat(createdAuthor.name()).isEqualTo("steve");
                 assertThat(createdAuthor.country()).isEqualTo("france");
                 assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));

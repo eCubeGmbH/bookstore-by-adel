@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,14 +24,15 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    private final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
+    final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     public Author addAuthor(Author author) {
         String authorId = UUID.randomUUID().toString();
-        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name().trim(), author.country(), author.birthDate());
+        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name().trim(), author.country(), author.birthDate(), new ArrayList<>());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);
     }
+
 
     public List<Author> getAll(String authorName, int from, int to) {
         // Sorting

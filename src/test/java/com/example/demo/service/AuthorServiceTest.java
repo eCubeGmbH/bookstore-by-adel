@@ -16,9 +16,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -33,15 +37,72 @@ class AuthorServiceTest {
     @InjectMocks
     private AuthorService authorService;
 
-    private final AuthorEntity AuthorEntity1 = new AuthorEntity(UUID.randomUUID().toString(), "John", "USA", LocalDate.of(1997, 1, 2));
-    private final AuthorEntity AuthorEntity2 = new AuthorEntity(UUID.randomUUID().toString(), "Müller", "USA", LocalDate.of(1997, 1, 2));
-    private final AuthorEntity AuthorEntity3 = new AuthorEntity(UUID.randomUUID().toString(), "müller", "USA", LocalDate.of(1997, 1, 2));
-    private final AuthorEntity AuthorEntity4 = new AuthorEntity(UUID.randomUUID().toString(), "Meier", "USA", LocalDate.of(1997, 1, 2));
-    private final AuthorEntity AuthorEntity5 = new AuthorEntity(UUID.randomUUID().toString(), "Rein", "DÄN", LocalDate.of(1920, 1, 2));
-    private final AuthorEntity AuthorEntity6 = new AuthorEntity(UUID.randomUUID().toString(), "Weg", "SWE", LocalDate.of(1911, 11, 9));
-    private final AuthorEntity AuthorEntity7 = new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2));
-    private final AuthorEntity AuthorEntity8 = new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22));
+    private final AuthorEntity authorEntity1 = new AuthorEntity(UUID.randomUUID().toString(), "John", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity AuthorEntity2 = new AuthorEntity(UUID.randomUUID().toString(), "Müller", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity AuthorEntity3 = new AuthorEntity(UUID.randomUUID().toString(), "müller", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity AuthorEntity4 = new AuthorEntity(UUID.randomUUID().toString(), "Meier", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity AuthorEntity5 = new AuthorEntity(UUID.randomUUID().toString(), "Rein", "DÄN", LocalDate.of(1920, 1, 2), new ArrayList<>());
+    private final AuthorEntity AuthorEntity6 = new AuthorEntity(UUID.randomUUID().toString(), "Weg", "SWE", LocalDate.of(1911, 11, 9), new ArrayList<>());
+    private final AuthorEntity AuthorEntity7 = new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2), new ArrayList<>());
+    private final AuthorEntity AuthorEntity8 = new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22), new ArrayList<>());
+    List<AuthorEntity> authors = List.of(authorEntity1, AuthorEntity2, AuthorEntity3, AuthorEntity4, AuthorEntity5);
 
+    @Test
+    void testStreamFilter() {
+        List<AuthorEntity> requiredAuthors = authors.stream()
+            .filter(author -> author.getCountry().equals("USA"))
+            .toList();
+        assertThat(requiredAuthors)
+            .hasSize(4)
+            .containsExactly(authorEntity1, AuthorEntity2, AuthorEntity3, AuthorEntity4);
+
+        //    requiredAuthors.add(AuthorEntity8);
+    }
+
+    @Test
+    void testStreamMapping() {
+        List<String> requiredAuthors = authors.stream()
+            .map(AuthorEntity::getId)
+            .toList();
+        assertEquals(5, requiredAuthors.size());
+    }
+
+    @Test
+    void testStreamForEach() {
+        List<AuthorEntity> requiredAuthors = new ArrayList<>(authors);
+        assertThat(requiredAuthors)
+            .hasSize(5);
+    }
+
+    @Test
+    void testForEach() {
+        List<AuthorEntity> requiredAuthors = new ArrayList<>();
+        for (AuthorEntity author : authors) {
+            requiredAuthors.add(author);
+        }
+        assertThat(requiredAuthors)
+            .hasSize(5);
+
+        //  requiredAuthors.add(AuthorEntity8);
+    }
+
+    @Test
+    void testStreamListToMap() {
+        Map<String, AuthorEntity> authorEntityMap = authors.stream()
+            .collect(Collectors.toMap(AuthorEntity::getId, author -> author));
+        assertThat(authorEntityMap)
+            .isNotEmpty();
+
+    }
+
+    @Test
+    void testStreamListToMap2() {
+        Map<String, List<AuthorEntity>> authorEntityMap = authors.stream()
+            .collect(Collectors.groupingBy(AuthorEntity::getName));
+        assertThat(authorEntityMap)
+            .isNotEmpty()
+            .hasSize(5);
+    }
 
     @Test
     void paginationTest1() {
@@ -52,7 +113,7 @@ class AuthorServiceTest {
         PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name", "id").ascending());
         PageImpl page1 = new PageImpl(
             List.of(
-                AuthorEntity1,
+                authorEntity1,
                 AuthorEntity2,
                 AuthorEntity3
             ),
@@ -105,13 +166,9 @@ class AuthorServiceTest {
         assertThat(authorService.getAll("", 6, 8))
             .extracting(Author::name).contains("Frank", "FNG");
 
-        // act
-//        assertThat(authorService.getAll("", 6, 9))
-//            .extracting(Author::name).contains("Rein", "Weg");
-//        // act
-//        assertThat(authorService.getAll("", 9, 12))
-//            .isEmpty();
+
     }
+
 
     @Test
     void paginationTestWithFiltering() {
@@ -120,7 +177,7 @@ class AuthorServiceTest {
             .and(Sort.by("id").ascending());
 
         when(authorRepository.findByName(eq("John"), any(Pageable.class)))
-            .thenReturn(List.of(AuthorEntity1))
+            .thenReturn(List.of(authorEntity1))
             .thenReturn(List.of());
 
         // act
@@ -135,7 +192,7 @@ class AuthorServiceTest {
     @ValueSource(strings = {"John", "john", "JOHn", "  John ", "\njohn\t"})
     void paginationTestWithFiltering2(String authorName) {
         when(authorRepository.findByName("John", PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending())))
-            .thenReturn(List.of(AuthorEntity1));
+            .thenReturn(List.of(authorEntity1));
 
         // act
         assertThat(authorService.getAll("John", 0, 11))
@@ -153,7 +210,7 @@ class AuthorServiceTest {
         PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name", "id").ascending());
         PageImpl page1 = new PageImpl(
             List.of(
-                AuthorEntity1,
+                authorEntity1,
                 AuthorEntity2,
                 AuthorEntity3)
             , pageRequest1

@@ -1,5 +1,6 @@
 package com.example.demo.model.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -41,7 +42,7 @@ public class AuthorEntity {
     private LocalDate birthDate;
 
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "authorId")
     @OrderBy("id")
     private List<BookEntity> BooksList;
 

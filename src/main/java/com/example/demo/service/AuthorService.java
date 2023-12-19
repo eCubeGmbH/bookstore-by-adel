@@ -4,7 +4,6 @@ import com.example.demo.model.Author;
 import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
 
     @Autowired
-    public AuthorService(@Qualifier("authorRepository") AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 

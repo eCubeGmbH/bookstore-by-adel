@@ -1,4 +1,6 @@
 const path = require("path");
+const StyleLintPlugin = require('stylelint-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -26,4 +28,11 @@ module.exports = {
             },
         ],
     },
+    plugins: [new StyleLintPlugin({
+        configFile: '.stylelint.json',
+        context: './frontend/styles',
+        files: '**/*.css',
+    }),
+        new ESLintPlugin()
+    ]
 }

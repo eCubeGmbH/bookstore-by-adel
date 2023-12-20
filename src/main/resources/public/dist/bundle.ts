@@ -15,7 +15,7 @@
   \***************************/
 /***/ (() => {
 
-eval("\n\n//# sourceURL=webpack://bookstore-by-adel-new/./frontend/index.ts?");
+eval("throw new Error(\"Module build failed (from ./node_modules/ts-loader/index.js):\\nError: TypeScript emitted no output for C:\\\\Users\\\\Adel\\\\git\\\\bookstore-by-adel-new\\\\frontend\\\\index.ts.\\n    at makeSourceMapAndFinish (C:\\\\Users\\\\Adel\\\\git\\\\bookstore-by-adel-new\\\\node_modules\\\\ts-loader\\\\dist\\\\index.js:55:18)\\n    at successLoader (C:\\\\Users\\\\Adel\\\\git\\\\bookstore-by-adel-new\\\\node_modules\\\\ts-loader\\\\dist\\\\index.js:42:5)\\n    at Object.loader (C:\\\\Users\\\\Adel\\\\git\\\\bookstore-by-adel-new\\\\node_modules\\\\ts-loader\\\\dist\\\\index.js:23:5)\");\n\n//# sourceURL=webpack://bookstore-by-adel-new/./frontend/index.ts?");
 
 /***/ })
 
@@ -24,7 +24,7 @@ eval("\n\n//# sourceURL=webpack://bookstore-by-adel-new/./frontend/index.ts?");
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
 /******/ 	var __webpack_exports__ = {};
 /******/ 	__webpack_modules__["./frontend/index.ts"]();
 /******/ 	

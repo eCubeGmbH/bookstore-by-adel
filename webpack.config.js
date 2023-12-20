@@ -1,6 +1,8 @@
 const path = require("path");
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 
 module.exports = {
     mode: 'development',
@@ -22,6 +24,10 @@ module.exports = {
                 use: 'ts-loader',
             },
             {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader']
+            },
+            {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: 'babel-loader',
@@ -33,6 +39,7 @@ module.exports = {
         context: './frontend/styles',
         files: '**/*.css',
     }),
-        new ESLintPlugin()
+        new ESLintPlugin(),
+        new MiniCssExtractPlugin()
     ]
 }

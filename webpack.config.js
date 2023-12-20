@@ -9,11 +9,11 @@ module.exports = {
     entry: './frontend/index.ts',
     output: {
         clean: true,
-        path: path.resolve(__dirname, './src/main/resources/public/dist'),
-        filename: 'bundle.ts',
+        path: path.resolve(__dirname, './src/main/resources/public'),
+        filename: 'bundle.js',
     },
     resolve: {
-        extensions: ['.tsx\', \'.ts\', \'.js\', \'.jsx']
+        extensions: ['.tsx', '.ts', '.js', '.jsx']
     },
 
     module: {
@@ -27,11 +27,7 @@ module.exports = {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader']
             },
-            {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                use: 'babel-loader',
-            },
+
         ],
     },
     plugins: [new StyleLintPlugin({

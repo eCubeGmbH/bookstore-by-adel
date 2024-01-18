@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
-const MyTableComponent = () => {
-    const [tableData, setTableData] = useState([]);
+const BooksTable = () => {
+    const [booksData, setBooksData] = useState([]);
 
     useEffect(() => {
-        fetch('/api/books/8200698372601688327')
+        fetch('/api/books?from=0&to=10')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -13,19 +13,16 @@ const MyTableComponent = () => {
             })
             .then((data) => {
                 console.log(data); // Log the received data
-                setTableData(data);
+
+                setBooksData(data);
             })
             .catch((error) => console.error('Error fetching data:', error));
     }, []); // Empty dependency array ensures the effect runs only once on mount
 
-    if (!Array.isArray(tableData)) {
-        // Handle the case where the fetched data is not an array
-        return <div>Error: Data format is not as expected.</div>;
-    }
 
     return (
         <div>
-            <h2>Data Table</h2>
+            <h2>Books Table</h2>
             <table>
                 <thead>
                 <tr>
@@ -36,7 +33,7 @@ const MyTableComponent = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {tableData.map((row) => (
+                {booksData.map((row) => (
                     <tr key={row.id}>
                         <td>{row.id.toString()}</td>
                         <td>{row.authorId}</td>
@@ -50,4 +47,4 @@ const MyTableComponent = () => {
     );
 };
 
-export default MyTableComponent;
+export default BooksTable;

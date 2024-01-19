@@ -1,25 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
-const BooksTable = () => {
-    const [booksData, setBooksData] = useState([]);
-
-    useEffect(() => {
-        fetch('/api/books?from=0&to=10')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data); // Log the received data
-
-                setBooksData(data);
-            })
-            .catch((error) => console.error('Error fetching data:', error));
-    }, []); // Empty dependency array ensures the effect runs only once on mount
-
-
+const BooksTable = ({books}) => {
     return (
         <div>
             <h2>Books Table</h2>
@@ -33,12 +14,12 @@ const BooksTable = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {booksData.map((row) => (
-                    <tr key={row.id}>
-                        <td>{row.id.toString()}</td>
-                        <td>{row.authorId}</td>
-                        <td>{row.name}</td>
-                        <td>{`${row.publishDate[0]}-${row.publishDate[1]}-${row.publishDate[2]}`}</td>
+                {books.map((book) => (
+                    <tr key={book.id}>
+                        <td>{book.id}</td>
+                        <td>{book.authorId}</td>
+                        <td>{book.name}</td>
+                        <td>{`${book.publishDate[0]}-${book.publishDate[1]}-${book.publishDate[2]}`}</td>
                     </tr>
                 ))}
                 </tbody>

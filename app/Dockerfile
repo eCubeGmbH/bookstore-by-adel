@@ -1,18 +1,13 @@
-FROM node:alpine
+FROM node:20-alpine
 
 WORKDIR /usr/app
 
-COPY package.json ./
+COPY ./package.json /usr/app/package.json
+COPY ./package-lock.json /usr/app/package-lock.json
+COPY src/ /usr/app/src/
+COPY public/ /usr/app/public/
 
-COPY package-lock.json ./
-
-COPY . ./
-
-# Add bash
-# RUN apk add --no-cache bash
-
-# RUN chmod +x ./env.sh
-
+RUN npm install
 RUN npm run build
 
 CMD ["npm", "start"]

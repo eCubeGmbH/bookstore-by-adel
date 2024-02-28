@@ -1,4 +1,4 @@
-export default function AuthorsTable({authors}: {
+export default function AuthorsTable(probs: {
     authors: Array<any>
 }) {
     return (
@@ -14,7 +14,7 @@ export default function AuthorsTable({authors}: {
                 </tr>
                 </thead>
                 <tbody>
-                {authors.map((author) => (
+                {probs.authors.map((author) => (
                     <tr key={author.id}>
                         <td>{author.id}</td>
                         <td>{author.name}</td>

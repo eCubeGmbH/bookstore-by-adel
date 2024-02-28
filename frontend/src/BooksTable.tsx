@@ -1,4 +1,4 @@
-export default function BooksTable({books}: {
+export default function BooksTable(probs: {
     books: Array<any>
 }) {
     return (
@@ -14,7 +14,7 @@ export default function BooksTable({books}: {
                 </tr>
                 </thead>
                 <tbody>
-                {books.map((book) => (
+                {probs.books.map((book) => (
                     <tr key={book.id}>
                         <td>{book.id}</td>
                         <td>{book.authorId}</td>

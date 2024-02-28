@@ -1,7 +1,6 @@
-export type BooksTableProp = {
-    books: any[]
-}
-export default function BooksTable({books}: BooksTableProp) {
+export default function BooksTable({books}: {
+    books: Array<any>
+}) {
     return (
         <div>
             <h2>Books Table</h2>

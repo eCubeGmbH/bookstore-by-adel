@@ -1,8 +1,6 @@
-export type AuthorsTableProp = {
-    authors: any[]
-}
-
-export default function AuthorsTable({authors}: AuthorsTableProp) {
+export default function AuthorsTable({authors}: {
+    authors: Array<any>
+}) {
     return (
         <div>
             <h2>Authors Table</h2>

@@ -1,6 +1,13 @@
-export default function BooksTable(probs: {
-    books: Array<any>
-}) {
+export interface Book {
+    id:number;
+    authorId:number;
+    name:string;
+    publishDate:Date;
+}
+interface Props{
+    books:Book[];
+}
+export default function BooksTable({books}:Props){
     return (
         <div>
             <h2>Books Table</h2>
@@ -14,12 +21,12 @@ export default function BooksTable(probs: {
                 </tr>
                 </thead>
                 <tbody>
-                {probs.books.map((book) => (
+                {books.map((book) => (
                     <tr key={book.id}>
                         <td>{book.id}</td>
                         <td>{book.authorId}</td>
                         <td>{book.name}</td>
-                        <td>{`${book.publishDate[0]}-${book.publishDate[1]}-${book.publishDate[2]}`}</td>
+                        <td>{`${book.publishDate}-${book.publishDate}-${book.publishDate}`}</td>
                     </tr>
                 ))}
                 </tbody>

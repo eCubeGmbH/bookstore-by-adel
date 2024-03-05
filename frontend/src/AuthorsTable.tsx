@@ -1,6 +1,14 @@
-export default function AuthorsTable(probs: {
-    authors: Array<any>
-}) {
+export interface Author {
+    id: string;
+    name: string;
+    country: string;
+    birthDate: Date;
+}
+interface Props{
+    authors: Author[];
+}
+
+export default function AuthorsTable({authors}: Props) {
     return (
         <div>
             <h2>Authors Table</h2>
@@ -14,12 +22,12 @@ export default function AuthorsTable(probs: {
                 </tr>
                 </thead>
                 <tbody>
-                {probs.authors.map((author) => (
+                {authors.map((author) => (
                     <tr key={author.id}>
                         <td>{author.id}</td>
                         <td>{author.name}</td>
                         <td>{author.country}</td>
-                        <td>{`${author.birthDate[0]}-${author.birthDate[1]}-${author.birthDate[2]}`}</td>
+                        <td>{`${author.birthDate}-${author.birthDate}-${author.birthDate}`}</td>
                     </tr>
                 ))}
                 </tbody>

@@ -1,47 +1,42 @@
 import {useEffect, useState} from 'react';
-import BooksTable, {Book} from './BooksTable.tsx';
+import './App.css'
 import AuthorsTable, {Author} from './AuthorsTable.tsx';
-
+import Header from './Header.tsx';
 
 const MyMainComponent = () => {
-    const [bookData, setBookData] = useState<Book[]>([]);
     const [authorData, setAuthorData] = useState<Author[]>([]);
+    let page = 0;
+    const pageSize = 10;
+
+    const updatePage = (pageNumber: number): void => {
+        page = pageNumber;
+    };
 
     useEffect(() => {
-        // Fetch data from the API endpoint for books
-        fetch('/api/books?from=0&to=10')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(response.statusText)
+        const from: number = page * pageSize;
+        const to: number = (page + 1) * pageSize;
+
+        Promise.all([
+            fetch(`/api/authors?from=${from}&to=${to}`)
+        ])
+            .then(([authorsResponse]) => {
+                if (!authorsResponse.ok) {
+                    throw new Error(authorsResponse.statusText);
                 }
-                return response.json() as Promise<Book[]>
+                return Promise.all([authorsResponse.json()]);
             })
-            .then((books) =>
-                setBookData(books)
-            )
-            .catch((error) => console.error('Error fetching books:', error))
-        // Fetch data from the API endpoint for authors
-        fetch('/api/authors?from=0&to=10')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(response.statusText)
-                }
-                return response.json() as Promise<Author[]>
+            .then(([authors]) => {
+                setAuthorData(authors);
             })
-            .then((authors) =>
-                setAuthorData(authors)
-            )
-            .catch((error) => console.error('Error fetching authors:', error));
+            .catch((error) => console.error('Error fetching data:', error));
     }, []);
 
-    const BooksTableComponent = <BooksTable books={bookData}/>;
-    const AuthorsTableComponent = <AuthorsTable authors={authorData}/>;
-
     return (
-        <div>
-            {BooksTableComponent}
-            {AuthorsTableComponent}
-        </div>
+        <>
+            <Header title="Authors"/>
+            <AuthorsTable authors={authorData} nextPage={2} prevPage={1}/>
+
+        </>
     );
 };
 

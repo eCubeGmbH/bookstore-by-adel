@@ -12,7 +12,7 @@ const MyMainComponent = () => {
 
     async function fetchAuthors(pageNumber: number): Promise<Author[]> {
         const from: number = pageNumber * pageSize;
-        const to: number = (pageNumber + 1) * pageSize + 1;
+        const to: number = (pageNumber + 1) * pageSize;
 
         console.log(`fetchAuthors: pageNumber: ${pageNumber} - from:${from}, to:${to}`)
 
@@ -29,15 +29,15 @@ const MyMainComponent = () => {
             .then(authors => {
                 setAuthorData(previousAuthor => previousAuthor.filter(() => false));
 
-                if (authors.length > pageSize) {
+                if (authors.length === pageSize) {
                     setAuthorData(() => authors.slice(0, pageSize));
-                    setHasNext(true);
+                    setHasNext(() => true);
                 } else {
                     setAuthorData(() => authors);
-                    setHasNext(false);
+                    setHasNext(() => false);
                 }
             })
-        setCurrentPage(pageNumber);
+        setCurrentPage(() => pageNumber);
     };
 
     useEffect(() => {

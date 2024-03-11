@@ -4,40 +4,56 @@ import AuthorsTable, {Author} from './AuthorsTable.tsx';
 import Header from './Header.tsx';
 
 const MyMainComponent = () => {
-    const [authorData, setAuthorData] = useState<Author[]>([]);
-    let page = 0;
     const pageSize = 10;
 
-    const updatePage = (pageNumber: number): void => {
-        page = pageNumber;
+    const [authorData, setAuthorData] = useState<Author[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [hasNext, setHasNext] = useState<boolean>(true);
+
+    async function fetchAuthors(pageNumber: number): Promise<Author[]> {
+        const from: number = pageNumber * pageSize;
+        const to: number = (pageNumber + 1) * pageSize + 1;
+
+        console.log(`fetchAuthors: pageNumber: ${pageNumber} - from:${from}, to:${to}`)
+
+        const response = await fetch(`/api/authors?from=${from}&to=${to}`);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    }
+
+    const updateCurrentPage = (pageNumber: number): void => {
+        console.log(`updateCurrentPage: ${pageNumber}`)
+        fetchAuthors(pageNumber)
+            .then(authors => {
+                setAuthorData(previousAuthor => previousAuthor.filter(() => false));
+
+                if (authors.length > pageSize) {
+                    setAuthorData(() => authors.slice(0, pageSize));
+                    setHasNext(true);
+                } else {
+                    setAuthorData(() => authors);
+                    setHasNext(false);
+                }
+            })
+        setCurrentPage(pageNumber);
     };
 
     useEffect(() => {
-        const from: number = page * pageSize;
-        const to: number = (page + 1) * pageSize;
+            updateCurrentPage(0);
+        }, []
+    )
 
-        Promise.all([
-            fetch(`/api/authors?from=${from}&to=${to}`)
-        ])
-            .then(([authorsResponse]) => {
-                if (!authorsResponse.ok) {
-                    throw new Error(authorsResponse.statusText);
-                }
-                return Promise.all([authorsResponse.json()]);
-            })
-            .then(([authors]) => {
-                setAuthorData(authors);
-            })
-            .catch((error) => console.error('Error fetching data:', error));
-    }, []);
-
+    const previousPage: number = currentPage === 0 ? 0 : currentPage - 1;
+    const nextPage: number = currentPage + 1;
     return (
         <>
             <Header title="Authors"/>
-            <AuthorsTable authors={authorData} nextPage={2} prevPage={1}/>
-
+            <AuthorsTable authors={authorData} nextPage={nextPage} prevPage={previousPage}
+                          onUpdateCurrentPage={updateCurrentPage}
+                          hasPrevious={currentPage !== 0} hasNext={hasNext}/>
         </>
     );
 };
-
 export default MyMainComponent;

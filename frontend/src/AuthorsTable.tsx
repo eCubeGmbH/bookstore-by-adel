@@ -1,5 +1,4 @@
 import './App.css'
-import {useState} from "react";
 
 export interface Author {
     id: string;
@@ -12,20 +11,12 @@ interface Props {
     authors: Author[];
     prevPage: number;
     nextPage: number;
+    onUpdateCurrentPage: (pageNumber: number) => void;
+    hasPrevious: boolean;
+    hasNext: boolean;
 }
 
-export default function AuthorsTable({authors, prevPage, nextPage}: Props) {
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    // const indexOfLastAuthor = currentPage * authorsPerPage;
-    // const indexOfFirstAuthor = indexOfLastAuthor - authorsPerPage;
-    // const currentAuthors = authors.slice(indexOfFirstAuthor, indexOfLastAuthor);
-
-    const onClickHandler = (pageNumber: number): void => {
-        if (currentPage > 1) {
-            setCurrentPage(pageNumber - 1);
-        }
-    };
-
+export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurrentPage, hasPrevious, hasNext}: Props) {
     return (
         <div>
             <table className="authors-table">
@@ -49,8 +40,8 @@ export default function AuthorsTable({authors, prevPage, nextPage}: Props) {
                 </tbody>
             </table>
 
-            <button onClick={() => onClickHandler(prevPage)}>Previous</button>
-            <button onClick={() => onClickHandler(nextPage)}>Next</button>
+            <button onClick={() => onUpdateCurrentPage(prevPage)} disabled={!hasPrevious}>Previous</button>
+            <button onClick={() => onUpdateCurrentPage(nextPage)} disabled={!hasNext}>Next</button>
         </div>
     );
 };

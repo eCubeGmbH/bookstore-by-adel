@@ -17,6 +17,13 @@ interface Props {
 }
 
 export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurrentPage, hasPrevious, hasNext}: Props) {
+    const formatDate = (date: Date): string => {
+        return new Date(date).toLocaleDateString('de-DE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
     return (
         <div>
             <table className="authors-table">
@@ -34,7 +41,7 @@ export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurre
                         <td>{author.id}</td>
                         <td>{author.name}</td>
                         <td>{author.country}</td>
-                        <td>{`${author.birthDate}`}</td>
+                        <td>{formatDate(author.birthDate)}</td>
                     </tr>
                 ))}
                 </tbody>

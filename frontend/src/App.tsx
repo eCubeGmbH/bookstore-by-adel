@@ -2,6 +2,9 @@ import {useEffect, useState} from 'react';
 import './App.css'
 import AuthorsTable, {Author} from './AuthorsTable.tsx';
 import Header from './Header.tsx';
+import AddAuthor from './AddAuthor.tsx';
+import './AddAuthor.css';
+
 
 const MyMainComponent = () => {
     const pageSize = 10;
@@ -28,7 +31,6 @@ const MyMainComponent = () => {
         fetchAuthors(pageNumber)
             .then(authors => {
                 setAuthorData(previousAuthor => previousAuthor.filter(() => false));
-
                 if (authors.length === pageSize) {
                     setAuthorData(() => authors.slice(0, pageSize));
                     setHasNext(() => true);
@@ -45,15 +47,19 @@ const MyMainComponent = () => {
         }, []
     )
 
+
     const previousPage: number = currentPage === 0 ? 0 : currentPage - 1;
     const nextPage: number = currentPage + 1;
     return (
         <>
+            <AddAuthor/>
             <Header title="Authors"/>
             <AuthorsTable authors={authorData} nextPage={nextPage} prevPage={previousPage}
                           onUpdateCurrentPage={updateCurrentPage}
                           hasPrevious={currentPage !== 0} hasNext={hasNext}/>
         </>
+
+
     );
 };
 export default MyMainComponent;

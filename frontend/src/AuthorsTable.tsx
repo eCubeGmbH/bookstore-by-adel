@@ -1,4 +1,4 @@
-import './App.css'
+import './index.css'
 
 export interface Author {
     id: string;

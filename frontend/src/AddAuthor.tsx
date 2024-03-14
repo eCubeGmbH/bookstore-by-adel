@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
-import './AddAuthor.css';
 import {Author} from "./AuthorsTable.tsx";
+import './index.css'
 
 const AddAuthor = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -54,27 +54,33 @@ const AddAuthor = () => {
         <>
             <button className="create-author-button" onClick={handleCreateClick}>Create Author</button>
             {isVisible && (
-                <p className="overlay">
-                    <p className="modal">
+                <div className="overlay">
+                    <section className="modal">
                         <h2>Add New Author</h2>
                         <form onSubmit={handleSubmit}>
-                            <label>Name: </label>
-                            <input type="text" ref={nameRef} required/>
-                            <label>Birthdate: </label>
-                            <input type="date" ref={birthdateRef} required/>
-                            <label>Country: </label>
-                            <select ref={countryRef} required>
-                                <option value="">Select Country</option>
-                                {countries.map(country => (
-                                    <option key={country} value={country}>{country}</option>))}
-                            </select>
+                            <p>
+                                <label>Name: </label>
+                                <input type="text" ref={nameRef} required/>
+                            </p>
+                            <p>
+                                <label>Birthdate: </label>
+                                <input type="date" ref={birthdateRef} required/>
+                            </p>
+                            <p>
+                                <label>Country: </label>
+                                <select ref={countryRef} required>
+                                    <option value="">Select Country</option>
+                                    {countries.map(country => (
+                                        <option key={country} value={country}>{country}</option>))}
+                                </select>
+                            </p>
                             <p>
                                 <button type="submit">Submit</button>
                                 <button type="button" onClick={handleCancelClick}>Cancel</button>
                             </p>
                         </form>
-                    </p>
-                </p>
+                    </section>
+                </div>
             )}
         </>
     );

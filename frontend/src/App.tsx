@@ -1,9 +1,8 @@
 import {useEffect, useState} from 'react';
-import './App.css'
+import './index.css'
 import AuthorsTable, {Author} from './AuthorsTable.tsx';
 import Header from './Header.tsx';
 import AddAuthor from './AddAuthor.tsx';
-import './AddAuthor.css';
 
 const MyMainComponent = () => {
     const pageSize = 10;

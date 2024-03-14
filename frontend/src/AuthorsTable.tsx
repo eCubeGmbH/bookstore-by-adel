@@ -25,7 +25,7 @@ export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurre
         });
     };
     return (
-        <div>
+        <>
             <table className="authors-table">
                 <thead>
                 <tr>
@@ -46,10 +46,9 @@ export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurre
                 ))}
                 </tbody>
             </table>
-
             <button onClick={() => onUpdateCurrentPage(prevPage)} disabled={!hasPrevious}>Previous</button>
             <button onClick={() => onUpdateCurrentPage(nextPage)} disabled={!hasNext}>Next</button>
-        </div>
+        </>
     );
 };
 

@@ -71,14 +71,8 @@
     margin-right: 0;
 }
 
-.select-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-}
-
 .select-wrapper select {
-    width: 107%;
+    width: 200%;
     padding: 8px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -86,3 +80,4 @@
     box-sizing: border-box;
     background-color: #fff;
 }
+

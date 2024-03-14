@@ -7,8 +7,6 @@ const AddAuthor = () => {
     const nameRef = useRef<HTMLInputElement>(null);
     const countryRef = useRef<HTMLSelectElement>(null);
     const birthdateRef = useRef<HTMLInputElement>(null);
-
-
     const countries = [
         'USA',
         'Canada',
@@ -16,7 +14,6 @@ const AddAuthor = () => {
         'Germany',
         'France',
         'Australia',
-
     ];
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +24,6 @@ const AddAuthor = () => {
             country: countryRef.current!.value,
             birthDate: new Date(birthdateRef.current!.value)
         }
-
         try {
             const response = await fetch('/api/authors', {
                 method: 'POST',
@@ -36,11 +32,9 @@ const AddAuthor = () => {
                 },
                 body: JSON.stringify(newAuthor)
             });
-
             if (!response.ok) {
                 throw new Error('Failed to create author');
             }
-
             console.log('Author created');
             setIsVisible(false);
         } catch (error) {
@@ -55,8 +49,9 @@ const AddAuthor = () => {
     const handleCancelClick = () => {
         setIsVisible(false);
     };
+
     return (
-        <div>
+        <>
             <button className="create-author-button" onClick={handleCreateClick}>Create Author</button>
             {isVisible && (
                 <div className="overlay">
@@ -65,20 +60,15 @@ const AddAuthor = () => {
                         <form onSubmit={handleSubmit}>
                             <label>Name: </label>
                             <input type="text" ref={nameRef} required/>
-                            <br/>
-                            <div
-                                className="select-wrapper"> {/* Wrap select element with div and apply select-wrapper class */}
-                                <label>Country: </label>
-                                <select ref={countryRef} required>
-                                    <option value="">Select Country</option>
-                                    {countries.map(country => (
-                                        <option key={country} value={country}>{country}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <br/>
                             <label>Birthdate: </label>
                             <input type="date" ref={birthdateRef} required/>
+                            <label>Country: </label>
+                            <select ref={countryRef} required>
+                                <option value="">Select Country</option>
+                                {countries.map(country => (
+                                    <option key={country} value={country}>{country}</option>))}
+                            </select>
+                            <br/>
                             <br/>
                             <button type="submit">Submit</button>
                             <button type="button" onClick={handleCancelClick}>Cancel</button>
@@ -86,7 +76,7 @@ const AddAuthor = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

@@ -172,5 +172,7 @@ Falls der Autor nicht gefunden wird:
 }
 
 
-
+## How to start the development environment
+**docker-compose up** : Startet die Dienste, die Containers werden gebaut und gestartet
+**docker-compose start**: Startet vorhandene Container für die Dienste, ohne neue Container zu erstellen
 **Hinweise**: Adel und Luc befinden sich noch in der Ausbildung.

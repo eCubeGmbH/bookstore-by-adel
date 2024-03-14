@@ -54,8 +54,8 @@ const AddAuthor = () => {
         <>
             <button className="create-author-button" onClick={handleCreateClick}>Create Author</button>
             {isVisible && (
-                <div className="overlay">
-                    <div className="modal">
+                <p className="overlay">
+                    <p className="modal">
                         <h2>Add New Author</h2>
                         <form onSubmit={handleSubmit}>
                             <label>Name: </label>
@@ -68,13 +68,13 @@ const AddAuthor = () => {
                                 {countries.map(country => (
                                     <option key={country} value={country}>{country}</option>))}
                             </select>
-                            <br/>
-                            <br/>
-                            <button type="submit">Submit</button>
-                            <button type="button" onClick={handleCancelClick}>Cancel</button>
+                            <p>
+                                <button type="submit">Submit</button>
+                                <button type="button" onClick={handleCancelClick}>Cancel</button>
+                            </p>
                         </form>
-                    </div>
-                </div>
+                    </p>
+                </p>
             )}
         </>
     );

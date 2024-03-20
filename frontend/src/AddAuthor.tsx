@@ -1,6 +1,8 @@
 import React, {useRef, useState} from 'react';
 import {Author} from "./AuthorsTable.tsx";
-import './index.css'
+import './assets/index.css';
+import {ToastContainer} from "react-toastify";
+import {errorNotify, successNotify} from "./Notifications.ts";
 
 const AddAuthor = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -15,31 +17,24 @@ const AddAuthor = () => {
         'France',
         'Australia',
     ];
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
         const newAuthor: Author = {
             id: '',
             name: nameRef.current!.value,
             country: countryRef.current!.value,
             birthDate: new Date(birthdateRef.current!.value)
         }
-        try {
-            const response = await fetch('/api/authors', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newAuthor)
-            });
-            if (!response.ok) {
-                throw new Error('Failed to create author');
-            }
-            console.log('Author created');
+        fetch('/api/authors', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAuthor)
+        }).then(() => {
+            successNotify({autoClose: 3000, message: "Succeed !"});
             setIsVisible(false);
-        } catch (error) {
-            throw new Error('Failed to create author');
-        }
+        }).catch(() => errorNotify({autoClose: 3000, message: "Failed"}));
     }
 
     const handleCreateClick = () => {
@@ -50,8 +45,10 @@ const AddAuthor = () => {
         setIsVisible(false);
     };
 
+
     return (
         <>
+            <ToastContainer/>
             <button className="create-author-button" onClick={handleCreateClick}>Create Author</button>
             {isVisible && (
                 <div className="overlay">

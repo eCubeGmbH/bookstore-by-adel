@@ -38,7 +38,7 @@ public class AuthorService {
         Sort sortOrder = Sort.by("name").ascending()
             .and(Sort.by("id").ascending());
         // Pagination + Sorting
-        int pageSize = to - from;
+        int pageSize = to - from ;
         int pageNumber = from / pageSize;
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
 

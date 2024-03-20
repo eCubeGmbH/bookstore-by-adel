@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react';
-import './index.css'
+import './assets/index.css'
 import AuthorsTable, {Author} from './AuthorsTable.tsx';
 import Header from './Header.tsx';
 import AddAuthor from './AddAuthor.tsx';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyMainComponent = () => {
     const pageSize = 10;
@@ -43,6 +44,7 @@ const MyMainComponent = () => {
     )
     const previousPage: number = currentPage === 0 ? 0 : currentPage - 1;
     const nextPage: number = currentPage + 1;
+
     return (
         <>
             <AddAuthor/>
@@ -53,4 +55,5 @@ const MyMainComponent = () => {
         </>
     );
 };
+
 export default MyMainComponent;

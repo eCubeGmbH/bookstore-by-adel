@@ -86,9 +86,6 @@ button:focus-visible {
     border-radius: 8px;
 }
 
-.create-author-button:hover {
-    border-color: red;
-}
 
 .overlay {
     position: fixed;

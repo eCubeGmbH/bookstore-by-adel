@@ -1,4 +1,5 @@
 import './assets/index.css'
+import {MdDelete, MdEdit} from "react-icons/md";
 
 export interface Author {
     id: string;
@@ -14,9 +15,21 @@ interface Props {
     onUpdateCurrentPage: (pageNumber: number) => void;
     hasPrevious: boolean;
     hasNext: boolean;
+    handleEditAuthor: (author: Author) => void;
+    handleDeleteAuthor: (author: Author) => void;
 }
 
-export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurrentPage, hasPrevious, hasNext}: Props) {
+export default function AuthorsTable({
+                                         authors,
+                                         prevPage,
+                                         nextPage,
+                                         onUpdateCurrentPage,
+                                         hasPrevious,
+                                         hasNext,
+                                         handleEditAuthor,
+                                         handleDeleteAuthor
+                                     }: Props) {
+
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
             day: '2-digit',
@@ -33,6 +46,7 @@ export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurre
                     <th>Name</th>
                     <th>Country</th>
                     <th>Birth Date</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,6 +56,10 @@ export default function AuthorsTable({authors, prevPage, nextPage, onUpdateCurre
                         <td>{author.name}</td>
                         <td>{author.country}</td>
                         <td>{formatDate(author.birthDate)}</td>
+                        <td>
+                            <button onClick={() => handleEditAuthor(author)}><MdEdit/></button>
+                            <button onClick={() => handleDeleteAuthor(author)}><MdDelete/></button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

@@ -8,6 +8,7 @@ import {ToastContainer} from "react-toastify";
 import {errorNotify, successNotify} from "./Notifications.ts";
 
 const MyMainComponent = () => {
+        // Constants and state declarations
         const pageSize = 10;
         const [isVisible, setIsVisible] = useState(false);
         const [authorData, setAuthorData] = useState<Author[]>([]);
@@ -17,6 +18,7 @@ const MyMainComponent = () => {
         const [mode, setMode] = useState<'add' | 'modify' | 'delete'>('add');
 
         async function fetchAuthors(pageNumber: number): Promise<Author[]> {
+            // Function to fetch authors data from the server (GET)
             const from: number = pageNumber * pageSize;
             const to: number = (pageNumber + 1) * pageSize;
             console.log(`fetchAuthors: pageNumber: ${pageNumber} - from:${from}, to:${to}`)
@@ -27,8 +29,8 @@ const MyMainComponent = () => {
             return response.json();
         }
 
+        // Handlers for CRUD operations on authors
         const handleOnClickAddAuthor = async (author: Author) => {
-            console.log("Add")
             fetch('/api/authors', {
                 method: 'POST',
                 headers: {
@@ -43,7 +45,6 @@ const MyMainComponent = () => {
         }
 
         const handleOnClickUpdateAuthor = async (author: Author) => {
-            console.log(`Update ${author.id}`)
             fetch(`/api/authors/${author.id}`, {
                 method: 'PUT',
                 headers: {
@@ -58,8 +59,6 @@ const MyMainComponent = () => {
         }
 
         const handleOnClickDeleteAuthor = async (author: Author) => {
-            console.log(`Delete ${author.id}`)
-
             fetch(`/api/authors/${author.id}`, {
                 method: 'DELETE',
                 headers: {
@@ -71,7 +70,7 @@ const MyMainComponent = () => {
                 setIsVisible(false);
             }).catch(() => errorNotify({autoClose: 3000, message: "Delete Failed !"}))
         }
-
+        // Handlers for UI actions
         const handleEdit = (author: Author) => {
             setCurrentAuthor(author);
             setIsVisible(true);
@@ -116,7 +115,7 @@ const MyMainComponent = () => {
 
         const previousPage: number = currentPage === 0 ? 0 : currentPage - 1;
         const nextPage: number = currentPage + 1;
-
+        // Title and button handler based on the mode
         let title: string;
         let buttonHandler: (author: Author) => void;
         if (mode === 'add') {
@@ -129,7 +128,7 @@ const MyMainComponent = () => {
             title = 'Delete author?';
             buttonHandler = handleOnClickDeleteAuthor;
         }
-
+        //JSX
         return (
             <>
                 <ToastContainer/>

@@ -11,6 +11,7 @@ interface ModifyAuthorProps {
 }
 
 export default function ModifyAuthor({author, onClickCancel, buttonLabel, buttonHandler, title}: ModifyAuthorProps) {
+    // Refs to input fields
     const nameRef = useRef<HTMLInputElement>(null);
     const countryRef = useRef<HTMLSelectElement>(null);
     const birthdateRef = useRef<HTMLInputElement>(null);
@@ -39,7 +40,7 @@ export default function ModifyAuthor({author, onClickCancel, buttonLabel, button
     const defaultAuthorCountry = author
         ? author.country
         : '';
-
+    //JSX
     return (
         <div className="overlay">
             <section className="modal">

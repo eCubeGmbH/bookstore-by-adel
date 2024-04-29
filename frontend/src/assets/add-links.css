@@ -1,0 +1,20 @@
+.link-separator {
+    margin: 0 10px;
+}
+.add-author-link,
+.add-book-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-author-link:hover,
+.add-book-link:hover {
+    background-color: #0056b3;
+}

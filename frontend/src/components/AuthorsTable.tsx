@@ -1,4 +1,4 @@
-import './assets/index.css'
+import '../assets/index.css'
 import {MdDelete, MdEdit} from "react-icons/md";
 
 export interface Author {

@@ -1,6 +1,6 @@
 import '../assets/index.css'
-import {MdDelete, MdEdit} from "react-icons/md";
-import {Link} from "react-router-dom";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export interface Author {
     id: string;

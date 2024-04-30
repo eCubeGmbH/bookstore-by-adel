@@ -1,4 +1,4 @@
-import {isRouteErrorResponse, useRouteError} from "react-router-dom";
+import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 import Navbar from "../components/NavBar.tsx";
 
 const ErrorPage = () => {

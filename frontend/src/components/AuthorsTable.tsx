@@ -1,5 +1,6 @@
 import '../assets/index.css'
 import {MdDelete, MdEdit} from "react-icons/md";
+import {Link} from "react-router-dom";
 
 export interface Author {
     id: string;
@@ -10,9 +11,8 @@ export interface Author {
 
 interface Props {
     authors: Author[];
-    prevPage: number;
-    nextPage: number;
-    onUpdateCurrentPage: (pageNumber: number) => void;
+    previousLink: string;
+    nextLink: string;
     hasPrevious: boolean;
     hasNext: boolean;
     handleEditAuthor: (author: Author) => void;
@@ -21,14 +21,14 @@ interface Props {
 
 export default function AuthorsTable({
                                          authors,
-                                         prevPage,
-                                         nextPage,
-                                         onUpdateCurrentPage,
+                                         previousLink,
+                                         nextLink,
                                          hasPrevious,
                                          hasNext,
                                          handleEditAuthor,
                                          handleDeleteAuthor
                                      }: Props) {
+
 
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
@@ -64,8 +64,12 @@ export default function AuthorsTable({
                 ))}
                 </tbody>
             </table>
-            <button onClick={() => onUpdateCurrentPage(prevPage)} disabled={!hasPrevious}>Previous</button>
-            <button onClick={() => onUpdateCurrentPage(nextPage)} disabled={!hasNext}>Next</button>
+            <Link to={previousLink} disabled={!hasPrevious}>
+                <button disabled={!hasPrevious}>Previous</button>
+            </Link>
+            <Link to={nextLink} disabled={!hasNext}>
+                <button disabled={!hasNext}>Next</button>
+            </Link>
         </>
     );
 };

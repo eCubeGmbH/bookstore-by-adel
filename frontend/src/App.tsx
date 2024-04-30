@@ -22,9 +22,12 @@ export default function App() {
                         {
                             index: true,
                             element: <AuthorsListPage/>,
+                            loader: AuthorsListPage.loader
                         },
+
                     ]
                 },
+
             ]
         },
     ]);

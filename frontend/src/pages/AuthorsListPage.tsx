@@ -1,34 +1,40 @@
 import '../assets/index.css'
 import 'react-toastify/dist/ReactToastify.css';
-import {useEffect, useState} from 'react';
 import AuthorsTable, {Author} from '../components/AuthorsTable.tsx';
 import Header from '../components/Header.tsx';
 import ModifyAuthor from '../components/ModifyAuthor.tsx';
 import {ToastContainer} from "react-toastify";
 import {errorNotify, successNotify} from "../components/Notifications.ts";
+import {LoaderFunction, useLoaderData, useSearchParams} from "react-router-dom";
+import {useState} from "react";
 
-const MyMainComponent = () => {
+
+const loader: LoaderFunction = async function getData({request}) {
+    const url = new URL(request.url);
+    const pageNumber = +(url.searchParams.get("pageNumber") || 0);
+    const pageSize = +(url.searchParams.get("pageSize") || 10);
+    const from = pageNumber * pageSize;
+    const to = (pageNumber + 1) * pageSize;
+
+    console.log(`pageNumber: ${pageNumber}; pageSize: ${pageSize}`)
+
+    const response = await fetch(`/api/authors?from=${from}&to=${to}`);
+
+    return response.json();
+}
+
+const AuthorsListPage = () => {
+        const authorData = useLoaderData() as Author[];
+        const [search] = useSearchParams();
+        console.log(`pageSize ${search.get(`pageSize`)}, pageNumber ${search.get(`pageNumber`)}`);
+        const pageSize = +(search.get(`pageSize`) || 10);
+        const pageNumber = +(search.get(`pageNumber`) || 0);
+        const hasNext = authorData.length === pageSize;
+
         // Constants and state declarations
-        const pageSize = 10;
         const [isVisible, setIsVisible] = useState(false);
-        const [authorData, setAuthorData] = useState<Author[]>([]);
-        const [currentPage, setCurrentPage] = useState<number>(0);
-        const [hasNext, setHasNext] = useState<boolean>(true);
         const [currentAuthor, setCurrentAuthor] = useState<Author | null>(null);
         const [mode, setMode] = useState<'add' | 'modify' | 'delete'>('add');
-
-
-        async function fetchAuthors(pageNumber: number): Promise<Author[]> {
-            // Function to fetch authors data from the server (GET)
-            const from: number = pageNumber * pageSize;
-            const to: number = (pageNumber + 1) * pageSize;
-            console.log(`fetchAuthors: pageNumber: ${pageNumber} - from:${from}, to:${to}`)
-            const response = await fetch(`/api/authors?from=${from}&to=${to}`);
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
-        }
 
         // Handlers for CRUD operations on authors
         const handleOnClickAddAuthor = async (author: Author) => {
@@ -39,7 +45,6 @@ const MyMainComponent = () => {
                 },
                 body: JSON.stringify(author)
             }).then(() => {
-                updateCurrentPage(currentPage);
                 successNotify({autoClose: 3000, message: "Succeed !"});
                 setIsVisible(false);
             }).catch(() => errorNotify({autoClose: 3000, message: "Failed"}));
@@ -53,7 +58,6 @@ const MyMainComponent = () => {
                 },
                 body: JSON.stringify(author)
             }).then(() => {
-                updateCurrentPage(currentPage);
                 successNotify({autoClose: 3000, message: "Edit Succeed !"})
                 setIsVisible(false);
             }).catch(() => errorNotify({autoClose: 3000, message: "Edit Failed !"}))
@@ -66,7 +70,6 @@ const MyMainComponent = () => {
                     'Content-Type': 'application/json'
                 },
             }).then(() => {
-                updateCurrentPage(currentPage);
                 successNotify({autoClose: 3000, message: "Delete Succeed !"})
                 setIsVisible(false);
             }).catch(() => errorNotify({autoClose: 3000, message: "Delete Failed !"}))
@@ -94,28 +97,9 @@ const MyMainComponent = () => {
             setIsVisible(false);
         };
 
-        const updateCurrentPage = (pageNumber: number): void => {
-            fetchAuthors(pageNumber)
-                .then(authors => {
-                    setAuthorData(previousAuthor => previousAuthor.filter(() => false));
-                    if (authors.length === pageSize) {
-                        setAuthorData(() => authors.slice(0, pageSize));
-                        setHasNext(() => true);
-                    } else {
-                        setAuthorData(() => authors);
-                        setHasNext(() => false);
-                    }
-                })
-            setCurrentPage(() => pageNumber);
-        };
+        const previousPage: number = pageNumber === 0 ? 0 : pageNumber - 1;
+        const nextPage: number = pageNumber + 1;
 
-        useEffect(() => {
-                updateCurrentPage(0);
-            }, []
-        )
-
-        const previousPage: number = currentPage === 0 ? 0 : currentPage - 1;
-        const nextPage: number = currentPage + 1;
         // Title and button handler based on the mode
         let title: string;
         let buttonHandler: (author: Author) => void;
@@ -130,6 +114,8 @@ const MyMainComponent = () => {
             buttonHandler = handleOnClickDeleteAuthor;
         }
 
+        const nextLink: string = `?pageNumber=${nextPage}&pageSize=${pageSize}`;
+        const previousLink: string = `?pageNumber=${previousPage}&pageSize=${pageSize}`;
 
         //JSX
         return (
@@ -140,9 +126,8 @@ const MyMainComponent = () => {
                     <ModifyAuthor author={currentAuthor} onClickCancel={handleUnVisible} title={title}
                                   buttonLabel={title} buttonHandler={buttonHandler}/>))}
                 <Header title="Authors"/>
-                <AuthorsTable authors={authorData} nextPage={nextPage} prevPage={previousPage}
-                              onUpdateCurrentPage={updateCurrentPage}
-                              hasPrevious={currentPage !== 0} hasNext={hasNext} handleEditAuthor={handleEdit}
+                <AuthorsTable authors={authorData} nextLink={nextLink} previousLink={previousLink}
+                              hasPrevious={pageNumber !== 0} hasNext={hasNext} handleEditAuthor={handleEdit}
                               handleDeleteAuthor={handleDelete}
                 />
             </>
@@ -150,5 +135,8 @@ const MyMainComponent = () => {
     }
 ;
 
-export default MyMainComponent;
+AuthorsListPage.loader = loader;
+
+export default AuthorsListPage;
+
 

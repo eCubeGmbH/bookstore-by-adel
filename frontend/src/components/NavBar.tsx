@@ -20,6 +20,14 @@ export default function Navbar() {
                         Authors
                     </NavLink>
                 </li>
+
+                <li>
+                    <NavLink
+                        to="/books"
+                    >
+                        Books
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     </header>

@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.model.Author;
 import com.example.demo.model.entity.AuthorEntity;
+import com.example.demo.model.enums.SortField;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -124,7 +127,7 @@ class AuthorServiceTest {
             .thenReturn(page1);
 
         // act
-        assertThat(authorService.getAll("", 0, 3))
+        assertThat(authorService.getAll(0, 3, SortField.ID, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("John", "Müller", "müller");
 
         /*
@@ -144,7 +147,7 @@ class AuthorServiceTest {
             .thenReturn(page2);
 
         // act
-        assertThat(authorService.getAll("", 3, 6))
+        assertThat(authorService.getAll(3, 6, SortField.COUNTRY, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("Meier", "Rein", "Weg");
 
         /*
@@ -163,7 +166,7 @@ class AuthorServiceTest {
             .thenReturn(page3);
 
         // act
-        assertThat(authorService.getAll("", 6, 8))
+        assertThat(authorService.getAll(6, 8, SortField.NAME, SortOrder.DESC, Optional.empty()))
             .extracting(Author::name).contains("Frank", "FNG");
 
 
@@ -181,10 +184,10 @@ class AuthorServiceTest {
             .thenReturn(List.of());
 
         // act
-        assertThat(authorService.getAll("John", 0, 2))
+        assertThat(authorService.getAll(0, 2, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("John");
         // act
-        assertThat(authorService.getAll("John", 9, 11))
+        assertThat(authorService.getAll(9, 11, SortField.ID, SortOrder.DESC, Optional.empty()))
             .isEmpty();
     }
 
@@ -195,10 +198,10 @@ class AuthorServiceTest {
             .thenReturn(List.of(authorEntity1));
 
         // act
-        assertThat(authorService.getAll("John", 0, 11))
+        assertThat(authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("John");
         // act
-        assertThat(authorService.getAll(authorName, 9, 11))
+        assertThat(authorService.getAll(9, 11, SortField.COUNTRY, SortOrder.DESC, Optional.empty()))
             .isEmpty();
 
     }
@@ -220,7 +223,7 @@ class AuthorServiceTest {
         when(authorRepository.findAll(pageRequest1)).thenReturn(page1);
 
         // act + assert
-        assertThat(authorService.getAll(authorName, 0, 3))
+        assertThat(authorService.getAll(0, 3, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("John", "Müller", "müller");
     }
 
@@ -230,7 +233,7 @@ class AuthorServiceTest {
             .thenReturn(List.of());
 
         // act + assert
-        assertThat(authorService.getAll("steve", 0, 11))
+        assertThat(authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.empty()))
             .isEmpty();
         //
         verify(authorRepository).findByName("steve", PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending()));
@@ -243,10 +246,10 @@ class AuthorServiceTest {
             .thenReturn(List.of(AuthorEntity4));
 
         // act + assert
-        assertThat(authorService.getAll(authorName, 0, 11))
+        assertThat(authorService.getAll(0, 11, SortField.COUNTRY, SortOrder.ASC, Optional.empty()))
             .hasSize(1)
             .extracting(Author::name).containsExactly("Meier");
-        assertThat(authorService.getAll(authorName, 6, 9))
+        assertThat(authorService.getAll(6, 9, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .isEmpty();
     }
 
@@ -257,7 +260,7 @@ class AuthorServiceTest {
             .thenReturn(List.of(AuthorEntity2, AuthorEntity3));
 
         // act + assert
-        assertThat(authorService.getAll("MülLer", 0, 11))
+        assertThat(authorService.getAll(0, 11, SortField.NAME, SortOrder.DESC, Optional.empty()))
             .hasSize(2)
             .extracting(Author::name).containsExactlyInAnyOrder("Müller", "müller");
     }

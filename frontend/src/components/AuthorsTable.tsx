@@ -1,6 +1,6 @@
 import '../assets/index.css'
 import { MdDelete, MdEdit } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 export interface Author {
     id: string;
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function AuthorsTable({
-                                         authors,
+
                                          previousLink,
                                          nextLink,
                                          hasPrevious,
@@ -28,7 +28,7 @@ export default function AuthorsTable({
                                          handleEditAuthor,
                                          handleDeleteAuthor
                                      }: Props) {
-
+    const loaderAuthors = useLoaderData() as Author[];
 
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
@@ -50,7 +50,7 @@ export default function AuthorsTable({
                 </tr>
                 </thead>
                 <tbody>
-                {authors.map((author, index) => (
+                {loaderAuthors.map((author, index) => (
                     <tr key={author.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
                         <td>{author.id}</td>
                         <td>{author.name}</td>

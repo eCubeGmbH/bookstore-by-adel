@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.model.Author;
 import com.example.demo.model.entity.AuthorEntity;
+import com.example.demo.model.enums.SortField;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -33,18 +35,16 @@ public class AuthorService {
     }
 
 
-    public List<Author> getAll(String authorName, int from, int to) {
+    public List<Author> getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
         // Sorting
-        Sort sortOrder = Sort.by("name").ascending()
-            .and(Sort.by("id").ascending());
-        // Pagination + Sorting
-        int pageSize = to - from ;
-        int pageNumber = from / pageSize;
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
+        Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.name()), sortField.name());
 
-        List<AuthorEntity> authorEntities = (authorName == null || authorName.isBlank())
-            ? authorRepository.findAll(pageRequest).getContent()
-            : authorRepository.findByName(authorName.trim(), pageRequest);
+        // Pagination + Sorting
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        List<AuthorEntity> authorEntities = maybeAuthorName.isPresent()
+            ? authorRepository.findByName(maybeAuthorName.get().trim(), pageRequest)
+            : authorRepository.findAll(pageRequest).getContent();
 
         return authorEntities.stream()
             .map(authorEntity -> toAuthor(authorEntity))

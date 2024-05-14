@@ -1,15 +1,13 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.enums.SortField;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.AuthorService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,15 +16,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@ResponseBody
 @RequestMapping(value = {"/api/authors"})
-class AuthorController {
+class AuthorController implements IAuthorController {
 
     private final AuthorService authorService;
 
@@ -35,92 +31,42 @@ class AuthorController {
         this.authorService = authorService;
     }
 
-    @Operation(summary = "Add new Author")
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Added the Author",
-            content = {@Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = Author.class)
-            )}
-        )
-    })
+    @Override
     @PostMapping(consumes = {"application/json"}, produces = {"application/json"})
     public Author addAuthor(@Valid @RequestBody Author author) {
         return authorService.addAuthor(author);
     }
 
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Found the Authors",
-            content = {@Content
-                (mediaType = "application/json",
-                    schema = @Schema(implementation = Author.class)
-                )}),
-        @ApiResponse(responseCode = "400",
-            description = "parameters from and to must be greater than 0"),
-        @ApiResponse(responseCode = "400",
-            description = "parameter from must be greater than to"),
-        @ApiResponse(responseCode = "400",
-            description = "result can  contains maximum 1000 elements")
-    })
-    @ResponseBody
+    @Override
     @GetMapping(produces = {"application/json"})
     public List<Author> getAllAuthors(
-        @RequestParam(value = "authorName", required = false, defaultValue = "") String authorName,
-        @RequestParam(value = "from") int from,
-        @RequestParam(value = "to") int to
+        @Min(0)
+        @RequestParam(value = "pageNumber") int pageNumber,
+        @Min(0)
+        @Max(1000)
+        @RequestParam(value = "pageSize") int pageSize,
+        @RequestParam(value = "sortField", defaultValue = "NAME") SortField sortField,
+        @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
+        @RequestParam(value = "maybeAuthorName", required = false) Optional<String> maybeAuthorName
     ) {
-        if (from < 0 || to < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameters from and to must be greater than 0");
-        }
-        if (from > to) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameter from must be greater than to");
-        }
-        if (Math.abs(from - to) > 1000) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "result can  contains maximum 1000 elements");
-        }
-        return authorService.getAll(authorName, from, to);
+        return authorService.getAll(pageNumber, pageSize, sortField, sortOrder, maybeAuthorName);
     }
 
-    @Operation(summary = "Find Author by it´s Id")
-    @ApiResponse(responseCode = "200",
-        description = "succeed",
-        content = {@Content
-            (mediaType = "application/json",
-                schema = @Schema(implementation = Author.class))
-        })
-    @ResponseBody
+    @Override
     @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
 
     public Author getAuthor(@PathVariable String authorId) {
         return authorService.getAuthor(authorId);
     }
 
-    @Operation(summary = "Delete Author")
-    @ApiResponse(responseCode = "200",
-        description = "succeed",
-        content = {@Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = Author.class))
-        })
-    @ResponseBody
+    @Override
     @DeleteMapping(value = {"/{authorId}"}, consumes = {"application/json"})
 
     public void removeAuthor(@PathVariable String authorId) {
         authorService.deleteAuthor(authorId);
     }
 
-    @Operation(summary = "Update Author")
-    @ApiResponse(responseCode = "200",
-        description = "Author has been deleted",
-        content = {@Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = Author.class))
-        })
-    @ResponseBody
+    @Override
     @PutMapping(value = {"/{authorId}"}, consumes = {"application/json"}, produces = {"application/json"})
 
     public Author updateAuthor(@PathVariable String authorId, @Valid @RequestBody Author authorFromUser) {

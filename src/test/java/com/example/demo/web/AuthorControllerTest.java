@@ -1,6 +1,8 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.enums.SortField;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.AuthorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.atIndex;
@@ -24,7 +27,7 @@ class AuthorControllerTest {
     @Mock
     private AuthorService authorService;
     @InjectMocks
-    private AuthorController controller;
+    private IAuthorController controller;
 
     @Test
     void addAuthor() {
@@ -52,10 +55,10 @@ class AuthorControllerTest {
         Author author = new Author("AXX2213", "FM", "SWE", LocalDate.of(1877, 2, 1));
 
         // when
-        Mockito.when(authorService.getAll("", 1, 5)).thenReturn(List.of(author));
+        Mockito.when(authorService.getAll(1, 5, SortField.NAME, SortOrder.ASC, Optional.empty())).thenReturn(List.of(author));
 
         // act + assert
-        assertThat(controller.getAllAuthors("", 1, 5))
+        assertThat(controller.getAllAuthors(1, 5, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .hasSize(1);
     }
 
@@ -66,10 +69,10 @@ class AuthorControllerTest {
         "0, -1",
         "-1, -2"
     })
-    void getAllAuthors_paginationWithNegativeNumber(int from, int to) {
-        assertThatThrownBy(() -> controller.getAllAuthors("", from, to))
+    void getAllAuthors_paginationWithNegativeNumber(int pageNumber, int pageSize) {
+        assertThatThrownBy(() -> controller.getAllAuthors(pageNumber, pageSize, SortField.NAME, SortOrder.DESC,Optional.empty()))
             .isInstanceOf(ResponseStatusException.class)
-            .hasMessage("400 BAD_REQUEST \"parameters from and to must be greater than 0\"");
+            .hasMessage("400 BAD_REQUEST \"parameters pageNumber and pageSize must be greater than 0\"");
         verifyNoMoreInteractions(authorService);
     }
 
@@ -79,10 +82,10 @@ class AuthorControllerTest {
         "10, 0",
         "5, 4"
     })
-    void getAllAuthors_paginationWithFromGreaterTo(int from, int to) {
-        assertThatThrownBy(() -> controller.getAllAuthors("", from, to))
+    void getAllAuthors_paginationWithFromGreaterTo(int pageNumber, int pageSize) {
+        assertThatThrownBy(() -> controller.getAllAuthors(pageNumber, pageSize, SortField.COUNTRY,SortOrder.ASC, Optional.empty()))
             .isInstanceOf(ResponseStatusException.class)
-            .hasMessage("400 BAD_REQUEST \"parameter from must be greater than to\"");
+            .hasMessage("400 BAD_REQUEST \"parameter pageNumber must be greater than pageSize\"");
         verifyNoMoreInteractions(authorService);
     }
 
@@ -92,10 +95,10 @@ class AuthorControllerTest {
         Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
 
         // when
-        Mockito.when(authorService.getAll("", 0, 5)).thenReturn(List.of(author));
+        Mockito.when(authorService.getAll(0, 5, SortField.ID, SortOrder.ASC, Optional.empty())).thenReturn(List.of(author));
 
         // act + assert
-        assertThat(controller.getAllAuthors("", 0, 5))
+        assertThat(controller.getAllAuthors(0, 5, SortField.NAME, SortOrder.DESC, Optional.empty()))
             .isNotEmpty()
             .hasSize(1)
             .satisfies(createdAuthor -> {
@@ -106,7 +109,7 @@ class AuthorControllerTest {
             }, atIndex(0));
 
         // verify
-        Mockito.verify(authorService).getAll("", 0, 5);
+        Mockito.verify(authorService).getAll(0, 5, SortField.NAME, SortOrder.ASC, Optional.empty());
         verifyNoMoreInteractions(authorService);
     }
 

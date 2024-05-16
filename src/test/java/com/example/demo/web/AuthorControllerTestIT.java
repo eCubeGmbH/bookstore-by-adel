@@ -46,6 +46,7 @@ class AuthorControllerTestIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
+
     @Test
     void test_addAuthor() {
         // preparation
@@ -69,6 +70,26 @@ class AuthorControllerTestIT {
     }
 
     // Validation Tests
+//    @ParameterizedTest
+//    @CsvSource({
+//        "-1, 0",
+//        "0, -1",
+//        "-1, -2"
+//    })
+//    void getAllAuthors_paginationWithNegativeNumber(int pageNumber, int pageSize) throws Exception {
+//        MvcResult result = mockMvc.perform(get("/api/authors")
+//                .param("pageNumber", String.valueOf(pageNumber))
+//                .param("pageSize", String.valueOf(pageSize))
+//                .param("sortField", SortField.NAME.name())
+//                .param("sortOrder", SortOrder.DESC.name())
+//                .contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(status().isBadRequest())
+//            .andReturn();
+//
+//        String responseMessage = result.getResponse().getContentAsString();
+//        assertThat(responseMessage).contains("must be greater than or equal to 0");
+//        assertThat(responseMessage).contains("must be greater than or equal to 1");
+//    }
     @Test
     void test_validAuthor_success() throws JsonProcessingException {
         // preparation
@@ -200,7 +221,8 @@ class AuthorControllerTestIT {
         ParameterizedTypeReference<List<Author>> responseType = new ParameterizedTypeReference<>() {
         };
 
-        ResponseEntity<List<Author>> responseEntity = restTemplate.exchange(uri.toString() + "?from=0&to=10", HttpMethod.GET, new HttpEntity<>("", headers), responseType);
+        ResponseEntity<List<Author>> responseEntity =
+            restTemplate.exchange(uri.toString() + "?pageNumber=0&pageSize=10", HttpMethod.GET, new HttpEntity<>("", headers), responseType);
 
         //
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
@@ -208,7 +230,6 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody())
                 .isNotEmpty()
-                .hasSize(1)
                 .satisfies(author1 -> {
                     assertThat(author1.id()).isNotEqualTo("ABC123");
                     assertThat(author1.name()).isEqualTo("steve");
@@ -218,6 +239,104 @@ class AuthorControllerTestIT {
                 }, atIndex(0));
         });
     }
+
+    @Test
+    void test_getAllAuthors_invalid_pageNumber() {
+
+        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
+        assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Act
+        ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<>() {
+        };
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+            uri + "?pageNumber=-1&pageSize=10",
+            HttpMethod.GET,
+            new HttpEntity<>("", headers),
+            responseType
+        );
+
+        // Assert
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
+        assertThat(responseEntity.getBody()).contains("Invalid argument");
+        assertThat(responseEntity.getBody()).contains("Parameter pageNumber must be greater or equal 0");
+    }
+
+    @Test
+    void test_getAllAuthors_invalid_pageSize() {
+
+        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
+        assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Act
+        ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<>() {
+        };
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+            uri + "?pageNumber=0&pageSize=0",
+            HttpMethod.GET,
+            new HttpEntity<>("", headers),
+            responseType
+        );
+
+        // Assert
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
+        assertThat(responseEntity.getBody()).contains("Invalid argument");
+        assertThat(responseEntity.getBody()).contains("Parameter pageSize must be greater or equal 1");
+    }
+
+    @Test
+    void test_getAllAuthors_invalid_pageSize_2() {
+
+        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
+        assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Act
+        ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<>() {
+        };
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+            uri + "?pageNumber=0&pageSize=2000",
+            HttpMethod.GET,
+            new HttpEntity<>("", headers),
+            responseType
+        );
+
+        // Assert
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
+        assertThat(responseEntity.getBody()).contains("Invalid argument");
+        assertThat(responseEntity.getBody()).contains("Parameter pageSize must be less than 1000");
+    }
+
+    @Test
+    void test_getAllAuthors_invalid_pageSize_and_pageNumber() {
+
+        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
+        assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Act
+        ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<>() {
+        };
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+            uri + "?pageNumber=-1&pageSize=-2",
+            HttpMethod.GET,
+            new HttpEntity<>("", headers),
+            responseType
+        );
+
+        // Assert
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
+        assertThat(responseEntity.getBody()).contains("Invalid argument");
+        assertThat(responseEntity.getBody()).contains("Parameter pageSize must be greater or equal 1");
+        assertThat(responseEntity.getBody()).contains("Parameter pageNumber must be greater or equal 0");
+    }
+
 
     @Test
     void test_getAuthor() {

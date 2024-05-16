@@ -6,18 +6,14 @@ import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.AuthorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.atIndex;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -27,7 +23,7 @@ class AuthorControllerTest {
     @Mock
     private AuthorService authorService;
     @InjectMocks
-    private IAuthorController controller;
+    private AuthorController controller;
 
     @Test
     void addAuthor() {
@@ -63,32 +59,6 @@ class AuthorControllerTest {
     }
 
     // pagination
-    @ParameterizedTest
-    @CsvSource({
-        "-1, 0",
-        "0, -1",
-        "-1, -2"
-    })
-    void getAllAuthors_paginationWithNegativeNumber(int pageNumber, int pageSize) {
-        assertThatThrownBy(() -> controller.getAllAuthors(pageNumber, pageSize, SortField.NAME, SortOrder.DESC,Optional.empty()))
-            .isInstanceOf(ResponseStatusException.class)
-            .hasMessage("400 BAD_REQUEST \"parameters pageNumber and pageSize must be greater than 0\"");
-        verifyNoMoreInteractions(authorService);
-    }
-
-    // pagination
-    @ParameterizedTest
-    @CsvSource({
-        "10, 0",
-        "5, 4"
-    })
-    void getAllAuthors_paginationWithFromGreaterTo(int pageNumber, int pageSize) {
-        assertThatThrownBy(() -> controller.getAllAuthors(pageNumber, pageSize, SortField.COUNTRY,SortOrder.ASC, Optional.empty()))
-            .isInstanceOf(ResponseStatusException.class)
-            .hasMessage("400 BAD_REQUEST \"parameter pageNumber must be greater than pageSize\"");
-        verifyNoMoreInteractions(authorService);
-    }
-
     @Test
     void getAllAuthors_emptyAuthorName() {
         // prep
@@ -98,7 +68,7 @@ class AuthorControllerTest {
         Mockito.when(authorService.getAll(0, 5, SortField.ID, SortOrder.ASC, Optional.empty())).thenReturn(List.of(author));
 
         // act + assert
-        assertThat(controller.getAllAuthors(0, 5, SortField.NAME, SortOrder.DESC, Optional.empty()))
+        assertThat(controller.getAllAuthors(0, 5, SortField.ID, SortOrder.ASC, Optional.empty()))
             .isNotEmpty()
             .hasSize(1)
             .satisfies(createdAuthor -> {
@@ -109,7 +79,7 @@ class AuthorControllerTest {
             }, atIndex(0));
 
         // verify
-        Mockito.verify(authorService).getAll(0, 5, SortField.NAME, SortOrder.ASC, Optional.empty());
+        Mockito.verify(authorService).getAll(0, 5, SortField.ID, SortOrder.ASC, Optional.empty());
         verifyNoMoreInteractions(authorService);
     }
 

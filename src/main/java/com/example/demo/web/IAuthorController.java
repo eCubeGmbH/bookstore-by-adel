@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +55,10 @@ public interface IAuthorController {
     @Operation()
     @GetMapping(produces = {"application/json"})
     List<Author> getAllAuthors(
+        @Min(value = 0, message = "Parameter pageNumber must be greater or equal 0")
         @RequestParam(value = "pageNumber") int pageNumber,
+        @Min(value = 1, message = "Parameter pageSize must be greater or equal 1")
+        @Max(value = 1000, message = "Parameter pageSize must be less than 1000")
         @RequestParam(value = "pageSize") int pageSize,
         @RequestParam(value = "sortField", defaultValue = "name") SortField sortField,
         @RequestParam(value = "sortOrder", defaultValue = "asc") SortOrder sortOrder,

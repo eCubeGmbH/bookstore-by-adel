@@ -37,7 +37,7 @@ public class AuthorService {
 
     public List<Author> getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
         // Sorting
-        Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.name()), sortField.name());
+        Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.name()), sortField.getFieldName());
 
         // Pagination + Sorting
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);

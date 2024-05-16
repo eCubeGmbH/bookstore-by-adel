@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,7 +60,6 @@ class AuthorServiceTest {
             .hasSize(4)
             .containsExactly(authorEntity1, AuthorEntity2, AuthorEntity3, AuthorEntity4);
 
-        //    requiredAuthors.add(AuthorEntity8);
     }
 
     @Test
@@ -86,7 +86,6 @@ class AuthorServiceTest {
         assertThat(requiredAuthors)
             .hasSize(5);
 
-        //  requiredAuthors.add(AuthorEntity8);
     }
 
     @Test
@@ -113,7 +112,7 @@ class AuthorServiceTest {
         /*
          * Page 0
          */
-        PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name", "id").ascending());
+        PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name").ascending());
         PageImpl page1 = new PageImpl(
             List.of(
                 authorEntity1,
@@ -127,13 +126,13 @@ class AuthorServiceTest {
             .thenReturn(page1);
 
         // act
-        assertThat(authorService.getAll(0, 3, SortField.ID, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(0, 3, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("John", "Müller", "müller");
 
         /*
          * Page 1
          */
-        PageRequest pageRequest2 = PageRequest.of(1, 3).withSort(Sort.by("name", "id").ascending());
+        PageRequest pageRequest2 = PageRequest.of(1, 3).withSort(Sort.by("name").ascending());
         PageImpl page2 = new PageImpl(
             List.of(
                 AuthorEntity4,
@@ -147,13 +146,13 @@ class AuthorServiceTest {
             .thenReturn(page2);
 
         // act
-        assertThat(authorService.getAll(3, 6, SortField.COUNTRY, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(1, 3, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("Meier", "Rein", "Weg");
 
         /*
          * Page 2
          */
-        PageRequest pageRequest3 = PageRequest.of(3, 2).withSort(Sort.by("name", "id").ascending());
+        PageRequest pageRequest3 = PageRequest.of(3, 2).withSort(Sort.by("name").ascending());
         PageImpl page3 = new PageImpl(
             List.of(
                 AuthorEntity7,
@@ -166,7 +165,7 @@ class AuthorServiceTest {
             .thenReturn(page3);
 
         // act
-        assertThat(authorService.getAll(6, 8, SortField.NAME, SortOrder.DESC, Optional.empty()))
+        assertThat(authorService.getAll(3, 2, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("Frank", "FNG");
 
 
@@ -176,41 +175,34 @@ class AuthorServiceTest {
     @Test
     void paginationTestWithFiltering() {
 
-        Sort sortOrder = Sort.by("name").ascending()
-            .and(Sort.by("id").ascending());
-
         when(authorRepository.findByName(eq("John"), any(Pageable.class)))
-            .thenReturn(List.of(authorEntity1))
-            .thenReturn(List.of());
+            .thenReturn(List.of(authorEntity1));
 
         // act
-        assertThat(authorService.getAll(0, 2, SortField.NAME, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(0, 2, SortField.NAME, SortOrder.ASC, Optional.of("John")))
             .extracting(Author::name).contains("John");
-        // act
-        assertThat(authorService.getAll(9, 11, SortField.ID, SortOrder.DESC, Optional.empty()))
-            .isEmpty();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"John", "john", "JOHn", "  John ", "\njohn\t"})
     void paginationTestWithFiltering2(String authorName) {
-        when(authorRepository.findByName("John", PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending())))
+        PageRequest pageRequest = PageRequest.of(0, 11).withSort(Sort.by("id").ascending());
+        when(authorRepository.findByName(authorName.trim(), pageRequest))
             .thenReturn(List.of(authorEntity1));
 
         // act
-        assertThat(authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.of(authorName)))
             .extracting(Author::name).contains("John");
-        // act
-        assertThat(authorService.getAll(9, 11, SortField.COUNTRY, SortOrder.DESC, Optional.empty()))
-            .isEmpty();
 
+        verify(authorRepository).findByName(authorName.trim(), pageRequest);
+        verifyNoMoreInteractions(authorRepository);
     }
 
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", " ", "   ", "\t", " \n "})
     void test_empty(String authorName) {
-        PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name", "id").ascending());
+        PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name").ascending());
         PageImpl page1 = new PageImpl(
             List.of(
                 authorEntity1,
@@ -229,38 +221,38 @@ class AuthorServiceTest {
 
     @Test
     void allAuthors_nameNotFound() {
-        when(authorRepository.findByName("steve", PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending())))
+        when(authorRepository.findByName("steve", PageRequest.of(0, 11).withSort(Sort.by("id").ascending())))
             .thenReturn(List.of());
 
         // act + assert
-        assertThat(authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.of("steve")))
             .isEmpty();
         //
-        verify(authorRepository).findByName("steve", PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending()));
+        verify(authorRepository).findByName("steve", PageRequest.of(0, 11).withSort(Sort.by("id").ascending()));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Meier", "meier", "mEier", "  Meier ", "\nMeier\t"})
     void allAuthors_authorFound(String authorName) {
-        when(authorRepository.findByName(authorName.trim(), PageRequest.of(0, 11).withSort(Sort.by("name", "id").ascending())))
+        when(authorRepository.findByName(authorName.trim(), PageRequest.of(0, 11).withSort(Sort.by("name").ascending())))
             .thenReturn(List.of(AuthorEntity4));
 
         // act + assert
-        assertThat(authorService.getAll(0, 11, SortField.COUNTRY, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(0, 11, SortField.NAME, SortOrder.ASC, Optional.of(authorName)))
             .hasSize(1)
             .extracting(Author::name).containsExactly("Meier");
-        assertThat(authorService.getAll(6, 9, SortField.NAME, SortOrder.ASC, Optional.empty()))
+        assertThat(authorService.getAll(6, 9, SortField.NAME, SortOrder.ASC, Optional.of(authorName)))
             .isEmpty();
     }
 
     @Test
     void allAuthors_authorFoundTwice() {
 
-        when(authorRepository.findByName("MülLer", PageRequest.of(0, 11, Sort.by("name", "id").ascending())))
+        when(authorRepository.findByName("Müller", PageRequest.of(0, 11, Sort.by("name").ascending())))
             .thenReturn(List.of(AuthorEntity2, AuthorEntity3));
 
         // act + assert
-        assertThat(authorService.getAll(0, 11, SortField.NAME, SortOrder.DESC, Optional.empty()))
+        assertThat(authorService.getAll(0, 11, SortField.NAME, SortOrder.ASC, Optional.of("Müller")))
             .hasSize(2)
             .extracting(Author::name).containsExactlyInAnyOrder("Müller", "müller");
     }

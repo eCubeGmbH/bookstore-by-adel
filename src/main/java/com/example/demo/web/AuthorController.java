@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+@Validated
 @RestController
 @RequestMapping(value = {"/api/authors"})
 class AuthorController implements IAuthorController {
@@ -37,18 +39,17 @@ class AuthorController implements IAuthorController {
         return authorService.addAuthor(author);
     }
 
+    @Valid
     @Override
     @GetMapping(produces = {"application/json"})
     public List<Author> getAllAuthors(
-        @Min(0)
         @RequestParam(value = "pageNumber") int pageNumber,
-        @Min(0)
-        @Max(1000)
         @RequestParam(value = "pageSize") int pageSize,
         @RequestParam(value = "sortField", defaultValue = "NAME") SortField sortField,
         @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
         @RequestParam(value = "maybeAuthorName", required = false) Optional<String> maybeAuthorName
     ) {
+
         return authorService.getAll(pageNumber, pageSize, sortField, sortOrder, maybeAuthorName);
     }
 

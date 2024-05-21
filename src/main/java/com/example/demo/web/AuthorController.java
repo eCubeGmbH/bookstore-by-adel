@@ -5,8 +5,6 @@ import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.AuthorService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +37,6 @@ class AuthorController implements IAuthorController {
         return authorService.addAuthor(author);
     }
 
-    @Valid
     @Override
     @GetMapping(produces = {"application/json"})
     public List<Author> getAllAuthors(
@@ -49,13 +46,11 @@ class AuthorController implements IAuthorController {
         @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
         @RequestParam(value = "maybeAuthorName", required = false) Optional<String> maybeAuthorName
     ) {
-
         return authorService.getAll(pageNumber, pageSize, sortField, sortOrder, maybeAuthorName);
     }
 
     @Override
     @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
-
     public Author getAuthor(@PathVariable String authorId) {
         return authorService.getAuthor(authorId);
     }

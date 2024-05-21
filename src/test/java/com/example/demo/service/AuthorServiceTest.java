@@ -20,12 +20,9 @@ import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -52,68 +49,13 @@ class AuthorServiceTest {
     List<AuthorEntity> authors = List.of(authorEntity1, AuthorEntity2, AuthorEntity3, AuthorEntity4, AuthorEntity5);
 
     @Test
-    void testStreamFilter() {
-        List<AuthorEntity> requiredAuthors = authors.stream()
-            .filter(author -> author.getCountry().equals("USA"))
-            .toList();
-        assertThat(requiredAuthors)
-            .hasSize(4)
-            .containsExactly(authorEntity1, AuthorEntity2, AuthorEntity3, AuthorEntity4);
-
-    }
-
-    @Test
-    void testStreamMapping() {
-        List<String> requiredAuthors = authors.stream()
-            .map(AuthorEntity::getId)
-            .toList();
-        assertEquals(5, requiredAuthors.size());
-    }
-
-    @Test
-    void testStreamForEach() {
-        List<AuthorEntity> requiredAuthors = new ArrayList<>(authors);
-        assertThat(requiredAuthors)
-            .hasSize(5);
-    }
-
-    @Test
-    void testForEach() {
-        List<AuthorEntity> requiredAuthors = new ArrayList<>();
-        for (AuthorEntity author : authors) {
-            requiredAuthors.add(author);
-        }
-        assertThat(requiredAuthors)
-            .hasSize(5);
-
-    }
-
-    @Test
-    void testStreamListToMap() {
-        Map<String, AuthorEntity> authorEntityMap = authors.stream()
-            .collect(Collectors.toMap(AuthorEntity::getId, author -> author));
-        assertThat(authorEntityMap)
-            .isNotEmpty();
-
-    }
-
-    @Test
-    void testStreamListToMap2() {
-        Map<String, List<AuthorEntity>> authorEntityMap = authors.stream()
-            .collect(Collectors.groupingBy(AuthorEntity::getName));
-        assertThat(authorEntityMap)
-            .isNotEmpty()
-            .hasSize(5);
-    }
-
-    @Test
     void paginationTest1() {
 
         /*
          * Page 0
          */
         PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name").ascending());
-        PageImpl page1 = new PageImpl(
+        PageImpl<AuthorEntity> page1 = new PageImpl<>(
             List.of(
                 authorEntity1,
                 AuthorEntity2,
@@ -133,7 +75,7 @@ class AuthorServiceTest {
          * Page 1
          */
         PageRequest pageRequest2 = PageRequest.of(1, 3).withSort(Sort.by("name").ascending());
-        PageImpl page2 = new PageImpl(
+        PageImpl<AuthorEntity> page2 = new PageImpl<>(
             List.of(
                 AuthorEntity4,
                 AuthorEntity5,
@@ -153,7 +95,7 @@ class AuthorServiceTest {
          * Page 2
          */
         PageRequest pageRequest3 = PageRequest.of(3, 2).withSort(Sort.by("name").ascending());
-        PageImpl page3 = new PageImpl(
+        PageImpl<AuthorEntity> page3 = new PageImpl<>(
             List.of(
                 AuthorEntity7,
                 AuthorEntity8
@@ -167,8 +109,6 @@ class AuthorServiceTest {
         // act
         assertThat(authorService.getAll(3, 2, SortField.NAME, SortOrder.ASC, Optional.empty()))
             .extracting(Author::name).contains("Frank", "FNG");
-
-
     }
 
 
@@ -203,7 +143,7 @@ class AuthorServiceTest {
     @ValueSource(strings = {"", " ", "   ", "\t", " \n "})
     void test_empty(String authorName) {
         PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name").ascending());
-        PageImpl page1 = new PageImpl(
+        PageImpl<AuthorEntity> page1 = new PageImpl<>(
             List.of(
                 authorEntity1,
                 AuthorEntity2,

@@ -46,7 +46,6 @@ class AuthorControllerTestIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     @Test
     void test_addAuthor() {
         // preparation
@@ -69,27 +68,6 @@ class AuthorControllerTestIT {
         });
     }
 
-    // Validation Tests
-//    @ParameterizedTest
-//    @CsvSource({
-//        "-1, 0",
-//        "0, -1",
-//        "-1, -2"
-//    })
-//    void getAllAuthors_paginationWithNegativeNumber(int pageNumber, int pageSize) throws Exception {
-//        MvcResult result = mockMvc.perform(get("/api/authors")
-//                .param("pageNumber", String.valueOf(pageNumber))
-//                .param("pageSize", String.valueOf(pageSize))
-//                .param("sortField", SortField.NAME.name())
-//                .param("sortOrder", SortOrder.DESC.name())
-//                .contentType(MediaType.APPLICATION_JSON))
-//            .andExpect(status().isBadRequest())
-//            .andReturn();
-//
-//        String responseMessage = result.getResponse().getContentAsString();
-//        assertThat(responseMessage).contains("must be greater than or equal to 0");
-//        assertThat(responseMessage).contains("must be greater than or equal to 1");
-//    }
     @Test
     void test_validAuthor_success() throws JsonProcessingException {
         // preparation

@@ -1,6 +1,7 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.AuthorsEnvelopDto;
 import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.List;
 import java.util.Optional;
 
 public interface IAuthorController {
@@ -76,7 +76,7 @@ public interface IAuthorController {
             description = "result can  contains maximum 1000 elements")
     })
     @GetMapping(produces = {"application/json"})
-    List<Author> getAllAuthors(
+    public AuthorsEnvelopDto getAllAuthors(
         @Min(value = 0, message = "Parameter pageNumber must be greater or equal 0")
         @RequestParam(value = "pageNumber") int pageNumber,
         @Min(value = 1, message = "Parameter pageSize must be greater or equal 1")

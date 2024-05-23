@@ -1,6 +1,9 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.AuthorsEnvelopDto;
+import com.example.demo.model.enums.SortField;
+import com.example.demo.model.enums.SortOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,9 +112,7 @@ class AuthorControllerTestIT {
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> {
-                assertThat(errorMessage.get("name")).isEqualTo("'name' can not be empty");
-            });
+            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> assertThat(errorMessage.get("name")).isEqualTo("'name' can not be empty"));
         });
     }
 
@@ -132,9 +133,7 @@ class AuthorControllerTestIT {
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> {
-                assertThat(errorMessage.get("country")).isEqualTo("'country' can not be empty");
-            });
+            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> assertThat(errorMessage.get("country")).isEqualTo("'country' can not be empty"));
         });
     }
 
@@ -155,9 +154,7 @@ class AuthorControllerTestIT {
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> {
-                assertThat(errorMessage.get("birthDate")).isEqualTo("'birthDate' can not be empty");
-            });
+            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> assertThat(errorMessage.get("birthDate")).isEqualTo("'birthDate' can not be empty"));
         });
     }
 
@@ -196,25 +193,28 @@ class AuthorControllerTestIT {
             .satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
 
         // act
-        ParameterizedTypeReference<List<Author>> responseType = new ParameterizedTypeReference<>() {
-        };
-
-        ResponseEntity<List<Author>> responseEntity =
-            restTemplate.exchange(uri.toString() + "?pageNumber=0&pageSize=10", HttpMethod.GET, new HttpEntity<>("", headers), responseType);
+        ResponseEntity<AuthorsEnvelopDto> responseEntity =
+            restTemplate.exchange(uri.toString() + "?pageNumber=0&pageSize=10", HttpMethod.GET, new HttpEntity<>("", headers), AuthorsEnvelopDto.class);
 
         //
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody())
-                .isNotEmpty()
-                .satisfies(author1 -> {
-                    assertThat(author1.id()).isNotEqualTo("ABC123");
-                    assertThat(author1.name()).isEqualTo("steve");
-                    assertThat(author1.country()).isEqualTo("france");
-                    assertThat(author1.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
-
-                }, atIndex(0));
+                .isNotNull()
+                .satisfies(authorsEnvelopDto -> {
+                    assertThat(authorsEnvelopDto.pageNumber()).isEqualTo(0);
+                    assertThat(authorsEnvelopDto.pageSize()).isEqualTo(10);
+                    assertThat(authorsEnvelopDto.authorsCount()).isEqualTo(1L);
+                    assertThat(authorsEnvelopDto.sortOrder()).isEqualTo(SortOrder.ASC);
+                    assertThat(authorsEnvelopDto.sortField()).isEqualTo(SortField.NAME);
+                    assertThat(authorsEnvelopDto.authors()).satisfies(author1 -> {
+                        assertThat(author1.id()).isNotEqualTo("ABC123");
+                        assertThat(author1.name()).isEqualTo("steve");
+                        assertThat(author1.country()).isEqualTo("france");
+                        assertThat(author1.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
+                    }, atIndex(0));
+                });
         });
     }
 

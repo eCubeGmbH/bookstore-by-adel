@@ -7,11 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Getter
 @Entity
 @Table(name = "author")
 public class AuthorEntity {
@@ -32,55 +35,23 @@ public class AuthorEntity {
     @Column(name = "id")
     private String id;
 
+    @Setter
     @Column(name = "name")
     private String name;
 
+    @Setter
     @Column(name = "country")
     private String country;
 
+    @Setter
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
 
+    @Setter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "authorId")
     @OrderBy("id")
     private List<BookEntity> BooksList;
 
-
-    public List<BookEntity> getBooksList() {
-        return BooksList;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public void setBooksList(List<BookEntity> booksList) {
-        BooksList = booksList;
-    }
 
 }

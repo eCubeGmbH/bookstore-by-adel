@@ -57,31 +57,6 @@ class AuthorRepositoryTest {
             }, Index.atIndex(0));
     }
 
-    @Test
-    void test_findByNameIgnoreCase() {
-
-        String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
-        authorRepository.save(author);
-
-        assertThat(authorRepository.findByNameIgnoreCase("NaMe"))
-            .isNotEmpty()
-            .hasSize(1);
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
-    void test_findByNameIgnoreCase2(String name) {
-        String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1977, 1, 22), new ArrayList<>());
-        authorRepository.save(author);
-
-        assertThat(authorRepository.findByNameIgnoreCase(name))
-            .isNotEmpty()
-            .hasSize(1);
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByName(String name) {
@@ -90,47 +65,17 @@ class AuthorRepositoryTest {
         AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         authorRepository.save(author);
 
-        assertThat(authorRepository.findByName(name))
+        // page 1
+        PageRequest pageRequest = PageRequest.of(0, 2)
+            .withSort(Sort.by("name").ascending()
+                .and(Sort.by("id").ascending())
+            );
+
+        assertThat(authorRepository.findByName(name, pageRequest))
             .isNotEmpty()
             .hasSize(1);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
-    void test_findByNameNative(String name) {
-
-        String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
-        authorRepository.save(author);
-
-        assertThat(authorRepository.findByNameNative(name))
-            .isNotEmpty()
-            .hasSize(1);
-    }
-
-    @Test
-    void test_findByNameSorting() {
-        String uuid = "0000";
-        String uuid1 = "2222";
-        String uuid2 = "1111";
-        String uuid3 = "4444";
-        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11), new ArrayList<>());
-        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11), new ArrayList<>());
-        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
-        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
-        authorRepository.save(author);
-        authorRepository.save(author1);
-        authorRepository.save(author2);
-        authorRepository.save(author3);
-
-        Sort sortOrder = Sort.by("name").ascending().and(Sort.by("id").ascending());
-
-        assertThat(authorRepository.findByName("adel", sortOrder))
-            .isNotEmpty()
-            .hasSize(3)
-            .extracting(AuthorEntity::getId).containsExactly(uuid, uuid2, uuid1)
-        ;
-    }
 
     @Test
     void test_findByNamePageable() {

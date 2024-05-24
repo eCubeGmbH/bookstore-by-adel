@@ -8,16 +8,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest
-public class AuthorRepoTest {
+@Transactional
+public class AuthorRepoTestIT {
 
     @Autowired
     private TestAuthorRepository testAuthorRepository;
@@ -145,8 +148,8 @@ public class AuthorRepoTest {
         testAuthorRepository.save(author3);
 
         Sort sortOrder = Sort.by("name").ascending().and(Sort.by("id").ascending());
-
-        Assertions.assertThat(testAuthorRepository.findByName("adel", (Pageable) sortOrder))
+        PageRequest pageRequest = PageRequest.of(0, 4, sortOrder);
+        Assertions.assertThat(testAuthorRepository.findByName("adel", pageRequest))
             .isNotEmpty()
             .hasSize(3)
             .extracting(AuthorEntity::getId).containsExactly(uuid, uuid2, uuid1)

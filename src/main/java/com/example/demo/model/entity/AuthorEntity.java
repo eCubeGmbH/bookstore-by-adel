@@ -7,51 +7,37 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-
-@Getter
 @Entity
 @Table(name = "author")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class AuthorEntity {
-
-    public AuthorEntity() {
-
-    }
-
-    public AuthorEntity(String id, String name, String country, LocalDate birthDate, ArrayList<BookEntity> booksList) {
-        this.id = id;
-        this.name = name;
-        this.country = country;
-        this.birthDate = birthDate;
-        this.BooksList = booksList;
-    }
 
     @Id
     @Column(name = "id")
     private String id;
 
-    @Setter
     @Column(name = "name")
     private String name;
 
-    @Setter
     @Column(name = "country")
     private String country;
 
-    @Setter
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-
-    @Setter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "authorId")
     @OrderBy("id")
     private List<BookEntity> BooksList;
-
-
 }

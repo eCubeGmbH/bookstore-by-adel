@@ -7,26 +7,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Table(name = "author")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class AuthorEntity {
-
-    public AuthorEntity() {
-
-    }
-
-    public AuthorEntity(String id, String name, String country, LocalDate birthDate, ArrayList<BookEntity> booksList) {
-        this.id = id;
-        this.name = name;
-        this.country = country;
-        this.birthDate = birthDate;
-        this.BooksList = booksList;
-    }
 
     @Id
     @Column(name = "id")
@@ -41,46 +37,7 @@ public class AuthorEntity {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "authorId")
     @OrderBy("id")
     private List<BookEntity> BooksList;
-
-
-    public List<BookEntity> getBooksList() {
-        return BooksList;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public void setBooksList(List<BookEntity> booksList) {
-        BooksList = booksList;
-    }
-
 }

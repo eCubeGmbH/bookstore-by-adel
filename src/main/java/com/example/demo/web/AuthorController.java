@@ -1,6 +1,7 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.AuthorsEnvelopDto;
 import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.AuthorService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 import java.util.Optional;
 
 @Validated
@@ -37,9 +37,8 @@ class AuthorController implements IAuthorController {
         return authorService.addAuthor(author);
     }
 
-    @Override
     @GetMapping(produces = {"application/json"})
-    public List<Author> getAllAuthors(
+    public AuthorsEnvelopDto getAllAuthors(
         @RequestParam(value = "pageNumber") int pageNumber,
         @RequestParam(value = "pageSize") int pageSize,
         @RequestParam(value = "sortField", defaultValue = "NAME") SortField sortField,

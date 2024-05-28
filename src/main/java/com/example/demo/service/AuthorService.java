@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Author;
+import com.example.demo.model.AuthorsEnvelopDto;
 import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -35,20 +37,30 @@ public class AuthorService {
     }
 
 
-    public List<Author> getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
+    public AuthorsEnvelopDto getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
         // Sorting
         Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.name()), sortField.getFieldName());
 
         // Pagination + Sorting
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
-        List<AuthorEntity> authorEntities = maybeAuthorName.isPresent()
-            ? authorRepository.findByName(maybeAuthorName.get().trim(), pageRequest)
-            : authorRepository.findAll(pageRequest).getContent();
+        Page<AuthorEntity> authorsCount = maybeAuthorName
+            .map(name -> authorRepository.findByName(name.trim(), pageRequest))
+            .orElseGet(() -> authorRepository.findAll(pageRequest));
 
-        return authorEntities.stream()
-            .map(authorEntity -> toAuthor(authorEntity))
+        List<Author> authors = authorsCount.getContent().stream()
+            .map(this::toAuthor)
             .toList();
+
+        return new AuthorsEnvelopDto(
+            pageNumber,
+            pageSize,
+            authorsCount.getTotalElements(),
+            sortField,
+            sortOrder,
+            maybeAuthorName.orElse(null),
+            authors
+        );
     }
 
     public Author getAuthor(String authorId) {

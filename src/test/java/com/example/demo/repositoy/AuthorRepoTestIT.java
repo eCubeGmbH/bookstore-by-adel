@@ -44,7 +44,7 @@ public class AuthorRepoTestIT {
         testAuthorRepository.save(author);
 
         // When
-        List<AuthorEntity> authors = testAuthorRepository.findByName("steve");
+        List<AuthorEntity> authors = testAuthorRepository.findByName("Steve", Sort.by(Sort.Order.asc("name")));
 
         // Then
         assertThat(authors).hasSize(1);

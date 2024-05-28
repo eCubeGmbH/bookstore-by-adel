@@ -5,6 +5,7 @@ import com.example.demo.model.AuthorsEnvelopDto;
 import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,10 @@ class AuthorControllerTestIT {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+    }
 
+    @AfterEach
+    void tearDown() {
         authorRepository.deleteAll();
     }
 

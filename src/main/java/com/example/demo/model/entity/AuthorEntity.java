@@ -3,7 +3,6 @@ package com.example.demo.model.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -21,12 +20,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class AuthorEntity {
-
-    @Id
-    @Column(name = "id")
-    private String id;
+@EqualsAndHashCode(callSuper = false)
+public class AuthorEntity extends BasicEntity {
 
     @Column(name = "name")
     private String name;
@@ -40,4 +35,5 @@ public class AuthorEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "authorId")
     @OrderBy("id")
     private List<BookEntity> BooksList;
+
 }

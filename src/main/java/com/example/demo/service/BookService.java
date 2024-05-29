@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class BookService {
@@ -24,16 +23,10 @@ public class BookService {
     final static String errorMessage = "The book you requested doesn't exist. Please review your parameters!";
 
     public Book addBook(Book book) {
-        Long bookId = generateRandomLong();
-        BookEntity bookEntity = new BookEntity(bookId, book.authorId(), book.name(), book.publishDate());
+        BookEntity bookEntity = new BookEntity(book.authorId(), book.name(), book.publishDate());
         BookEntity savedBookEntity = bookRepository.save(bookEntity);
         return toBook(savedBookEntity);
 
-    }
-
-    private Long generateRandomLong() {
-        Random random = new Random();
-        return Math.abs(random.nextLong());
     }
 
     public List<Book> getAll(String bookName, int from, int to) {

@@ -29,7 +29,6 @@ public class AuthorService {
     final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     public Author addAuthor(Author author) {
-//        String authorId = UUID.randomUUID().toString();
         AuthorEntity authorEntity = new AuthorEntity(author.name().trim(), author.country(), author.birthDate(), new ArrayList<>());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);

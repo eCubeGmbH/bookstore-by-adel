@@ -26,7 +26,7 @@ export default function ModifyAuthor({author, onClickCancel, buttonLabel, button
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const authorData: Author = {
-            id: author?.id || '',
+            id: author?.id || 0,
             name: nameRef.current!.value,
             country: countryRef.current!.value,
             birthDate: new Date(birthdateRef.current!.value)

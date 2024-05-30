@@ -1,9 +1,9 @@
 import '../assets/index.css'
-import { MdDelete, MdEdit } from "react-icons/md";
-import { Link, useLoaderData } from "react-router-dom";
+import {MdDelete, MdEdit} from "react-icons/md";
+import {Link, useLoaderData} from "react-router-dom";
 
 export interface Author {
-    id: string;
+    id: number;
     name: string;
     country: string;
     birthDate: Date;
@@ -19,6 +19,16 @@ interface Props {
     handleDeleteAuthor: (author: Author) => void;
 }
 
+export interface AuthorsEnvelopDto {
+    pageNumber: number;
+    pageSize: number;
+    authorsCount: number;
+    sortField: string;
+    sortOrder: string;
+    authorName: string;
+    authors: Author[];
+}
+
 export default function AuthorsTable({
 
                                          previousLink,
@@ -28,7 +38,7 @@ export default function AuthorsTable({
                                          handleEditAuthor,
                                          handleDeleteAuthor
                                      }: Props) {
-    const loaderAuthors = useLoaderData() as Author[];
+    const loaderAuthors = useLoaderData() as AuthorsEnvelopDto;
 
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
@@ -50,9 +60,9 @@ export default function AuthorsTable({
                 </tr>
                 </thead>
                 <tbody>
-                {loaderAuthors.map((author, index) => (
-                    <tr key={author.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                        <td>{author.id}</td>
+                {loaderAuthors.authors.map((author, index) => (
+                    <tr key={author.id.toString()} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                        <td>{author.id.toString()}</td>
                         <td>{author.name}</td>
                         <td>{author.country}</td>
                         <td>{formatDate(author.birthDate)}</td>

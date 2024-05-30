@@ -1,28 +1,25 @@
 import '../assets/index.css'
 import 'react-toastify/dist/ReactToastify.css';
-import { useState } from "react";
-import { LoaderFunction, useLoaderData, useSearchParams } from "react-router-dom";
-import AuthorsTable, { Author } from '../components/AuthorsTable.tsx';
+import {useState} from "react";
+import {LoaderFunction, useLoaderData, useSearchParams} from "react-router-dom";
+import AuthorsTable, {Author, AuthorsEnvelopDto} from '../components/AuthorsTable.tsx';
 import ModifyAuthor from '../components/ModifyAuthor.tsx';
-import { errorNotify, successNotify } from "../components/Notifications.ts";
+import {errorNotify, successNotify} from "../components/Notifications.ts";
 
 const loader: LoaderFunction = async function getData({request}) {
     const url = new URL(request.url);
     const pageNumber = +(url.searchParams.get("pageNumber") || 0);
     const pageSize = +(url.searchParams.get("pageSize") || 10);
-    const from = pageNumber * pageSize;
-    const to = (pageNumber + 1) * pageSize;
-
-    const response = await fetch(`/api/authors?from=${from}&to=${to}`);
+    const response = await fetch(`/api/authors?pageNumber=${pageNumber}&pageSize=${pageSize}`);
     return response.json();
 }
 
 const AuthorsListPage = () => {
-    const authorData = useLoaderData() as Author[];
+    const authorData = useLoaderData() as AuthorsEnvelopDto;
     const [search] = useSearchParams();
     const pageSize = +(search.get(`pageSize`) || 10);
     const pageNumber = +(search.get(`pageNumber`) || 0);
-    const hasNext = authorData.length === pageSize;
+    const hasNext = authorData.authors.length === pageSize;
 
     // Constants and state declarations
     const [isVisible, setIsVisible] = useState(false);
@@ -117,7 +114,7 @@ const AuthorsListPage = () => {
             {isVisible && ((
                 <ModifyAuthor author={currentAuthor} onClickCancel={handleUnVisible} title={title}
                               buttonLabel={title} buttonHandler={buttonHandler}/>))}
-            <AuthorsTable authors={authorData} nextLink={nextLink} previousLink={previousLink}
+            <AuthorsTable authors={authorData.authors} nextLink={nextLink} previousLink={previousLink}
                           hasPrevious={pageNumber !== 0} hasNext={hasNext} handleEditAuthor={handleEdit}
                           handleDeleteAuthor={handleDelete}
             />

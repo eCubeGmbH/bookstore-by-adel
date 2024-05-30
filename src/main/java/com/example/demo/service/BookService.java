@@ -26,6 +26,8 @@ public class BookService {
     }
 
     final static String errorMessage = "The book you requested doesn't exist. Please review your parameters!";
+    final static String authorErrorMessage = "The author you requested doesn't exist. Please review your parameters!";
+
 
     public Book addBook(Book book) {
         Optional<AuthorEntity> authorEntity = authorRepository.findById(book.authorId());
@@ -33,7 +35,7 @@ public class BookService {
             BookEntity bookEntity = new BookEntity(author, book.name(), book.publishDate());
             BookEntity savedBookEntity = bookRepository.save(bookEntity);
             return toBook(savedBookEntity);
-        }).orElseThrow(() -> new InvalidDataException(""));
+        }).orElseThrow(() -> new InvalidDataException(authorErrorMessage));
     }
 
     public List<Book> getAll(String bookName, int from, int to) {

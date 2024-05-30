@@ -2,7 +2,8 @@ package com.example.demo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,18 +14,15 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "book")
-@EqualsAndHashCode //lombok auto-generate
-@Getter//lombok auto-generate
-@Setter//lombok auto-generate
-@NoArgsConstructor//lombok auto-generate
-@AllArgsConstructor//lombok auto-generate
-public class BookEntity {
-    @Id
-    @Column(name = "id")
-    private long id;
-
-    @Column(name = "authorId")
-    private String authorId;
+@Getter //lombok auto-generate
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class BookEntity extends BasicEntity {
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    private AuthorEntity authorReference;
 
     @Column(name = "name")
     private String name;

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.model.entity.BookEntity;
 import com.example.demo.repository.BookRepository;
 import org.assertj.core.api.Assertions;
@@ -12,10 +13,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -31,15 +34,14 @@ public class BookServiceTest {
     @InjectMocks
     private BookService bookService;
 
-    private final BookEntity bookEntity1 = new BookEntity(1, "1", "Firstbook", LocalDate.of(1997, 1, 2));
-    private final BookEntity BookEntity2 = new BookEntity(2, "2", "Secondbook", LocalDate.of(1997, 1, 2));
-    private final BookEntity BookEntity3 = new BookEntity(3, "3", "Thirdbook", LocalDate.of(1997, 1, 2));
-    private final BookEntity BookEntity4 = new BookEntity(4, "4", "Fourthbook", LocalDate.of(1997, 1, 2));
-    private final BookEntity BookEntity5 = new BookEntity(5, "5", "thirdbook", LocalDate.of(1920, 1, 2));
-    private final BookEntity BookEntity6 = new BookEntity(6, "6", "SWE", LocalDate.of(1911, 11, 9));
-    private final BookEntity BookEntity7 = new BookEntity(7, "7", "SYR", LocalDate.of(1991, 2, 2));
-    private final BookEntity BookEntity8 = new BookEntity(8, "8", "CHI", LocalDate.of(1755, 2, 22));
-    List<BookEntity> books = List.of(bookEntity1, BookEntity2, BookEntity3, BookEntity4, BookEntity5);
+
+    private final AuthorEntity authorEntity = new AuthorEntity("test", "blah", LocalDate.now(), new ArrayList<>());
+
+    private final BookEntity bookEntity1 = new BookEntity(authorEntity, "Firstbook", LocalDate.of(1997, 1, 2));
+    private final BookEntity BookEntity2 = new BookEntity(authorEntity, "Secondbook", LocalDate.of(1997, 1, 2));
+    private final BookEntity BookEntity3 = new BookEntity(authorEntity, "Thirdbook", LocalDate.of(1997, 1, 2));
+    private final BookEntity BookEntity4 = new BookEntity(authorEntity, "Fourthbook", LocalDate.of(1997, 1, 2));
+    private final BookEntity BookEntity5 = new BookEntity(authorEntity, "thirdbook", LocalDate.of(1920, 1, 2));
 
 
     @ParameterizedTest
@@ -62,14 +64,7 @@ public class BookServiceTest {
     @ValueSource(strings = {"", " ", "   ", "\t", " \n "})
     void test_empty(String name) {
         PageRequest pageRequest1 = PageRequest.of(0, 3).withSort(Sort.by("name", "id").ascending());
-        PageImpl page1 = new PageImpl(
-            List.of(
-                bookEntity1,
-                BookEntity2,
-                BookEntity3)
-            , pageRequest1
-            , 3L
-        );
+        Page<BookEntity> page1 = new PageImpl<>(List.of(bookEntity1, BookEntity2, BookEntity3), pageRequest1, 3L);
 
         when(bookRepository.findAll(pageRequest1)).thenReturn(page1);
 

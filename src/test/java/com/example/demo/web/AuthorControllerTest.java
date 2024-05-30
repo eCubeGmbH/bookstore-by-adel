@@ -10,11 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -32,14 +30,14 @@ class AuthorControllerTest {
     @Test
     void addAuthor() {
         // prep
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
 
         // when
         when(authorService.addAuthor(author)).thenReturn(author);
 
         // act + assert
         assertThat(controller.addAuthor(author)).satisfies(createdAuthor -> {
-            assertThat(createdAuthor.id()).isEqualTo("ABC123");
+            assertThat(createdAuthor.id()).isEqualTo(1L);
             assertThat(createdAuthor.name()).isEqualTo("steve");
             assertThat(createdAuthor.country()).isEqualTo("france");
             assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
@@ -52,7 +50,7 @@ class AuthorControllerTest {
 
     @Test
     void getAllAuthors_pagination() {
-        Author author = new Author("AXX2213", "FM", "SWE", LocalDate.of(1877, 2, 1));
+        Author author = new Author(2L, "FM", "SWE", LocalDate.of(1877, 2, 1));
         List<Author> authors = List.of(author);
         AuthorsEnvelopDto envelope = new AuthorsEnvelopDto(1, 5, 1, SortField.NAME, SortOrder.ASC, null, authors);
 
@@ -77,7 +75,7 @@ class AuthorControllerTest {
     @Test
     void getAllAuthors_emptyAuthorName() {
         // prep
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(3L, "steve", "france", LocalDate.of(1985, 4, 15));
         List<Author> authors = List.of(author);
         AuthorsEnvelopDto envelope = new AuthorsEnvelopDto(0, 5, 1, SortField.ID, SortOrder.ASC, null, authors);
 
@@ -102,59 +100,59 @@ class AuthorControllerTest {
     @Test
     void getAuthor() {
         // prep
-        Author author = new Author("XD123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(4L, "steve", "france", LocalDate.of(1985, 4, 15));
 
         // when
-        when(authorService.getAuthor("XD123")).thenReturn(author);
+        when(authorService.getAuthor(4L)).thenReturn(author);
 
         // act + assert
-        assertThat(controller.getAuthor("XD123")).satisfies(createdAuthor -> {
-            assertThat(createdAuthor.id()).isEqualTo("XD123");
+        assertThat(controller.getAuthor(4L)).satisfies(createdAuthor -> {
+            assertThat(createdAuthor.id()).isEqualTo(4L);
             assertThat(createdAuthor.name()).isEqualTo("steve");
             assertThat(createdAuthor.country()).isEqualTo("france");
             assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
         });
 
         // verify
-        verify(authorService).getAuthor("XD123");
+        verify(authorService).getAuthor(4L);
         verifyNoMoreInteractions(authorService);
     }
 
     @Test
     void getAuthorNotFound() {
         // when
-        when(authorService.getAuthor("XD123")).thenReturn(null);
+        when(authorService.getAuthor(5L)).thenReturn(null);
 
         // act + assert
-        assertThat(controller.getAuthor("XD123")).isNull();
+        assertThat(controller.getAuthor(5L)).isNull();
 
         // verify
-        verify(authorService).getAuthor("XD123");
+        verify(authorService).getAuthor(5L);
         verifyNoMoreInteractions(authorService);
     }
 
     @Test
     void removeAuthor() {
         // act
-        controller.removeAuthor("FN123");
+        controller.removeAuthor(6L);
 
-        verify(authorService).deleteAuthor("FN123");
+        verify(authorService).deleteAuthor(6L);
     }
 
     @Test
     void updateAuthor() {
-        Author author = new Author("FN123", "lara", "USA", LocalDate.of(1985, 4, 15));
+        Author author = new Author(7L, "lara", "USA", LocalDate.of(1985, 4, 15));
 
-        when(authorService.updateAuthor("FN123", author)).thenReturn(author);
+        when(authorService.updateAuthor(7L, author)).thenReturn(author);
 
-        assertThat(controller.updateAuthor("FN123", author)).satisfies(updatedAuthor -> {
-            assertThat(updatedAuthor.id()).isEqualTo("FN123");
+        assertThat(controller.updateAuthor(7L, author)).satisfies(updatedAuthor -> {
+            assertThat(updatedAuthor.id()).isEqualTo(7L);
             assertThat(updatedAuthor.name()).isEqualTo("lara");
             assertThat(updatedAuthor.country()).isEqualTo("USA");
             assertThat(updatedAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
         });
 
-        verify(authorService).updateAuthor("FN123", author);
+        verify(authorService).updateAuthor(7L, author);
         verifyNoMoreInteractions(authorService);
     }
 }

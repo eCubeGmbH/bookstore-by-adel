@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorRepository extends JpaRepository<AuthorEntity, String> {
+public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
 
     @Query("""
         SELECT author

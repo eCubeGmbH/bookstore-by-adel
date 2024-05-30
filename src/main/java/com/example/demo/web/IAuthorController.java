@@ -51,14 +51,14 @@ public interface IAuthorController {
                 schema = @Schema(type = "integer", minimum = "1", maximum = "1000")),
             @Parameter(name = "sortField",
                 description = "The field by which to sort the authors.",
-                required = false, in = ParameterIn.QUERY,
+                in = ParameterIn.QUERY,
                 schema = @Schema(type = "string", defaultValue = "name", allowableValues = {"NAME", "ID", "COUNTRY", "BIRTH_DATE"})),
             @Parameter(name = "sortOrder",
                 description = "The order in which to sort the authors.",
-                required = false, in = ParameterIn.QUERY,
+                in = ParameterIn.QUERY,
                 schema = @Schema(type = "string", defaultValue = "asc", allowableValues = {"ASC", "DESC"})),
             @Parameter(name = "maybeAuthorName",
-           description = "An optional parameter to filter authors by name")
+                description = "An optional parameter to filter authors by name")
         })
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
@@ -76,7 +76,7 @@ public interface IAuthorController {
             description = "result can  contains maximum 1000 elements")
     })
     @GetMapping(produces = {"application/json"})
-    public AuthorsEnvelopDto getAllAuthors(
+    AuthorsEnvelopDto getAllAuthors(
         @Min(value = 0, message = "Parameter pageNumber must be greater or equal 0")
         @RequestParam(value = "pageNumber") int pageNumber,
         @Min(value = 1, message = "Parameter pageSize must be greater or equal 1")
@@ -84,7 +84,7 @@ public interface IAuthorController {
         @RequestParam(value = "pageSize") int pageSize,
         @RequestParam(value = "sortField", defaultValue = "name") SortField sortField,
         @RequestParam(value = "sortOrder", defaultValue = "asc") SortOrder sortOrder,
-        @RequestParam(value = "authorName", required = false) Optional<String> maybeAuthorName
+        @RequestParam(value = "authorName", required = false)Optional<String> maybeAuthorName
     );
 
     @Operation(summary = "Find Author by it´s Id")
@@ -95,7 +95,7 @@ public interface IAuthorController {
                 schema = @Schema(implementation = Author.class))
         })
     @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
-    Author getAuthor(@PathVariable String authorId);
+    Author getAuthor(@PathVariable long authorId);
 
     @Operation(summary = "Delete Author")
     @ApiResponse(responseCode = "200",
@@ -105,7 +105,7 @@ public interface IAuthorController {
             schema = @Schema(implementation = Author.class))
         })
     @DeleteMapping(value = {"/{authorId}"}, consumes = {"application/json"})
-    void removeAuthor(@PathVariable String authorId);
+    void removeAuthor(@PathVariable long authorId);
 
     @Operation(summary = "Update Author")
     @ApiResponse(responseCode = "200",
@@ -115,5 +115,5 @@ public interface IAuthorController {
             schema = @Schema(implementation = Author.class))
         })
     @PutMapping(value = {"/{authorId}"}, consumes = {"application/json"}, produces = {"application/json"})
-    Author updateAuthor(@PathVariable String authorId, @Valid @RequestBody Author authorFromUser);
+    Author updateAuthor(@PathVariable long authorId, @Valid @RequestBody Author authorFromUser);
 }

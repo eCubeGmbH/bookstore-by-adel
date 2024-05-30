@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthorService {
@@ -30,12 +29,10 @@ public class AuthorService {
     final static String errorMessage = "The author you requested doesn't exist. Please review your parameters!";
 
     public Author addAuthor(Author author) {
-        String authorId = UUID.randomUUID().toString();
-        AuthorEntity authorEntity = new AuthorEntity(authorId, author.name().trim(), author.country(), author.birthDate(), new ArrayList<>());
+        AuthorEntity authorEntity = new AuthorEntity(author.name().trim(), author.country(), author.birthDate(), new ArrayList<>());
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
         return toAuthor(savedAuthorEntity);
     }
-
 
     public AuthorsEnvelopDto getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
         // Sorting
@@ -63,16 +60,16 @@ public class AuthorService {
         );
     }
 
-    public Author getAuthor(String authorId) {
+    public Author getAuthor(long authorId) {
         return toAuthor(findAuthorAndValidate(authorId));
     }
 
-    public void deleteAuthor(String authorId) {
+    public void deleteAuthor(long authorId) {
         AuthorEntity foundAuthor = findAuthorAndValidate(authorId);
         authorRepository.delete(foundAuthor);
     }
 
-    public Author updateAuthor(String authorId, Author authorFromUser) {
+    public Author updateAuthor(long authorId, Author authorFromUser) {
         AuthorEntity foundAuthor = findAuthorAndValidate(authorId);
         foundAuthor.setName(authorFromUser.name());
         foundAuthor.setCountry(authorFromUser.country());
@@ -81,7 +78,7 @@ public class AuthorService {
         return toAuthor(savedAuthorEntity);
     }
 
-    private AuthorEntity findAuthorAndValidate(String authorId) {
+    private AuthorEntity findAuthorAndValidate(long authorId) {
         Optional<AuthorEntity> maybeAuthorEntity = authorRepository.findById(authorId);
         if (maybeAuthorEntity.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);

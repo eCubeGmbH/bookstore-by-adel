@@ -50,21 +50,21 @@ class AuthorController implements IAuthorController {
 
     @Override
     @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
-    public Author getAuthor(@PathVariable String authorId) {
+    public Author getAuthor(@PathVariable long authorId) {
         return authorService.getAuthor(authorId);
     }
 
     @Override
     @DeleteMapping(value = {"/{authorId}"}, consumes = {"application/json"})
 
-    public void removeAuthor(@PathVariable String authorId) {
+    public void removeAuthor(@PathVariable long authorId) {
         authorService.deleteAuthor(authorId);
     }
 
     @Override
     @PutMapping(value = {"/{authorId}"}, consumes = {"application/json"}, produces = {"application/json"})
 
-    public Author updateAuthor(@PathVariable String authorId, @Valid @RequestBody Author authorFromUser) {
+    public Author updateAuthor(@PathVariable long authorId, @Valid @RequestBody Author authorFromUser) {
         return authorService.updateAuthor(authorId, authorFromUser);
     }
 }

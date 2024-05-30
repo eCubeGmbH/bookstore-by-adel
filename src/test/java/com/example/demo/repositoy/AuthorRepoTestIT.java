@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @ActiveProfiles("test")
@@ -27,7 +26,7 @@ public class AuthorRepoTestIT {
 
     @Test
     public void testFindByNameIgnoreCase() {
-        AuthorEntity author = new AuthorEntity("ABC123", "Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
         testAuthorRepository.save(author);
 
         // When
@@ -40,7 +39,7 @@ public class AuthorRepoTestIT {
 
     @Test
     public void testFindByName() {
-        AuthorEntity author = new AuthorEntity("ABC123", "Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
         testAuthorRepository.save(author);
 
         // When
@@ -53,7 +52,7 @@ public class AuthorRepoTestIT {
 
     @Test
     public void testFindByNameNative() {
-        AuthorEntity author = new AuthorEntity("ABC123", "Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
         testAuthorRepository.save(author);
 
         // When
@@ -66,8 +65,8 @@ public class AuthorRepoTestIT {
 
     @Test
     public void testFindByNameWithSort() {
-        AuthorEntity author1 = new AuthorEntity("ABC123", "Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
-        AuthorEntity author2 = new AuthorEntity("DEF456", "Alice", "Germany", LocalDate.of(1990, 8, 25), new ArrayList<>());
+        AuthorEntity author1 = new AuthorEntity("Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
+        AuthorEntity author2 = new AuthorEntity("Alice", "Germany", LocalDate.of(1990, 8, 25), new ArrayList<>());
         testAuthorRepository.save(author1);
         testAuthorRepository.save(author2);
 
@@ -81,8 +80,8 @@ public class AuthorRepoTestIT {
 
     @Test
     public void testFindByNameWithPagination() {
-        AuthorEntity author1 = new AuthorEntity("ABC123", "Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
-        AuthorEntity author2 = new AuthorEntity("DEF456", "Alice", "Germany", LocalDate.of(1990, 8, 25), new ArrayList<>());
+        AuthorEntity author1 = new AuthorEntity("Steve", "France", LocalDate.of(1985, 4, 15), new ArrayList<>());
+        AuthorEntity author2 = new AuthorEntity("Alice", "Germany", LocalDate.of(1990, 8, 25), new ArrayList<>());
         testAuthorRepository.save(author1);
         testAuthorRepository.save(author2);
 
@@ -98,8 +97,7 @@ public class AuthorRepoTestIT {
     @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByNameNative(String name) {
 
-        String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         testAuthorRepository.save(author);
         // Then
         assertThat(testAuthorRepository.findByNameNative(name))
@@ -110,8 +108,7 @@ public class AuthorRepoTestIT {
     @Test
     void test_findByNameIgnoreCase() {
 
-        String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("name", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         testAuthorRepository.save(author);
         // Then
         assertThat(testAuthorRepository.findByNameIgnoreCase("NaMe"))
@@ -123,8 +120,7 @@ public class AuthorRepoTestIT {
     @ParameterizedTest
     @ValueSource(strings = {"Name", "nAme", "namE", "nAMe"})
     void test_findByNameIgnoreCase2(String name) {
-        String uuid = UUID.randomUUID().toString();
-        AuthorEntity author = new AuthorEntity(uuid, "name", "country", LocalDate.of(1977, 1, 22), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("name", "country", LocalDate.of(1977, 1, 22), new ArrayList<>());
         testAuthorRepository.save(author);
         // Then
         assertThat(testAuthorRepository.findByNameIgnoreCase(name))
@@ -134,14 +130,10 @@ public class AuthorRepoTestIT {
 
     @Test
     void test_findByNameSorting() {
-        String uuid = "0000";
-        String uuid1 = "2222";
-        String uuid2 = "1111";
-        String uuid3 = "4444";
-        AuthorEntity author = new AuthorEntity(uuid, "adel", "country", LocalDate.of(1999, 1, 11), new ArrayList<>());
-        AuthorEntity author1 = new AuthorEntity(uuid1, "adel", "country", LocalDate.of(1998, 1, 11), new ArrayList<>());
-        AuthorEntity author2 = new AuthorEntity(uuid2, "adel", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
-        AuthorEntity author3 = new AuthorEntity(uuid3, "sven", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author = new AuthorEntity("adel", "country", LocalDate.of(1999, 1, 11), new ArrayList<>());
+        AuthorEntity author1 = new AuthorEntity("adel", "country", LocalDate.of(1998, 1, 11), new ArrayList<>());
+        AuthorEntity author2 = new AuthorEntity("adel", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
+        AuthorEntity author3 = new AuthorEntity("sven", "country", LocalDate.of(1997, 1, 11), new ArrayList<>());
         testAuthorRepository.save(author);
         testAuthorRepository.save(author1);
         testAuthorRepository.save(author2);
@@ -152,7 +144,7 @@ public class AuthorRepoTestIT {
         Assertions.assertThat(testAuthorRepository.findByName("adel", pageRequest))
             .isNotEmpty()
             .hasSize(3)
-            .extracting(AuthorEntity::getId).containsExactly(uuid, uuid2, uuid1)
+            .extracting(AuthorEntity::getName).containsExactly("adel", "adel", "adel")
         ;
     }
 

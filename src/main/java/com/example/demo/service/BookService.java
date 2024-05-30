@@ -58,14 +58,15 @@ public class BookService {
         return toBook(findBookAndValidate(bookId));
     }
 
-//    public List<BookEntity> getBooksForAuthor(long authorId) {
-//        return bookRepository.findByAuthorId(authorId);
-//    }
-
     public void deleteBook(Long bookId) {
         BookEntity foundBook = findBookAndValidate(bookId);
         bookRepository.delete(foundBook);
     }
+
+    private Book toBook(BookEntity bookEntity) {
+        return new Book(bookEntity.getId(), bookEntity.getAuthorReference().getId(), bookEntity.getName(), bookEntity.getPublishDate());
+    }
+
 
     public Book updateBook(Long bookId, Book bookFromUser) {
         BookEntity foundBook = findBookAndValidate(bookId);
@@ -84,11 +85,5 @@ public class BookService {
         }
     }
 
-    private Book toBook(BookEntity bookEntity) {
-        return new Book(bookEntity.getId(), bookEntity.getAuthorReference().getId(), bookEntity.getName(), bookEntity.getPublishDate());
-    }
 
-    public List<BookEntity> getBooksForAuthor() {
-        return List.of();
-    }
 }

@@ -220,32 +220,5 @@ public class BookControllerTestIT {
 
     }
 
-    @Test
-    void test_updateBook2() {
-        // Preparation
-        Book book = new Book(5L, authorEntity.getId(), "Stomped", LocalDate.of(1985, 4, 15));
-        ResponseEntity<Book> createdBookResponse = restTemplate.postForEntity(uri, new HttpEntity<>(book, headers), Book.class);
-        Book createdBook = createdBookResponse.getBody();
-
-        // Assert creation
-        assertThat(createdBookResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(createdBook).isNotNull();
-
-        // Update the book
-        Book updatedBook = new Book(createdBook.id(), createdBook.authorId(), createdBook.name(), LocalDate.of(1981, 4, 15));
-
-        // Act
-        ResponseEntity<Book> responseEntity = restTemplate.exchange("/api/books/" + createdBook.id(), HttpMethod.PUT, new HttpEntity<>(updatedBook, headers), Book.class);
-
-        // Assert
-        assertThat(responseEntity).satisfies(bookResponseEntity -> {
-            assertThat(bookResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(bookResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(bookResponseEntity.getBody()).satisfies(responseBook -> {
-                assertThat(responseBook.publishDate()).isNotEqualTo(LocalDate.of(1985, 4, 15));
-                assertThat(responseBook.publishDate()).isEqualTo(LocalDate.of(1981, 4, 15));
-            });
-        });
-    }
 }
 

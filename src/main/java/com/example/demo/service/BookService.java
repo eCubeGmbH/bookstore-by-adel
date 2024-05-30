@@ -86,4 +86,7 @@ public class BookService {
     }
 
 
+    public List<BookEntity> getBooksForAuthor() {
+        return List.of();
+    }
 }

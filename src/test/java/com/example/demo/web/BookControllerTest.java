@@ -28,14 +28,14 @@ public class BookControllerTest {
     @Test
     void addAuthor() {
 
-        Book book = new Book(12L, "5", "Animals in the Ocean", LocalDate.of(1985, 4, 15));
+        Book book = new Book(12L, 5, "Animals in the Ocean", LocalDate.of(1985, 4, 15));
 
         Mockito.when(bookService.addBook(book)).thenReturn(book);
 
 
         assertThat(controller.addBook(book)).satisfies(createdBook -> {
             assertThat(createdBook.id()).isEqualTo(12L);
-            assertThat(createdBook.authorId()).isEqualTo("5");
+            assertThat(createdBook.authorId()).isEqualTo(5);
             assertThat(createdBook.name()).isEqualTo("Animals in the Ocean");
             assertThat(createdBook.publishDate()).isEqualTo(LocalDate.of(1985, 4, 15));
         });
@@ -46,8 +46,8 @@ public class BookControllerTest {
 
     @Test
     void getBooks_pagination() {
-        Book book = new Book(15L, "7", "BCE", LocalDate.of(1877, 2, 1));
-        Book book1 = new Book(16L, "8", "NFTs", LocalDate.of(1877, 2, 1));
+        Book book = new Book(15L, 7, "BCE", LocalDate.of(1877, 2, 1));
+        Book book1 = new Book(16L, 8, "NFTs", LocalDate.of(1877, 2, 1));
 
         Mockito.when(bookService.getAll("", 1, 5)).thenReturn(List.of(book, book1));
 
@@ -84,7 +84,7 @@ public class BookControllerTest {
 
     @Test
     void getBooks_emptyBookName() {
-        Book book = new Book(10L, "2", "RadioFM", LocalDate.of(1985, 4, 15));
+        Book book = new Book(10L, 2, "RadioFM", LocalDate.of(1985, 4, 15));
 
         Mockito.when(bookService.getAll("", 0, 5)).thenReturn(List.of(book));
 
@@ -93,7 +93,7 @@ public class BookControllerTest {
             .hasSize(1)
             .satisfies(createdBook -> {
                 assertThat(createdBook.id()).isEqualTo(10L);
-                assertThat(createdBook.authorId()).isEqualTo("2");
+                assertThat(createdBook.authorId()).isEqualTo(2);
                 assertThat(createdBook.name()).isEqualTo("RadioFM");
                 assertThat(createdBook.publishDate()).isEqualTo(LocalDate.of(1985, 4, 15));
             }, atIndex(0));

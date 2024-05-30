@@ -9,8 +9,4 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
     List<BookEntity> findByNameIgnoreCase(String name, PageRequest pageRequest);
-
-    List<BookEntity> findByAuthorId(String authorId);
-
-    List<BookEntity> findByName(String bookName);
 }

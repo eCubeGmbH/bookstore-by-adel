@@ -19,13 +19,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,14 +39,14 @@ class AuthorServiceTest {
     @InjectMocks
     private AuthorService authorService;
 
-    private final AuthorEntity authorEntity1 = new AuthorEntity(UUID.randomUUID().toString(), "John", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
-    private final AuthorEntity authorEntity2 = new AuthorEntity(UUID.randomUUID().toString(), "Müller", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
-    private final AuthorEntity authorEntity3 = new AuthorEntity(UUID.randomUUID().toString(), "müller", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
-    private final AuthorEntity authorEntity4 = new AuthorEntity(UUID.randomUUID().toString(), "Meier", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
-    private final AuthorEntity authorEntity5 = new AuthorEntity(UUID.randomUUID().toString(), "Rein", "DÄN", LocalDate.of(1920, 1, 2), new ArrayList<>());
-    private final AuthorEntity authorEntity6 = new AuthorEntity(UUID.randomUUID().toString(), "Weg", "SWE", LocalDate.of(1911, 11, 9), new ArrayList<>());
-    private final AuthorEntity authorEntity7 = new AuthorEntity(UUID.randomUUID().toString(), "Frank", "SYR", LocalDate.of(1991, 2, 2), new ArrayList<>());
-    private final AuthorEntity authorEntity8 = new AuthorEntity(UUID.randomUUID().toString(), "FNG", "CHI", LocalDate.of(1755, 2, 22), new ArrayList<>());
+    private final AuthorEntity authorEntity1 = new AuthorEntity("John", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity authorEntity2 = new AuthorEntity("Müller", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity authorEntity3 = new AuthorEntity("müller", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity authorEntity4 = new AuthorEntity("Meier", "USA", LocalDate.of(1997, 1, 2), new ArrayList<>());
+    private final AuthorEntity authorEntity5 = new AuthorEntity("Rein", "DÄN", LocalDate.of(1920, 1, 2), new ArrayList<>());
+    private final AuthorEntity authorEntity6 = new AuthorEntity("Weg", "SWE", LocalDate.of(1911, 11, 9), new ArrayList<>());
+    private final AuthorEntity authorEntity7 = new AuthorEntity("Frank", "SYR", LocalDate.of(1991, 2, 2), new ArrayList<>());
+    private final AuthorEntity authorEntity8 = new AuthorEntity("FNG", "CHI", LocalDate.of(1755, 2, 22), new ArrayList<>());
 
     @Test
     void paginationTest1() {

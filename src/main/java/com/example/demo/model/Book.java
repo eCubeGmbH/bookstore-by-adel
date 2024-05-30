@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record Book(
     Long id,
 
-    String authorId,
+    long authorId,
 
     @NotBlank(message = "'name' can not be empty") String name,
     @NotNull(message = "'publishDate' can not be empty") LocalDate publishDate

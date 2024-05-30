@@ -2,6 +2,8 @@ package com.example.demo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -18,8 +20,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class BookEntity extends BasicEntity {
-    @Column(name = "authorId")
-    private String authorId;
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    private AuthorEntity authorReference;
 
     @Column(name = "name")
     private String name;

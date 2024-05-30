@@ -34,11 +34,8 @@ public class BookController {
     }
 
     @GetMapping()
-    public List<Book> getBooks(
-        @RequestParam(value = "bookName", required = false, defaultValue = "") String bookName,
-        @RequestParam(value = "from") int from,
-        @RequestParam(value = "to") int to
-    ) {
+    public List<Book> getBooks(@RequestParam(value = "bookName", required = false, defaultValue = "") String bookName, @RequestParam(value = "from") int from,
+                               @RequestParam(value = "to") int to) {
         if (from < 0 || to < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameters from and to must be greater than 0");
         }
@@ -58,8 +55,8 @@ public class BookController {
     }
 
     @GetMapping("/byAuthorId/{authorId}")
-    public List<BookEntity> getBooksForAuthor(@PathVariable String authorId) {
-        return bookService.getBooksForAuthor(authorId);
+    public List<BookEntity> getBooksForAuthor() {
+        return bookService.getBooksForAuthor();
     }
 
     @DeleteMapping("/{bookId}")

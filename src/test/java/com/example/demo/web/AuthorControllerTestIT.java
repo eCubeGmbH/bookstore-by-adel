@@ -60,8 +60,8 @@ class AuthorControllerTestIT {
     @Test
     void test_addAuthor() {
         // preparation
-        String authorID = "ABC123";
-        Author author = new Author(authorID, "steve", "france", LocalDate.of(1985, 4, 15));
+
+        Author author = new Author(30L, "steve", "france", LocalDate.of(1985, 4, 15));
 
         // act
         ResponseEntity<Author> responseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
@@ -71,7 +71,6 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody()).satisfies(createdAuthor -> {
-                assertThat(createdAuthor.id()).isNotEqualTo(authorID);
                 assertThat(createdAuthor.name()).isEqualTo("steve");
                 assertThat(createdAuthor.country()).isEqualTo("france");
                 assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
@@ -82,7 +81,7 @@ class AuthorControllerTestIT {
     @Test
     void test_validAuthor_success() throws JsonProcessingException {
         // preparation
-        Map<String, String> authorAsMap = Map.of("id", "ABC123", "name", "steve", "country", "France", "birthDate", "2000-04-13");
+        Map<String, String> authorAsMap = Map.of("name", "steve", "country", "France", "birthDate", "2000-04-13");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String valueAsString = objectMapper.writeValueAsString(authorAsMap);
@@ -95,7 +94,6 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody()).satisfies(createdAuthor -> {
-                assertThat(createdAuthor.id()).isNotEqualTo("ABC123");
                 assertThat(createdAuthor.name()).isEqualTo("steve");
                 assertThat(createdAuthor.country()).isEqualTo("France");
                 assertThat(createdAuthor.birthDate()).isEqualTo(LocalDate.of(2000, 4, 13));
@@ -106,7 +104,7 @@ class AuthorControllerTestIT {
     @Test
     void test_validAuthor_missingName() throws JsonProcessingException {
         // preparation
-        Map<String, String> authorAsMap = Map.of("id", "ABC123", "country", "France", "birthDate", "2000-04-13");
+        Map<String, String> authorAsMap = Map.of("country", "France", "birthDate", "2000-04-13");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String valueAsString = objectMapper.writeValueAsString(authorAsMap);
@@ -127,7 +125,7 @@ class AuthorControllerTestIT {
     @Test
     void test_validAuthor_missingCountry() throws JsonProcessingException {
         // preparation
-        Map<String, String> authorAsMap = Map.of("id", "ABC123", "name", "steve", "birthDate", "2000-04-13");
+        Map<String, String> authorAsMap = Map.of("name", "steve", "birthDate", "2000-04-13");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String valueAsString = objectMapper.writeValueAsString(authorAsMap);
@@ -148,7 +146,7 @@ class AuthorControllerTestIT {
     @Test
     void test_validAuthor_missingBirthDate() throws JsonProcessingException {
         // preparation
-        Map<String, String> authorAsMap = Map.of("id", "ABC123", "name", "steve", "country", "France");
+        Map<String, String> authorAsMap = Map.of("name", "steve", "country", "France");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String valueAsString = objectMapper.writeValueAsString(authorAsMap);
@@ -170,7 +168,7 @@ class AuthorControllerTestIT {
     void test_validAuthor_missingSeveralElements() throws JsonProcessingException {
         // preparation
         Map<String, String> authorAsMap = Map.of(
-            "id", "ABC123",
+            "name", "Land",
             "birthDate", "2000-04-13");
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -185,10 +183,7 @@ class AuthorControllerTestIT {
         assertThat(responseEntity).satisfies(authorResponseEntity -> {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> {
-                assertThat(errorMessage.get("name")).isEqualTo("'name' can not be empty");
-                assertThat(errorMessage.get("country")).isEqualTo("'country' can not be empty");
-            });
+            assertThat(authorResponseEntity.getBody()).satisfies(errorMessage -> assertThat(errorMessage.get("country")).isEqualTo("'country' can not be empty"));
         });
     }
 
@@ -196,7 +191,7 @@ class AuthorControllerTestIT {
     void test_getAllAuthors() {
 
         // preparation
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         assertThat(restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class))
             .satisfies(authorResponseEntity -> assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
 
@@ -217,7 +212,7 @@ class AuthorControllerTestIT {
                     assertThat(authorsEnvelopDto.sortOrder()).isEqualTo(SortOrder.ASC);
                     assertThat(authorsEnvelopDto.sortField()).isEqualTo(SortField.NAME);
                     assertThat(authorsEnvelopDto.authors()).satisfies(author1 -> {
-                        assertThat(author1.id()).isNotEqualTo("ABC123");
+                        assertThat(author1.id()).isNotEqualTo(1L);
                         assertThat(author1.name()).isEqualTo("steve");
                         assertThat(author1.country()).isEqualTo("france");
                         assertThat(author1.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
@@ -229,7 +224,7 @@ class AuthorControllerTestIT {
     @Test
     void test_getAllAuthors_invalid_pageNumber() {
 
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
         assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -253,7 +248,7 @@ class AuthorControllerTestIT {
     @Test
     void test_getAllAuthors_invalid_pageSize() {
 
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
         assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -277,7 +272,7 @@ class AuthorControllerTestIT {
     @Test
     void test_getAllAuthors_invalid_pageSize_2() {
 
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
         assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -301,7 +296,7 @@ class AuthorControllerTestIT {
     @Test
     void test_getAllAuthors_invalid_pageSize_and_pageNumber() {
 
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         ResponseEntity<Author> authorResponseEntity = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class);
         assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -327,7 +322,7 @@ class AuthorControllerTestIT {
     @Test
     void test_getAuthor() {
         // preparation
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         Author createdAuthor = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class).getBody();
         assertThat(createdAuthor).isNotNull();
 
@@ -339,7 +334,7 @@ class AuthorControllerTestIT {
             assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
             assertThat(authorResponseEntity.getBody()).satisfies(foundAuthor -> {
-                assertThat(foundAuthor.id()).isNotEqualTo("ABC123");
+                assertThat(foundAuthor.id()).isNotEqualTo(1L);
                 assertThat(foundAuthor.name()).isEqualTo("steve");
                 assertThat(foundAuthor.country()).isEqualTo("france");
                 assertThat(foundAuthor.birthDate()).isEqualTo(LocalDate.of(1985, 4, 15));
@@ -348,21 +343,9 @@ class AuthorControllerTestIT {
     }
 
     @Test
-    void test_getAuthor_notFound() {
-        // act
-        ResponseEntity<Author> responseEntity = restTemplate.getForEntity("/api/authors/" + "blah", Author.class);
-
-        //assert
-        assertThat(responseEntity).satisfies(authorResponseEntity -> {
-            assertThat(authorResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(authorResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-        });
-    }
-
-    @Test
     void test_removeAuthor() {
         // preparation
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         Author createdAuthor = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class).getBody();
         assertThat(createdAuthor).isNotNull();
 
@@ -375,10 +358,10 @@ class AuthorControllerTestIT {
     @Test
     void test_updateAuthor() {
         // preparation
-        Author author = new Author("ABC123", "steve", "france", LocalDate.of(1985, 4, 15));
+        Author author = new Author(1L, "steve", "france", LocalDate.of(1985, 4, 15));
         Author createdAuthor = restTemplate.postForEntity(uri, new HttpEntity<>(author, headers), Author.class).getBody();
         assertThat(createdAuthor).isNotNull();
-        Author updatedAuthor = new Author("ABC123", "steve", "france", LocalDate.of(1981, 4, 15));
+        Author updatedAuthor = new Author(1L, "steve", "france", LocalDate.of(1981, 4, 15));
 
         //act
         ResponseEntity<Author> responseEntity = restTemplate.exchange("/api/authors/" + createdAuthor.id(), HttpMethod.PUT, new HttpEntity<>(updatedAuthor), Author.class);

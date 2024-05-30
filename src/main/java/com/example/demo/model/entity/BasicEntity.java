@@ -14,20 +14,21 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @Setter
-abstract public class BasicEntity {
+public abstract class BasicEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "date_created", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
-    @Column(nullable = false)
+    @Column(name = "date_modified", nullable = false)
     private LocalDateTime dateModified;
 
     @PrePersist
     protected void onCreate() {
         dateCreated = LocalDateTime.now();
+        dateModified = LocalDateTime.now();
     }
 
     @PreUpdate

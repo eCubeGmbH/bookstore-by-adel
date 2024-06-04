@@ -57,6 +57,7 @@ export default function ModifyAuthor({author, onClickCancel, buttonLabel, button
                     <p>
                         <label>Country: </label>
                         <select ref={countryRef} required defaultValue={defaultAuthorCountry}>
+
                             <option value=''>Select Country</option>
                             {countries.map(country => (
                                 <option key={country} value={country}>{country}</option>))}

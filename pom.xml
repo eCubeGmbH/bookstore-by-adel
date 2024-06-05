@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
+        <testcontainers.version>1.19.8</testcontainers.version>
         <springdoc-openapi-ui.version>2.3.0</springdoc-openapi-ui.version>
     </properties>
 

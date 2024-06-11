@@ -10,7 +10,9 @@ const loader: LoaderFunction = async function getData({request}) {
     const url = new URL(request.url);
     const pageNumber = +(url.searchParams.get("pageNumber") || 0);
     const pageSize = +(url.searchParams.get("pageSize") || 10);
-    const response = await fetch(`/api/authors?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+    const sortField = url.searchParams.get("sortField") || "NAME";
+    const sortOrder = url.searchParams.get("sortOrder") || "ASC";
+    const response = await fetch(`/api/authors?pageNumber=${pageNumber}&pageSize=${pageSize}&sortField=${sortField.toUpperCase()}&sortOrder=${sortOrder.toUpperCase()}`);
     return response.json();
 }
 
@@ -19,6 +21,8 @@ const AuthorsListPage = () => {
     const [search] = useSearchParams();
     const pageSize = +(search.get(`pageSize`) || 10);
     const pageNumber = +(search.get(`pageNumber`) || 0);
+    const sortField = search.get(`sortField`) || "NAME";
+    const sortOrder = search.get(`sortOrder`) || 'ASC';
     const hasNext = authorData.authors.length === pageSize;
 
     // Constants and state declarations
@@ -104,8 +108,8 @@ const AuthorsListPage = () => {
 
     const previousPage: number = pageNumber === 0 ? 0 : pageNumber - 1;
     const nextPage: number = pageNumber + 1;
-    const nextLink: string = `?pageNumber=${nextPage}&pageSize=${pageSize}`;
-    const previousLink: string = `?pageNumber=${previousPage}&pageSize=${pageSize}`;
+    const nextLink: string = `?pageNumber=${nextPage}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`;
+    const previousLink: string = `?pageNumber=${previousPage}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`;
 
     //JSX
     return (
@@ -116,7 +120,7 @@ const AuthorsListPage = () => {
                               buttonLabel={title} buttonHandler={buttonHandler}/>))}
             <AuthorsTable authors={authorData.authors} nextLink={nextLink} previousLink={previousLink}
                           hasPrevious={pageNumber !== 0} hasNext={hasNext} handleEditAuthor={handleEdit}
-                          handleDeleteAuthor={handleDelete}
+                          handleDeleteAuthor={handleDelete} sortField={sortField} sortOrder={sortOrder}
             />
         </>
     );

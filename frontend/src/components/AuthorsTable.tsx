@@ -1,6 +1,7 @@
 import '../assets/index.css'
+import '../assets/sort-symbols.css'
 import {MdDelete, MdEdit} from "react-icons/md";
-import {Link, useLoaderData} from "react-router-dom";
+import {Link, useLoaderData, useSearchParams} from "react-router-dom";
 
 export interface Author {
     id: number;
@@ -15,6 +16,8 @@ interface Props {
     nextLink: string;
     hasPrevious: boolean;
     hasNext: boolean;
+    sortField: string;
+    sortOrder: string;
     handleEditAuthor: (author: Author) => void;
     handleDeleteAuthor: (author: Author) => void;
 }
@@ -35,11 +38,13 @@ export default function AuthorsTable({
                                          nextLink,
                                          hasPrevious,
                                          hasNext,
+                                         sortOrder,
+                                         sortField,
                                          handleEditAuthor,
                                          handleDeleteAuthor
                                      }: Props) {
     const loaderAuthors = useLoaderData() as AuthorsEnvelopDto;
-
+    const [searchParams, setSearchParams] = useSearchParams();
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
             day: '2-digit',
@@ -47,15 +52,28 @@ export default function AuthorsTable({
             year: 'numeric'
         });
     };
+
+    const handleSort = (field: string) => {
+        const newSorOrder = sortField === field && sortOrder === 'ASC' ? 'DESC' : 'ASC';
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()),
+            sortField: field,
+            sortOrder: newSorOrder,
+        });
+    };
     return (
         <>
             <table className="authors-table">
                 <thead>
                 <tr>
-                    <th>Author ID</th>
-                    <th>Name</th>
-                    <th>Country</th>
-                    <th>Birth Date</th>
+                    <th onClick={() => handleSort('id')} title={"click to sort by Id"}>Author
+                        ID {sortField === 'id' ? (sortOrder === 'ASC' ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort('name')}
+                        title={"click to sort by Name"}>Name {sortField === 'name' ? (sortOrder === 'ASC' ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort('country')}
+                        title={"Sort nach Country"}>Country {sortField === 'country' ? (sortOrder === 'ASC' ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort('birthDate')}
+                        title={"click to sort by Birthdate"}>BirthDate {sortField === 'birthDate' ? (sortOrder === 'ASC' ? '▲' : '▼') : ''}</th>
                     <th>Actions</th>
                 </tr>
                 </thead>

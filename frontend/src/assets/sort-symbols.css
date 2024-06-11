@@ -1,0 +1,24 @@
+th[title] {
+    position: sticky;
+    cursor: pointer;
+}
+
+th[title]::after {
+    content: attr(data-title);
+    position: absolute;
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+th[title]:hover::after {
+    opacity: 1;
+}

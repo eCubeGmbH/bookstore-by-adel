@@ -44,6 +44,9 @@ export default function AuthorsTable({
                                      }: Props) {
     const loaderAuthors = useLoaderData() as AuthorsEnvelopDto;
     const [searchParams, setSearchParams] = useSearchParams();
+    const sortField: SortField = SortField[searchParams.get(`sortField`) as keyof typeof SortField] || SortField.NAME;
+    const sortOrder: SortOrder = SortOrder[searchParams.get(`sortOrder`) as keyof typeof SortOrder] || SortOrder.ASC;
+
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
             day: '2-digit',
@@ -55,8 +58,8 @@ export default function AuthorsTable({
     const handleSort = (sortField: SortField, sortOrder: SortOrder) => {
         setSearchParams({
             ...Object.fromEntries(searchParams.entries()),
-            sortField: sortField.toString(),
-            sortOrder: sortOrder.toString(),
+            sortField: SortField[sortField],
+            sortOrder: SortOrder[sortOrder],
         });
     };
     return (
@@ -64,14 +67,14 @@ export default function AuthorsTable({
             <table className="authors-table">
                 <thead>
                 <tr>
-                    <th onClick={() => handleSort(SortField.ID, SortOrder.ASC)}
-                        title={"click to sort by Id"}>Author ID {SortField.ID ? (SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th onClick={() => handleSort(SortField.NAME, SortOrder.ASC)}
-                        title={"click to sort by Name"}>Name {SortField.NAME ? (SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th onClick={() => handleSort(SortField.COUNTRY, SortOrder.ASC)}
-                        title={"Sort nach Country"}>Country {SortField.COUNTRY ? (SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th onClick={() => handleSort(SortField.BIRTHDATE, SortOrder.ASC)}
-                        title={"click to sort by Birthdate"}>BirthDate {SortField.BIRTHDATE ? (SortOrder.ASC ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort(SortField.ID, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                        title={"click to sort by Id"}>Author ID {sortField !== SortField.ID ? '' : sortOrder === SortOrder.ASC ? '▲' : '▼'}</th>
+                    <th onClick={() => handleSort(SortField.NAME, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                        title={"click to sort by Name"}>Name {sortField === SortField.NAME ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort(SortField.COUNTRY,sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                        title={"Sort nach Country"}>Country {sortField === SortField.COUNTRY ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort(SortField.BIRTHDATE,sortOrder ===  SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                        title={"click to sort by Birthdate"}>BirthDate {sortField === SortField.BIRTHDATE ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
                     <th>Actions</th>
                 </tr>
                 </thead>

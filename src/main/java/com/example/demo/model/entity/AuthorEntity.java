@@ -38,7 +38,7 @@ public class AuthorEntity extends BasicEntity {
     @Column(name = "country")
     private String country;
 
-    @Column(name = "birthDate")
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "authorReference")

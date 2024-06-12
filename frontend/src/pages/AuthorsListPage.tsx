@@ -10,7 +10,7 @@ export enum SortOrder {
     ASC, DESC
 }
 export enum SortField {
-    ID, NAME, COUNTRY, BIRTHDATE,
+    IGNORE_ME, ID, NAME, COUNTRY, BIRTHDATE
 }
 
 const loader: LoaderFunction = async function getData({request}) {
@@ -19,7 +19,7 @@ const loader: LoaderFunction = async function getData({request}) {
     const pageSize = +(url.searchParams.get("pageSize") || 10);
     const sortField = url.searchParams.get("sortField") || "NAME";
     const sortOrder = url.searchParams.get("sortOrder") || "ASC";
-    const response = await fetch(`/api/authors?pageNumber=${pageNumber}&pageSize=${pageSize}&sortField=${sortField.toUpperCase()}&sortOrder=${sortOrder.toUpperCase()}`);
+    const response = await fetch(`/api/authors?pageNumber=${pageNumber}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`);
     return response.json();
 }
 

@@ -6,6 +6,13 @@ import AuthorsTable, {Author, AuthorsEnvelopDto} from '../components/AuthorsTabl
 import ModifyAuthor from '../components/ModifyAuthor.tsx';
 import {errorNotify, successNotify} from "../components/Notifications.ts";
 
+export enum SortOrder {
+    ASC, DESC
+}
+export enum SortField {
+    ID, NAME, COUNTRY, BIRTHDATE,
+}
+
 const loader: LoaderFunction = async function getData({request}) {
     const url = new URL(request.url);
     const pageNumber = +(url.searchParams.get("pageNumber") || 0);
@@ -21,8 +28,8 @@ const AuthorsListPage = () => {
     const [search] = useSearchParams();
     const pageSize = +(search.get(`pageSize`) || 10);
     const pageNumber = +(search.get(`pageNumber`) || 0);
-    const sortField = search.get(`sortField`) || "NAME";
-    const sortOrder = search.get(`sortOrder`) || 'ASC';
+    const sortField: SortField = SortField[search.get(`sortField`) as keyof typeof SortField] || SortField.NAME;
+    const sortOrder = SortOrder[search.get(`sortOrder`) as keyof typeof SortOrder] || SortOrder.ASC;
     const hasNext = authorData.authors.length === pageSize;
 
     // Constants and state declarations

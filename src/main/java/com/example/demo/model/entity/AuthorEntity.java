@@ -25,7 +25,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class AuthorEntity extends BasicEntity {
 
-    public AuthorEntity(String name, String country, LocalDate birthDate){
+    public AuthorEntity(String name, String country, LocalDate birthDate) {
         this.name = name;
         this.country = country;
         this.birthDate = birthDate;

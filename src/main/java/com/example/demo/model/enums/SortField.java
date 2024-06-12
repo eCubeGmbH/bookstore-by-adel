@@ -2,17 +2,17 @@ package com.example.demo.model.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum SortField {
 
     ID("id"),
     NAME("name"),
     COUNTRY("country"),
-    BIRTH_DATE("birth_date");
+    BIRTHDATE("birthDate");
 
-    @Getter
     private final String fieldName;
 
-    private SortField(String fieldName){
+    SortField(String fieldName){
         this.fieldName = fieldName;
     }
 }

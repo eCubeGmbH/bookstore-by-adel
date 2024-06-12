@@ -36,7 +36,7 @@ public class AuthorService {
 
     public AuthorsEnvelopDto getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
         // Sorting
-        Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.name()), sortField.getFieldName());
+        Sort sort = Sort.by(sortOrder == SortOrder.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, sortField.getFieldName());
 
         // Pagination + Sorting
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);

@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.atIndex;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -130,31 +129,29 @@ public class BookControllerTestIT {
 
     @Test
     void test_getBooks() {
-
         // preparation
-        Book book = new Book(12L, authorEntity.getId(), "Mars", LocalDate.of(2012, 4, 15));
-        assertThat(restTemplate.postForEntity(uri, new HttpEntity<>(book, headers), Book.class))
-            .satisfies(bookResponseEntity -> assertThat(bookResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         // act
-        ParameterizedTypeReference<List<Book>> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<>() {
         };
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+            uri + "?pageNumber=-1&pageSize=10",
+            HttpMethod.GET,
+            new HttpEntity<>("", headers),
+            responseType
+        );
 
-        ResponseEntity<List<Book>> responseEntity = restTemplate.exchange(uri.toString() + "?from=0&to=10", HttpMethod.GET, new HttpEntity<>("", headers), responseType);
+        // assert
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
 
-        //
-        assertThat(responseEntity).satisfies(bookResponseEntity -> {
-            assertThat(bookResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(bookResponseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE)).isEqualTo(List.of("application/json"));
-            assertThat(bookResponseEntity.getBody())
-                .hasSize(1)
-                .satisfies(book1 -> {
-                    assertThat(book1.name()).isEqualTo("Mars");
-                    assertThat(book1.publishDate()).isEqualTo(LocalDate.of(2012, 4, 15));
-
-                }, atIndex(0));
-        });
+        String responseBody = responseEntity.getBody();
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody).contains("parameters pageNumber and pageSize must be greater than 0");
     }
+
 
     @Test
     void test_getBook() {

@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.model.Author;
 import com.example.demo.model.AuthorsEnvelopDto;
 import com.example.demo.model.entity.AuthorEntity;
-import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class AuthorService {
         return toAuthor(savedAuthorEntity);
     }
 
-    public AuthorsEnvelopDto getAll(int pageNumber, int pageSize, SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
+    public AuthorsEnvelopDto getAll(int pageNumber, int pageSize, AuthorsEnvelopDto.SortField sortField, SortOrder sortOrder, Optional<String> maybeAuthorName) {
         // Sorting
         Sort sort = Sort.by(sortOrder == SortOrder.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, sortField.getFieldName());
 

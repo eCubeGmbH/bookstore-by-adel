@@ -1,7 +1,9 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.BooksEnvelopDto;
 import com.example.demo.model.entity.BookEntity;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = {"/api/books"})
@@ -34,18 +37,20 @@ public class BookController {
     }
 
     @GetMapping()
-    public List<Book> getBooks(@RequestParam(value = "bookName", required = false, defaultValue = "") String bookName, @RequestParam(value = "from") int from,
-                               @RequestParam(value = "to") int to) {
-        if (from < 0 || to < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameters from and to must be greater than 0");
+    public BooksEnvelopDto getBooks(
+        @RequestParam(value = "pageNumber") int pageNumber,
+        @RequestParam(value = "pageSize") int pageSize,
+        @RequestParam(value = "sortField", defaultValue = "NAME") BooksEnvelopDto.SortField sortField,
+        @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
+        @RequestParam(value = "maybeBookName", required = false) Optional<String> maybeBookName
+    ) {
+        if (pageNumber < 0 || pageSize <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameters pageNumber and pageSize must be greater than 0");
         }
-        if (from > to) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameter from must be greater than to");
+        if (pageNumber > pageSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "parameter pageNumber must be greater than pageSize");
         }
-        if (Math.abs(from - to) > 1000) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "result can  contains maximum 1000 elements");
-        }
-        return bookService.getAll(bookName, from, to);
+        return bookService.getAll(pageNumber, pageSize, sortField, sortOrder, maybeBookName);
     }
 
 

@@ -1,4 +1,4 @@
-import '../assets/index.css'
+import '../assets/authorsDisplay.css'
 import 'react-toastify/dist/ReactToastify.css';
 import {useState} from "react";
 import {LoaderFunction, useLoaderData, useSearchParams} from "react-router-dom";
@@ -7,10 +7,10 @@ import ModifyAuthor from '../components/ModifyAuthor.tsx';
 import {errorNotify, successNotify} from "../components/Notifications.ts";
 
 export enum SortOrder {
-    ASC, DESC
+    ASC='ASC', DESC='DESC'
 }
 export enum SortField {
-    IGNORE_ME, ID, NAME, COUNTRY, BIRTHDATE
+    IGNORE_ME='IGNORE_ME', ID= 'ID', NAME='NAME', COUNTRY='COUNTRY', BIRTHDATE='BIRTHDATE'
 }
 
 const loader: LoaderFunction = async function getData({request}) {
@@ -28,8 +28,8 @@ const AuthorsListPage = () => {
     const [search] = useSearchParams();
     const pageSize = +(search.get(`pageSize`) || 10);
     const pageNumber = +(search.get(`pageNumber`) || 0);
-    const sortField: SortField = SortField[search.get(`sortField`) as keyof typeof SortField] || SortField.NAME;
-    const sortOrder = SortOrder[search.get(`sortOrder`) as keyof typeof SortOrder] || SortOrder.ASC;
+    const sortField: SortField = (search.get(`sortField`) || 'NAME') as SortField;
+    const sortOrder: SortOrder = (search.get(`sortOrder`) || 'ASC') as SortOrder;
     const hasNext = authorData.authors.length === pageSize;
 
     // Constants and state declarations

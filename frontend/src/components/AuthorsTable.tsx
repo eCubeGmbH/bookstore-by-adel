@@ -1,4 +1,4 @@
-import '../assets/index.css'
+import '../assets/authorsDisplay.css'
 import '../assets/sort-symbols.css'
 import {MdDelete, MdEdit} from "react-icons/md";
 import {Link, useLoaderData, useSearchParams} from "react-router-dom";
@@ -60,6 +60,7 @@ export default function AuthorsTable({
             ...Object.fromEntries(searchParams.entries()),
             sortField: SortField[sortField],
             sortOrder: SortOrder[sortOrder],
+            pageNumber: '0',
         });
     };
     return (
@@ -68,12 +69,13 @@ export default function AuthorsTable({
                 <thead>
                 <tr>
                     <th onClick={() => handleSort(SortField.ID, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
-                        title={"click to sort by Id"}>Author ID {sortField !== SortField.ID ? '' : sortOrder === SortOrder.ASC ? '▲' : '▼'}</th>
+                        title={"click to sort by Id"}>Author
+                        ID {sortField !== SortField.ID ? '' : sortOrder === SortOrder.ASC ? '▲' : '▼'}</th>
                     <th onClick={() => handleSort(SortField.NAME, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by Name"}>Name {sortField === SortField.NAME ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th onClick={() => handleSort(SortField.COUNTRY,sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                    <th onClick={() => handleSort(SortField.COUNTRY, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"Sort nach Country"}>Country {sortField === SortField.COUNTRY ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th onClick={() => handleSort(SortField.BIRTHDATE,sortOrder ===  SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                    <th onClick={() => handleSort(SortField.BIRTHDATE, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by Birthdate"}>BirthDate {sortField === SortField.BIRTHDATE ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
                     <th>Actions</th>
                 </tr>
@@ -102,4 +104,3 @@ export default function AuthorsTable({
         </>
     );
 };
-

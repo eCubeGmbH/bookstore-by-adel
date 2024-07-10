@@ -1,6 +1,7 @@
-import {MdDelete, MdEdit} from "react-icons/md";
+import {MdEdit} from "react-icons/md";
 import {Link, useLoaderData} from "react-router-dom";
 import '../assets/booksDisplay.css';
+import {SortField, SortOrder} from "../pages/AuthorsListPage.tsx";
 
 export interface Book {
     id: number;
@@ -11,13 +12,14 @@ export interface Book {
 }
 
 interface Props {
-    books: Book[];
-    previousLink: string;
-    nextLink: string;
-    hasPrevious: boolean;
-    hasNext: boolean;
-    handleEditBook: (book: Book) => void;
-    handleDeleteBook: (book: Book) => void;
+    books: Book[],
+    previousLink: () => void,
+    nextLink: () => void,
+    hasPrevious: boolean,
+    hasNext: boolean,
+    handleEditBook: (book: Book) => void,
+    handleViewBookDetails?: (book: Book) => void,
+    handleSortChange?: (newSortField: SortField, newSortOrder: SortOrder) => void
 }
 
 export interface BooksEnvelopDto {
@@ -36,7 +38,6 @@ export default function BooksTable({
                                        hasPrevious,
                                        hasNext,
                                        handleEditBook,
-                                       handleDeleteBook,
                                    }: Props) {
     const loaderBooks = useLoaderData() as BooksEnvelopDto;
 
@@ -58,7 +59,7 @@ export default function BooksTable({
                     <th>Name</th>
                     <th>Publish Date</th>
                     <th>Author</th>
-                    <th>Actions</th>
+                    <th>Edit</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -73,7 +74,6 @@ export default function BooksTable({
                         </td>
                         <td>
                             <button onClick={() => handleEditBook(book)}><MdEdit/></button>
-                            <button onClick={() => handleDeleteBook(book)}><MdDelete/></button>
                         </td>
                     </tr>
                 ))}

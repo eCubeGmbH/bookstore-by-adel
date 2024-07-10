@@ -1,7 +1,14 @@
 import {LoaderFunction, useLoaderData, useNavigate, useSearchParams} from "react-router-dom";
 import BooksTable, {Book} from "../components/BooksTable";
 import {useState} from "react";
-import {SortField, SortOrder} from "./AuthorsListPage.tsx";
+
+export enum SortOrder {
+    ASC = 'ASC', DESC = 'DESC'
+}
+
+export enum SortField {
+    ID = 'ID', AUTHORID = 'AUTHORID', NAME = 'NAME', PUBLISHDATE = 'PUBLISHDATE', AUTHOR = 'AUTHOR'
+}
 
 const loader: LoaderFunction = async function getData({request}) {
     const url = new URL(request.url);
@@ -39,19 +46,15 @@ const BooksListPage = () => {
         const newPageNumber = direction === "next" ? pageNumber + 1 : pageNumber - 1;
         navigate(`/books?pageNumber=${newPageNumber}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`);
     };
-
-    const handleSortChange = (newSortField: SortField, newSortOrder: SortOrder) => {
-        navigate(`/books?pageNumber=0&pageSize=${pageSize}&sortField=${newSortField}&sortOrder=${newSortOrder}`);
-    };
     return (
         <div>
-            <h1>Books</h1>
             <button onClick={handleCreateBook}>Add New Book</button>
             <BooksTable
                 books={books}
                 handleEditBook={handleEditBook}
                 handleViewBookDetails={handleViewBookDetails}
-                handleSortChange={handleSortChange}
+                sortField={sortField}
+                sortOrder={sortOrder}
                 hasNext={books.length === pageSize}
                 hasPrevious={pageNumber > 0}
                 nextLink={() => handlePageChange("next")}

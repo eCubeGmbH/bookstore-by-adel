@@ -4,23 +4,22 @@ import com.example.demo.model.enums.SortOrder;
 import lombok.Getter;
 import java.util.List;
 
-
-public record AuthorsEnvelopDto(
+public record BooksEnvelopDto(
     int pageNumber,
     int pageSize,
-    long authorsCount,
+    long booksCount,
     SortField sortField,
     SortOrder sortOrder,
-    String authorName,
-    List<Author> authors
+    String bookName,
+    List<Book> bookList
 ) {
     @Getter
     public enum SortField {
 
         ID("id"),
+        AUTHOR_ID("authorId"),
         NAME("name"),
-        COUNTRY("country"),
-        BIRTHDATE("birthDate");
+        PUBLISH_DATE("publishDate");
 
         private final String fieldName;
 

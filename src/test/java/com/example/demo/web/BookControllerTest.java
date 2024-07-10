@@ -1,6 +1,8 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.BooksEnvelopDto;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,13 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.atIndex;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookControllerTest {
@@ -30,7 +34,7 @@ public class BookControllerTest {
 
         Book book = new Book(12L, 5, "Animals in the Ocean", LocalDate.of(1985, 4, 15));
 
-        Mockito.when(bookService.addBook(book)).thenReturn(book);
+        when(bookService.addBook(book)).thenReturn(book);
 
 
         assertThat(controller.addBook(book)).satisfies(createdBook -> {
@@ -48,11 +52,19 @@ public class BookControllerTest {
     void getBooks_pagination() {
         Book book = new Book(15L, 7, "BCE", LocalDate.of(1877, 2, 1));
         Book book1 = new Book(16L, 8, "NFTs", LocalDate.of(1877, 2, 1));
+        List<Book> bookList = List.of(book, book1);
+        BooksEnvelopDto envelopDto = new BooksEnvelopDto(1, 2, 2, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, null, bookList);
 
-        Mockito.when(bookService.getAll("", 1, 5)).thenReturn(List.of(book, book1));
+        when(bookService.getAll(0, 2, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty())).thenReturn(envelopDto);
 
-        assertThat(controller.getBooks("", 1, 5))
-            .hasSize(2);
+        assertThat(controller.getBooks(0, 2, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty())).satisfies(envelopeDto -> {
+            assertThat(envelopeDto.pageNumber()).isEqualTo(1);
+            assertThat(envelopeDto.pageSize()).isEqualTo(2);
+            assertThat(envelopeDto.booksCount()).isEqualTo(2);
+            assertThat(envelopeDto.sortField()).isEqualTo(BooksEnvelopDto.SortField.NAME);
+            assertThat(envelopeDto.sortOrder()).isEqualTo(SortOrder.ASC);
+            assertThat(envelopeDto.bookList()).containsExactly(book, book1);
+        });
     }
 
     // pagination
@@ -62,23 +74,24 @@ public class BookControllerTest {
         "0, -1",
         "-1, -2"
     })
-    void getBooks_paginationWithNegativeNumber(int from, int to) {
-        assertThatThrownBy(() -> controller.getBooks("", from, to))
+    void getBooks_paginationWithNegativeNumber(int pageNumber, int pageSize) {
+        assertThatThrownBy(() -> controller.getBooks(pageNumber, pageSize, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty()))
             .isInstanceOf(ResponseStatusException.class)
-            .hasMessage("400 BAD_REQUEST \"parameters from and to must be greater than 0\"");
+            .hasMessageContaining("parameters pageNumber and pageSize must be greater than 0")
+            .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
         verifyNoMoreInteractions(bookService);
     }
 
     // pagination
     @ParameterizedTest
     @CsvSource({
-        "10, 0",
         "5, 4"
     })
-    void getBooks_paginationWithFromGreaterTo(int from, int to) {
-        assertThatThrownBy(() -> controller.getBooks("", from, to))
+    void getBooks_paginationWithPageNumberGreaterPageSize(int pageNumber, int pageSize) {
+        assertThatThrownBy(() -> controller.getBooks(pageNumber, pageSize, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty()))
             .isInstanceOf(ResponseStatusException.class)
-            .hasMessage("400 BAD_REQUEST \"parameter from must be greater than to\"");
+            .hasMessageContaining("parameter pageNumber must be greater than pageSize")
+            .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
         verifyNoMoreInteractions(bookService);
     }
 
@@ -86,19 +99,20 @@ public class BookControllerTest {
     void getBooks_emptyBookName() {
         Book book = new Book(10L, 2, "RadioFM", LocalDate.of(1985, 4, 15));
 
-        Mockito.when(bookService.getAll("", 0, 5)).thenReturn(List.of(book));
+        List<Book> bookList = List.of(book);
+        BooksEnvelopDto envelopDto = new BooksEnvelopDto(1, 1, 1, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, "RadioFM", bookList);
 
-        assertThat(controller.getBooks("", 0, 5))
-            .isNotEmpty()
-            .hasSize(1)
-            .satisfies(createdBook -> {
-                assertThat(createdBook.id()).isEqualTo(10L);
-                assertThat(createdBook.authorId()).isEqualTo(2);
-                assertThat(createdBook.name()).isEqualTo("RadioFM");
-                assertThat(createdBook.publishDate()).isEqualTo(LocalDate.of(1985, 4, 15));
-            }, atIndex(0));
+        when(bookService.getAll(0, 1, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty())).thenReturn(envelopDto);
 
-        Mockito.verify(bookService).getAll("", 0, 5);
+        assertThat(controller.getBooks(0, 1, BooksEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty())).satisfies(envelopeDto -> {
+            assertThat(envelopeDto.pageNumber()).isEqualTo(1);
+            assertThat(envelopeDto.pageSize()).isEqualTo(1);
+            assertThat(envelopeDto.booksCount()).isEqualTo(1);
+            assertThat(envelopeDto.sortField()).isEqualTo(BooksEnvelopDto.SortField.NAME);
+            assertThat(envelopeDto.sortOrder()).isEqualTo(SortOrder.ASC);
+            assertThat(envelopeDto.bookList()).containsExactly(book);
+        });
         verifyNoMoreInteractions(bookService);
     }
+
 }

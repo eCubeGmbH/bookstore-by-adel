@@ -7,7 +7,7 @@ export enum SortOrder {
 }
 
 export enum SortField {
-    ID = 'ID', AUTHORID = 'AUTHORID', NAME = 'NAME', PUBLISHDATE = 'PUBLISHDATE', AUTHOR = 'AUTHOR'
+    ID = 'ID', AUTHOR_ID = 'AUTHOR_ID', NAME = 'NAME', PUBLISH_DATE = 'PUBLISH_DATE', AUTHOR = 'AUTHOR'
 }
 
 const loader: LoaderFunction = async function getData({request}) {

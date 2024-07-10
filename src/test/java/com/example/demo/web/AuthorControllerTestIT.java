@@ -2,7 +2,6 @@ package com.example.demo.web;
 
 import com.example.demo.model.Author;
 import com.example.demo.model.AuthorsEnvelopDto;
-import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -210,7 +209,7 @@ class AuthorControllerTestIT {
                     assertThat(authorsEnvelopDto.pageSize()).isEqualTo(10);
                     assertThat(authorsEnvelopDto.authorsCount()).isEqualTo(1L);
                     assertThat(authorsEnvelopDto.sortOrder()).isEqualTo(SortOrder.ASC);
-                    assertThat(authorsEnvelopDto.sortField()).isEqualTo(SortField.NAME);
+                    assertThat(authorsEnvelopDto.sortField()).isEqualTo(AuthorsEnvelopDto.SortField.NAME);
                     assertThat(authorsEnvelopDto.authors()).satisfies(author1 -> {
                         assertThat(author1.id()).isNotEqualTo(1L);
                         assertThat(author1.name()).isEqualTo("steve");

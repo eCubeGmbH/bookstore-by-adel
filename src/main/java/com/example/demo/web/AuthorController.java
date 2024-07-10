@@ -2,7 +2,6 @@ package com.example.demo.web;
 
 import com.example.demo.model.Author;
 import com.example.demo.model.AuthorsEnvelopDto;
-import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.service.AuthorService;
 import jakarta.validation.Valid;
@@ -41,7 +40,7 @@ class AuthorController implements IAuthorController {
     public AuthorsEnvelopDto getAllAuthors(
         @RequestParam(value = "pageNumber") int pageNumber,
         @RequestParam(value = "pageSize") int pageSize,
-        @RequestParam(value = "sortField", defaultValue = "NAME") SortField sortField,
+        @RequestParam(value = "sortField", defaultValue = "NAME") AuthorsEnvelopDto.SortField sortField,
         @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
         @RequestParam(value = "maybeAuthorName", required = false) Optional<String> maybeAuthorName
     ) {

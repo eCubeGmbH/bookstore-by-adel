@@ -70,13 +70,13 @@ export default function BooksTable({
                     <th onClick={() => handleSort(SortField.ID, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by Id"}>Book
                         ID {sortField !== SortField.ID ? '' : sortOrder === SortOrder.ASC ? '▲' : '▼'}</th>
-                    <th onClick={() => handleSort(SortField.AUTHORID, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                    <th onClick={() => handleSort(SortField.AUTHOR_ID, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by AuthorId"}>Author
-                        ID {sortField === SortField.AUTHORID ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
+                        ID {sortField === SortField.AUTHOR_ID ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
                     <th onClick={() => handleSort(SortField.NAME, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by Name"}>Name {sortField === SortField.NAME ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th onClick={() => handleSort(SortField.PUBLISHDATE, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
-                        title={"click to sort by PublishDate"}>PublishDate {sortField === SortField.PUBLISHDATE ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
+                    <th onClick={() => handleSort(SortField.PUBLISH_DATE, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
+                        title={"click to sort by PublishDate"}>PublishDate {sortField === SortField.PUBLISH_DATE ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
                     <th onClick={() => handleSort(SortField.AUTHOR, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by Author"}>Author {sortField === SortField.AUTHOR ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
                     <th>Edit</th>

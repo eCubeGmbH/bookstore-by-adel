@@ -1,13 +1,12 @@
 import {FormEvent, useState} from "react";
 import {LoaderFunction, useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {Book} from "../components/BooksTable";
-import "../assets/add-new-book.css";
+import "../assets/add-new-book.css"
 
 export const loader: LoaderFunction = async function getData({params}) {
     const response = await fetch(`/api/books/${params.id}`);
     return response.json();
 }
-
 
 const BookFormPage = () => {
     const navigate = useNavigate();
@@ -44,9 +43,14 @@ const BookFormPage = () => {
         navigate('/books');
     };
 
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
         setBook({...book, [name]: value});
+    };
+
+    const handleCancel = () => {
+        navigate('/books');
     };
 
     return (
@@ -67,9 +71,9 @@ const BookFormPage = () => {
                     </label>
                 </div>
                 <button type="submit">Save</button>
+                <button type="submit" onClick={handleCancel} >Cancel</button>
             </form>
         </div>
     );
 };
-
 export default BookFormPage;

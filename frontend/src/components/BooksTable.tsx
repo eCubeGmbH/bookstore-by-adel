@@ -14,10 +14,10 @@ export interface Book {
 interface Props {
     books: Book[],
     previousLink: string;
-    nextLink:string;
+    nextLink: string;
     hasPrevious: boolean;
     hasNext: boolean;
-    sortField:string;
+    sortField: string;
     sortOrder: string;
     handleEditBook: (book: Book) => void;
     handleViewBookDetails?: (book: Book) => void;

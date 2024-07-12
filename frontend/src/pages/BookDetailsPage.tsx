@@ -1,6 +1,7 @@
 import {LoaderFunction, useLoaderData, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import "../assets/edit-book.css";
+import "../assets/edit-book.css"
+
 interface Book {
     id: number;
     authorId: number;
@@ -60,27 +61,32 @@ const BookDetailsPage = () => {
         const {name, value} = event.target;
         setEditedBook({...editedBook, [name]: value});
     };
+    const handleCancel = () => {
+        navigate('/books');
+    };
 
     return (
-        <div className={"overlay"}>
-            <div className={"form-container"}>
+        <div>
+            <div className="form-container2">
                 <p>
                     <strong>Publish Date:</strong> {isEditing ?
-                    <input type="date" name="publishDate" value={editedBook.publishDate}
-                           onChange={handleChange}/> : book.publishDate}
+                    <input type="date" name="publishDate" value={editedBook.publishDate} onChange={handleChange} /> : book.publishDate}
                 </p>
                 <p>
                     <strong>Name:</strong> {isEditing ?
-                    <input type="text" name="name" value={editedBook.name} onChange={handleChange}/> : book.name}
+                    <input type="text" name="name" value={editedBook.name} onChange={handleChange} /> : book.name}
                 </p>
 
                 {isEditing ? (
-                    <button onClick={handleSaveBook}>Save</button>
+                    <div className="form-buttons">
+                        <button className="btn btn-save" onClick={handleSaveBook}>Save</button>
+                        <button className="btn btn-cancel" onClick={handleCancel}>Cancel</button>
+                    </div>
                 ) : (
-                    <>
-                        <button onClick={handleEditBook}>Edit</button>
-                        <button onClick={handleDeleteBook}>Delete</button>
-                    </>
+                    <div className="form-buttons">
+                        <button className="btn btn-edit" onClick={handleEditBook}>Edit</button>
+                        <button className="btn btn-delete" onClick={handleDeleteBook}>Delete</button>
+                    </div>
                 )}
             </div>
         </div>

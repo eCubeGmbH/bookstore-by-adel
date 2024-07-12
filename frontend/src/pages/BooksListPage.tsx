@@ -1,6 +1,6 @@
 import {LoaderFunction, useLoaderData, useNavigate, useSearchParams} from "react-router-dom";
-import BooksTable, {Book} from "../components/BooksTable";
-import {useState} from "react";
+import BooksTable, {Book, BooksEnvelopDto} from "../components/BooksTable";
+import "../assets/booksDisplay.css"
 
 export enum SortOrder {
     ASC = 'ASC', DESC = 'DESC'
@@ -20,14 +20,14 @@ const loader: LoaderFunction = async function getData({request}) {
     return response.json();
 }
 const BooksListPage = () => {
-    const loaderData = useLoaderData() as Book[];
-    const [books] = useState(loaderData);
+    const bookData = useLoaderData() as BooksEnvelopDto;
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const pageNumber = +(searchParams.get("pageNumber") || 0);
     const pageSize = +(searchParams.get("pageSize") || 10);
     const sortField = searchParams.get("sortField") || "NAME";
     const sortOrder = searchParams.get("sortOrder") || "ASC";
+    const hasNext = bookData.bookList.length === pageSize;
 
 
     const handleEditBook = (book: Book) => {
@@ -41,24 +41,24 @@ const BooksListPage = () => {
     const handleCreateBook = () => {
         navigate('/books/new');
     };
-
-    const handlePageChange = (direction: "next" | "prev") => {
-        const newPageNumber = direction === "next" ? pageNumber + 1 : pageNumber - 1;
-        navigate(`/books?pageNumber=${newPageNumber}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`);
-    };
+    const hasPrevious = pageNumber > 0;
+    const previousPage = hasPrevious ? pageNumber - 1 : 0;
+    const nextPage = hasNext ? pageNumber + 1 : pageNumber;
+    const nextLink: string = `?pageNumber=${nextPage}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`;
+    const previousLink: string = `?pageNumber=${previousPage}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`;
     return (
         <div>
-            <button onClick={handleCreateBook}>Add New Book</button>
+            <button className={"create-book-button"} onClick={handleCreateBook}>Add New Book</button>
             <BooksTable
-                books={books}
+                books={bookData.bookList}
                 handleEditBook={handleEditBook}
                 handleViewBookDetails={handleViewBookDetails}
                 sortField={sortField}
                 sortOrder={sortOrder}
-                hasNext={books.length === pageSize}
-                hasPrevious={pageNumber > 0}
-                nextLink={() => handlePageChange("next")}
-                previousLink={() => handlePageChange("prev")}
+                hasNext={hasNext}
+                hasPrevious={pageNumber !== 0}
+                nextLink={nextLink}
+                previousLink={previousLink}
             />
         </div>
     );

@@ -10,7 +10,7 @@ export enum SortOrder {
     ASC='ASC', DESC='DESC'
 }
 export enum SortField {
-    IGNORE_ME='IGNORE_ME', ID= 'ID', NAME='NAME', COUNTRY='COUNTRY', BIRTHDATE='BIRTHDATE'
+     ID= 'ID', NAME='NAME', COUNTRY='COUNTRY', BIRTHDATE='BIRTHDATE'
 }
 
 const loader: LoaderFunction = async function getData({request}) {

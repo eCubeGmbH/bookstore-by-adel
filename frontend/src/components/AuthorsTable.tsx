@@ -43,9 +43,9 @@ export default function AuthorsTable({
                                          handleDeleteAuthor
                                      }: Props) {
     const loaderAuthors = useLoaderData() as AuthorsEnvelopDto;
-    const [searchParams, setSearchParams] = useSearchParams();
-    const sortField: SortField = SortField[searchParams.get(`sortField`) as keyof typeof SortField] || SortField.NAME;
-    const sortOrder: SortOrder = SortOrder[searchParams.get(`sortOrder`) as keyof typeof SortOrder] || SortOrder.ASC;
+    const [search, setSearchParams] = useSearchParams();
+    const sortField: SortField = SortField[search.get(`sortField`) as keyof typeof SortField] || SortField.NAME;
+    const sortOrder: SortOrder = SortOrder[search.get(`sortOrder`) as keyof typeof SortOrder] || SortOrder.ASC;
 
     const formatDate = (date: Date): string => {
         return new Date(date).toLocaleDateString('de-DE', {
@@ -57,7 +57,7 @@ export default function AuthorsTable({
 
     const handleSort = (sortField: SortField, sortOrder: SortOrder) => {
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
+            ...Object.fromEntries(search.entries()),
             sortField: SortField[sortField],
             sortOrder: SortOrder[sortOrder],
             pageNumber: '0',

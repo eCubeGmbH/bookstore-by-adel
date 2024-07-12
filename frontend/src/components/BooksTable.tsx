@@ -1,6 +1,6 @@
 import {MdEdit} from "react-icons/md";
 import {Link, useLoaderData, useSearchParams} from "react-router-dom";
-import '../assets/booksDisplay.css';
+import "../assets/booksDisplay.css"
 import {SortField, SortOrder} from "../pages/BooksListPage.tsx";
 
 export interface Book {
@@ -13,11 +13,11 @@ export interface Book {
 
 interface Props {
     books: Book[],
-    previousLink: () => void;
-    nextLink: () => void;
+    previousLink: string;
+    nextLink:string;
     hasPrevious: boolean;
     hasNext: boolean;
-    sortField:string
+    sortField:string;
     sortOrder: string;
     handleEditBook: (book: Book) => void;
     handleViewBookDetails?: (book: Book) => void;
@@ -99,10 +99,10 @@ export default function BooksTable({
                 ))}
                 </tbody>
             </table>
-            <Link to={previousLink} className={hasPrevious ? '' : 'disabled-link'}>
+            <Link to={previousLink} disabled={!hasPrevious}>
                 <button disabled={!hasPrevious}>Previous</button>
             </Link>
-            <Link to={nextLink} className={hasNext ? '' : 'disabled-link'}>
+            <Link to={nextLink} disabled={!hasNext}>
                 <button disabled={!hasNext}>Next</button>
             </Link>
         </>

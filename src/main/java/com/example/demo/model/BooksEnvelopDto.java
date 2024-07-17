@@ -17,7 +17,7 @@ public record BooksEnvelopDto(
     public enum SortField {
 
         ID("id"),
-        AUTHOR_ID("authorId"),
+        AUTHOR_ID("authorReference.id"),
         NAME("name"),
         PUBLISH_DATE("publishDate");
 

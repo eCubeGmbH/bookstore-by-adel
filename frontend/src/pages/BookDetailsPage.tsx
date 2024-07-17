@@ -70,11 +70,12 @@ const BookDetailsPage = () => {
             <div className="form-container2">
                 <p>
                     <strong>Publish Date:</strong> {isEditing ?
-                    <input type="date" name="publishDate" value={editedBook.publishDate} onChange={handleChange} /> : book.publishDate}
+                    <input type="date" name="publishDate" value={editedBook.publishDate}
+                           onChange={handleChange}/> : book.publishDate}
                 </p>
                 <p>
                     <strong>Name:</strong> {isEditing ?
-                    <input type="text" name="name" value={editedBook.name} onChange={handleChange} /> : book.name}
+                    <input type="text" name="name" value={editedBook.name} onChange={handleChange}/> : book.name}
                 </p>
 
                 {isEditing ? (

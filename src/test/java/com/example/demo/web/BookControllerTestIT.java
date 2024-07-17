@@ -149,9 +149,10 @@ public class BookControllerTestIT {
 
         String responseBody = responseEntity.getBody();
         assertThat(responseBody).isNotNull();
-        assertThat(responseBody).contains("parameters pageNumber and pageSize must be greater than 0");
+        assertThat(responseBody).contains("\"status\":400");
+        assertThat(responseBody).contains("\"error\":\"Bad Request\"");
+        assertThat(responseBody).contains("\"message\":\"Validation failed");
     }
-
 
     @Test
     void test_getBook() {

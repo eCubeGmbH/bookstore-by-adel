@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -76,6 +77,21 @@ public class BookRepositoryTest {
 
         assertThat(bookRepository.findByNameIgnoreCase(name, PageRequest.of(0, 2)))
             .hasSize(1);
+    }
+
+    @Test
+    void test_FindAllSortedByAuthorId() {
+        var bookN = new BookEntity(authorEntity, "Neugierig", LocalDate.of(1955,1,12));
+        var bookF = new BookEntity(authorEntity, "Funny", LocalDate.of(1955,1,12));
+        var bookG = new BookEntity(authorEntity, "Glad", LocalDate.of(1955,1,12));
+
+        bookRepository.save(bookN);
+        bookRepository.save(bookF);
+        bookRepository.save(bookG);
+
+        List<BookEntity> books = bookRepository.findAll(Sort.by(Sort.Direction.ASC, "authorReference.id"));
+
+        assertThat(books).hasSize(3);
     }
 
     @Test

@@ -35,7 +35,7 @@ public interface IBookController {
         )
     })
     @PostMapping(consumes = {"application/json"}, produces = {"application/json"})
-    Book addAuthor(@Valid @RequestBody Book book);
+    Book addBook(@Valid @RequestBody Book book);
 
     @Operation(summary = "Get All Books",
         description = "Retrieves a paginated list of books with optional sorting and filtering by name.",
@@ -94,7 +94,7 @@ public interface IBookController {
                 schema = @Schema(implementation = Book.class))
         })
     @GetMapping(value = {"/{bookId}"}, produces = {"application/json"})
-    Book getBook(@PathVariable long bookId);
+    Book getBook(@PathVariable Long bookId);
 
     @Operation(summary = "Delete Book")
     @ApiResponse(responseCode = "200",
@@ -104,7 +104,7 @@ public interface IBookController {
             schema = @Schema(implementation = Book.class))
         })
     @DeleteMapping(value = {"/{bookId}"}, consumes = {"application/json"})
-    void removeBook(@PathVariable long bookId);
+    void deleteBook(@PathVariable long bookId);
 
     @Operation(summary = "Update Book")
     @ApiResponse(responseCode = "200",

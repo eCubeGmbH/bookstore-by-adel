@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = {"/api/books"})
-public class BookController {
+public class BookController implements IBookController {
     private final BookService bookService;
 
     @Autowired

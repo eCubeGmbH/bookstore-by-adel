@@ -1,7 +1,7 @@
 package com.example.demo.web;
 
-import com.example.demo.model.Author;
-import com.example.demo.model.AuthorsEnvelopDto;
+import com.example.demo.model.Book;
+import com.example.demo.model.BooksEnvelopDto;
 import com.example.demo.model.enums.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,48 +22,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Optional;
 
-public interface IAuthorController {
-    @Operation(summary = "Add new Author")
+public interface IBookController {
+    @Operation(summary = "Add new Book")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "Added the Author",
+            description = "Added the Book",
             content = {@Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = Author.class)
+                schema = @Schema(implementation = Book.class)
             )}
         )
     })
     @PostMapping(consumes = {"application/json"}, produces = {"application/json"})
-    Author addAuthor(@Valid @RequestBody Author author);
+    Book addBook(@Valid @RequestBody Book book);
 
-    @Operation(summary = "Get All Authors",
-        description = "Retrieves a paginated list of authors with optional sorting and filtering by name.",
+    @Operation(summary = "Get All Books",
+        description = "Retrieves a paginated list of books with optional sorting and filtering by name.",
         parameters = {
             @Parameter(name = "pageNumber",
                 description = "The page number to retrieve. Must be greater than or equal to 0.",
                 required = true, in = ParameterIn.QUERY,
                 schema = @Schema(type = "integer", minimum = "0")),
             @Parameter(name = "pageSize",
-                description = "The number of authors to retrieve per page. Must be between 1 and 1000, inclusive.",
+                description = "The number of books to retrieve per page. Must be between 1 and 1000, inclusive.",
                 required = true, in = ParameterIn.QUERY,
                 schema = @Schema(type = "integer", minimum = "1", maximum = "1000")),
             @Parameter(name = "sortField",
-                description = "The field by which to sort the authors.",
+                description = "The field by which to sort the books.",
                 in = ParameterIn.QUERY,
-                schema = @Schema(type = "string", defaultValue = "name", allowableValues = {"NAME", "ID", "COUNTRY", "BIRTH_DATE"})),
+                schema = @Schema(type = "string", defaultValue = "name", allowableValues = {"NAME", "AUTHORID", "PUBLISH_DATE"})),
             @Parameter(name = "sortOrder",
-                description = "The order in which to sort the authors.",
+                description = "The order in which to sort the books.",
                 in = ParameterIn.QUERY,
                 schema = @Schema(type = "string", defaultValue = "asc", allowableValues = {"ASC", "DESC"})),
-            @Parameter(name = "maybeAuthorName",
-                description = "An optional parameter to filter authors by name")
+            @Parameter(name = "maybeBookName",
+                description = "An optional parameter to filter books by name")
         })
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
-            description = "Successfully retrieved list of authors",
+            description = "Successfully retrieved list of books",
             content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = Author.class))),
+                schema = @Schema(implementation = Book.class))),
         @ApiResponse(responseCode = "400",
             description = "Invalid input parameters",
             content = @Content(mediaType = "application/json")),
@@ -75,44 +75,44 @@ public interface IAuthorController {
             description = "result can  contains maximum 1000 elements")
     })
     @GetMapping(produces = {"application/json"})
-    AuthorsEnvelopDto getAllAuthors(
+    BooksEnvelopDto getBooks(
         @Min(value = 0, message = "Parameter pageNumber must be greater or equal 0")
         @RequestParam(value = "pageNumber") int pageNumber,
         @Min(value = 1, message = "Parameter pageSize must be greater or equal 1")
         @Max(value = 1000, message = "Parameter pageSize must be less than 1000")
         @RequestParam(value = "pageSize") int pageSize,
-        @RequestParam(value = "sortField", defaultValue = "name") AuthorsEnvelopDto.SortField sortField,
+        @RequestParam(value = "sortField", defaultValue = "name") BooksEnvelopDto.SortField sortField,
         @RequestParam(value = "sortOrder", defaultValue = "asc") SortOrder sortOrder,
-        @RequestParam(value = "authorName", required = false) Optional<String> maybeAuthorName
+        @RequestParam(value = "authorName", required = false) Optional<String> maybeBookName
     );
 
-    @Operation(summary = "Find Author by it´s Id")
+    @Operation(summary = "Find Book by it´s Id")
     @ApiResponse(responseCode = "200",
         description = "succeed",
         content = {@Content
             (mediaType = "application/json",
-                schema = @Schema(implementation = Author.class))
+                schema = @Schema(implementation = Book.class))
         })
-    @GetMapping(value = {"/{authorId}"}, produces = {"application/json"})
-    Author getAuthor(@PathVariable long authorId);
+    @GetMapping(value = {"/{bookId}"}, produces = {"application/json"})
+    Book getBook(@PathVariable Long bookId);
 
-    @Operation(summary = "Delete Author")
+    @Operation(summary = "Delete Book")
     @ApiResponse(responseCode = "200",
         description = "succeed",
         content = {@Content(
             mediaType = "application/json",
-            schema = @Schema(implementation = Author.class))
+            schema = @Schema(implementation = Book.class))
         })
-    @DeleteMapping(value = {"/{authorId}"}, consumes = {"application/json"})
-    void removeAuthor(@PathVariable long authorId);
+    @DeleteMapping(value = {"/{bookId}"}, consumes = {"application/json"})
+    void deleteBook(@PathVariable long bookId);
 
-    @Operation(summary = "Update Author")
+    @Operation(summary = "Update Book")
     @ApiResponse(responseCode = "200",
-        description = "Author has been deleted",
+        description = "Book has been deleted",
         content = {@Content(
             mediaType = "application/json",
-            schema = @Schema(implementation = Author.class))
+            schema = @Schema(implementation = Book.class))
         })
-    @PutMapping(value = {"/{authorId}"}, consumes = {"application/json"}, produces = {"application/json"})
-    Author updateAuthor(@PathVariable long authorId, @Valid @RequestBody Author authorFromUser);
+    @PutMapping(value = {"/{bookId}"}, consumes = {"application/json"}, produces = {"application/json"})
+    Book updateBook(@PathVariable long bookId, @Valid @RequestBody Book bookFromUser);
 }

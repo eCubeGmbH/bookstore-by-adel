@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.BooksEnvelopDto;
 import com.example.demo.model.entity.AuthorEntity;
 import com.example.demo.model.entity.BookEntity;
+import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.web.InvalidDataException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -38,22 +41,30 @@ public class BookService {
         }).orElseThrow(() -> new InvalidDataException(authorErrorMessage));
     }
 
-    public List<Book> getAll(String bookName, int from, int to) {
+    public BooksEnvelopDto getAll(int pageNumber, int pageSize, BooksEnvelopDto.SortField sortField, SortOrder sortOrder, Optional<String> maybeBookName) {
         // Sorting
-        Sort sortOrder = Sort.by("name").ascending()
-            .and(Sort.by("id").ascending());
+        Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.name()), sortField.getFieldName());
+
         // Pagination + Sorting
-        int pageSize = to - from;
-        int pageNumber = from / pageSize;
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize).withSort(sortOrder);
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
-        List<BookEntity> bookEntities = (bookName == null || bookName.isBlank())
-            ? bookRepository.findAll(pageRequest).getContent()
-            : bookRepository.findByNameIgnoreCase(bookName.trim(), pageRequest);
+        Page<BookEntity> booksCount = maybeBookName
+            .map(name -> bookRepository.findByNameIgnoreCase(name.trim(), pageRequest))
+            .orElseGet(() -> bookRepository.findAll(pageRequest));
 
-        return bookEntities.stream()
+        List<Book> books = booksCount.getContent().stream()
             .map(this::toBook)
             .toList();
+
+        return new BooksEnvelopDto(
+            pageNumber,
+            pageSize,
+            booksCount.getTotalElements(),
+            sortField,
+            sortOrder,
+            maybeBookName.orElse(null),
+            books
+        );
     }
 
     public Book getBook(Long bookId) {

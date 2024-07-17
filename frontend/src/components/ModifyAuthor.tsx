@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Author} from "./AuthorsTable.tsx";
-import '../assets/index.css';
+import '../assets/authorsDisplay.css';
 
 interface ModifyAuthorProps {
     author: Author | null,

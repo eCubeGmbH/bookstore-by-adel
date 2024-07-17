@@ -3,6 +3,9 @@ import ErrorPage from "./pages/ErrorPage.tsx";
 import RootLayout from "./components/RootLayout.tsx";
 import AuthorsListPage from "./pages/AuthorsListPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
+import BooksListPage from "./pages/BooksListPage.tsx";
+import BookFormPage from "./pages/BookFormPage.tsx";
+import BookDetailsPage from "./pages/BookDetailsPage.tsx";
 
 export default function App() {
 
@@ -24,18 +27,33 @@ export default function App() {
                             element: <AuthorsListPage/>,
                             loader: AuthorsListPage.loader
                         },
-
                     ]
                 },
-
+                {
+                    path: 'books',
+                    children: [
+                        {
+                            index: true,
+                            element: <BooksListPage/>,
+                            loader: BooksListPage.loader
+                        },
+                        {
+                            path: 'new',
+                            element: <BookFormPage/>,
+                        },
+                        {
+                            path: ':id',
+                            element: <BookDetailsPage/>,
+                            loader: BookDetailsPage.loader
+                        },
+                    ]
+                },
             ]
         },
     ]);
     return (
         <>
             <RouterProvider router={router}/>
-
         </>
     );
 }
-

@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.model.Author;
 import com.example.demo.model.AuthorsEnvelopDto;
 import com.example.demo.model.entity.AuthorEntity;
-import com.example.demo.model.enums.SortField;
 import com.example.demo.model.enums.SortOrder;
 import com.example.demo.repository.AuthorRepository;
 import org.junit.jupiter.api.Test;
@@ -59,7 +58,7 @@ class AuthorServiceTest {
         when(authorRepository.findAll(pageRequest1)).thenReturn(page1);
 
         // act
-        AuthorsEnvelopDto result1 = authorService.getAll(0, 3, SortField.NAME, SortOrder.ASC, Optional.empty());
+        AuthorsEnvelopDto result1 = authorService.getAll(0, 3, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty());
 
         // assert
         assertThat(result1.authors()).extracting(Author::name).contains("John", "Müller", "müller");
@@ -74,7 +73,7 @@ class AuthorServiceTest {
         when(authorRepository.findAll(pageRequest2)).thenReturn(page2);
 
         // act
-        AuthorsEnvelopDto result2 = authorService.getAll(1, 3, SortField.NAME, SortOrder.ASC, Optional.empty());
+        AuthorsEnvelopDto result2 = authorService.getAll(1, 3, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty());
 
         // assert
         assertThat(result2.authors()).extracting(Author::name).contains("Meier", "Rein", "Weg");
@@ -89,7 +88,7 @@ class AuthorServiceTest {
         when(authorRepository.findAll(pageRequest3)).thenReturn(page3);
 
         // act
-        AuthorsEnvelopDto result3 = authorService.getAll(2, 2, SortField.NAME, SortOrder.ASC, Optional.empty());
+        AuthorsEnvelopDto result3 = authorService.getAll(2, 2, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.empty());
 
         // assert
         assertThat(result3.authors()).extracting(Author::name).contains("Frank", "FNG");
@@ -104,7 +103,7 @@ class AuthorServiceTest {
         when(authorRepository.findByName(eq("John"), any(Pageable.class))).thenReturn(page);
 
         // act
-        AuthorsEnvelopDto result = authorService.getAll(0, 2, SortField.NAME, SortOrder.ASC, Optional.of("John"));
+        AuthorsEnvelopDto result = authorService.getAll(0, 2, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.of("John"));
 
         // assert
         assertThat(result.authors()).extracting(Author::name).contains("John");
@@ -120,7 +119,7 @@ class AuthorServiceTest {
         when(authorRepository.findByName(authorName.trim(), pageRequest)).thenReturn(page);
 
         // act
-        AuthorsEnvelopDto result = authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.of(authorName));
+        AuthorsEnvelopDto result = authorService.getAll(0, 11, AuthorsEnvelopDto.SortField.ID, SortOrder.ASC, Optional.of(authorName));
 
         // assert
         assertThat(result.authors()).extracting(Author::name).contains("John");
@@ -140,7 +139,7 @@ class AuthorServiceTest {
         when(authorRepository.findAll(pageRequest1)).thenReturn(page1);
 
         // act
-        AuthorsEnvelopDto result = authorService.getAll(0, 3, SortField.NAME, SortOrder.ASC, Optional.ofNullable(authorName));
+        AuthorsEnvelopDto result = authorService.getAll(0, 3, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.ofNullable(authorName));
 
         // assert
         assertThat(result.authors()).extracting(Author::name).contains("John", "Müller", "müller");
@@ -155,7 +154,7 @@ class AuthorServiceTest {
         when(authorRepository.findByName("steve", pageRequest)).thenReturn(page);
 
         // act
-        AuthorsEnvelopDto result = authorService.getAll(0, 11, SortField.ID, SortOrder.ASC, Optional.of("steve"));
+        AuthorsEnvelopDto result = authorService.getAll(0, 11, AuthorsEnvelopDto.SortField.ID, SortOrder.ASC, Optional.of("steve"));
 
         // assert
         assertThat(result.authors()).isEmpty();
@@ -173,7 +172,7 @@ class AuthorServiceTest {
         when(authorRepository.findByName(authorName.trim(), pageRequest)).thenReturn(page);
 
         // act
-        AuthorsEnvelopDto result = authorService.getAll(0, 11, SortField.NAME, SortOrder.ASC, Optional.of(authorName));
+        AuthorsEnvelopDto result = authorService.getAll(0, 11, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.of(authorName));
 
         // assert
         assertThat(result.authors()).hasSize(1).extracting(Author::name).containsExactly("Meier");
@@ -181,7 +180,7 @@ class AuthorServiceTest {
 
         when(authorRepository.findByName(authorName.trim(), pageRequest)).thenReturn(page);
 
-        result = authorService.getAll(0, 11, SortField.NAME, SortOrder.ASC, Optional.of(authorName));
+        result = authorService.getAll(0, 11, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.of(authorName));
 
         assertThat(result.authors()).isNotEmpty();
     }
@@ -194,7 +193,7 @@ class AuthorServiceTest {
         when(authorRepository.findByName("Müller", pageRequest)).thenReturn(page);
 
         // act
-        AuthorsEnvelopDto result = authorService.getAll(0, 11, SortField.NAME, SortOrder.ASC, Optional.of("Müller"));
+        AuthorsEnvelopDto result = authorService.getAll(0, 11, AuthorsEnvelopDto.SortField.NAME, SortOrder.ASC, Optional.of("Müller"));
 
         // assert
         assertThat(result.authors()).hasSize(2).extracting(Author::name).containsExactlyInAnyOrder("Müller", "müller");

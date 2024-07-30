@@ -1,7 +1,7 @@
 .form-container2 {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 20px;
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 30px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #ffffff;
@@ -21,6 +21,13 @@
     color: #555;
 }
 
+.form-container2 hr {
+    border: 0;
+    height: 7px;
+    background: darkturquoise;
+    margin: 20px 0;
+}
+
 .form-container2 input[type="text"],
 .form-container2 input[type="date"] {
     width: calc(100% - 22px);
@@ -30,7 +37,7 @@
     font-size: 16px;
     box-sizing: border-box;
     margin-top: 5px;
-    outline: none; /* Remove default focus outline */
+    outline: none;
 }
 
 .form-buttons {

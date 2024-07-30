@@ -6,6 +6,8 @@ import HomePage from "./pages/HomePage.tsx";
 import BooksListPage from "./pages/BooksListPage.tsx";
 import BookFormPage from "./pages/BookFormPage.tsx";
 import BookDetailsPage from "./pages/BookDetailsPage.tsx";
+import AuthorDetailsPage from "./pages/AuthorDetailsPage.tsx";
+import AuthorFormPage from "./pages/AuthorFormPage.tsx";
 
 export default function App() {
 
@@ -27,6 +29,16 @@ export default function App() {
                             element: <AuthorsListPage/>,
                             loader: AuthorsListPage.loader
                         },
+                        {
+                            path: 'new',
+                            element: <AuthorFormPage/>
+                        },
+                        {
+                            path: ':id',
+                            element: <AuthorDetailsPage/>,
+                            loader: AuthorDetailsPage.loader
+                        },
+
                     ]
                 },
                 {

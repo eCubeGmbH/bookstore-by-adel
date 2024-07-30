@@ -1,6 +1,6 @@
 import '../assets/authorsDisplay.css'
 import '../assets/sort-symbols.css'
-import {MdDelete, MdEdit} from "react-icons/md";
+import {MdEdit} from "react-icons/md";
 import {Link, useLoaderData, useSearchParams} from "react-router-dom";
 import {SortField, SortOrder} from "../pages/AuthorsListPage.tsx";
 
@@ -20,7 +20,6 @@ interface Props {
     sortField: SortField;
     sortOrder: SortOrder;
     handleEditAuthor: (author: Author) => void;
-    handleDeleteAuthor: (author: Author) => void;
 }
 
 export interface AuthorsEnvelopDto {
@@ -40,7 +39,6 @@ export default function AuthorsTable({
                                          hasPrevious,
                                          hasNext,
                                          handleEditAuthor,
-                                         handleDeleteAuthor
                                      }: Props) {
     const loaderAuthors = useLoaderData() as AuthorsEnvelopDto;
     const [search, setSearchParams] = useSearchParams();
@@ -77,7 +75,7 @@ export default function AuthorsTable({
                         title={"Sort nach Country"}>Country {sortField === SortField.COUNTRY ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
                     <th onClick={() => handleSort(SortField.BIRTHDATE, sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC)}
                         title={"click to sort by Birthdate"}>BirthDate {sortField === SortField.BIRTHDATE ? (sortOrder === SortOrder.ASC ? '▲' : '▼') : ''}</th>
-                    <th>Actions</th>
+                    <th>Edit</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -89,7 +87,6 @@ export default function AuthorsTable({
                         <td>{formatDate(author.birthDate)}</td>
                         <td>
                             <button onClick={() => handleEditAuthor(author)}><MdEdit/></button>
-                            <button onClick={() => handleDeleteAuthor(author)}><MdDelete/></button>
                         </td>
                     </tr>
                 ))}

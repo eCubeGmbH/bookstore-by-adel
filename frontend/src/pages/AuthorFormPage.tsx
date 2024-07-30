@@ -1,80 +1,78 @@
 import {FormEvent, useState} from "react";
 import {LoaderFunction, useLoaderData, useNavigate, useParams} from "react-router-dom";
-import {Book} from "../components/BooksTable";
 import "../assets/add-new-book-author.css"
+import {Author} from "../components/AuthorsTable.tsx";
 
 export const loader: LoaderFunction = async function getData({params}) {
-    const response = await fetch(`/api/books/${params.id}`);
+    const response = await fetch(`/api/authors/${params.id}`);
     return response.json();
 }
 
-const BookFormPage = () => {
+const AuthorFormPage = () => {
     const navigate = useNavigate();
     const {id} = useParams();
-    const loaderData = useLoaderData() as Book;
-    const [book, setBook] = useState<Book>(
+    const loaderData = useLoaderData() as Author;
+    const [author, setAuthor] = useState<Author>(
         loaderData || {
             id: 0,
-            authorId: 0,
             name: "",
-            publishDate: new Date().toISOString().substring(0, 10),
+            country: "",
+            birthDate: new Date().toISOString().substring(0, 10),
         }
     );
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         if (id) {
-            await fetch(`/api/books/${id}`, {
+            await fetch(`/api/authors/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(book)
-
-            })
-            navigate(`/books/${id}`);
+                body: JSON.stringify(author)
+            });
         } else {
-            await fetch('/api/books', {
+            await fetch('/api/authors', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(book),
+                body: JSON.stringify(author),
             });
-            navigate(`/books`);
         }
+        navigate('/authors');
     };
 
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
-        setBook({...book, [name]: value});
+        setAuthor({...author, [name]: value});
     };
 
     const handleCancel = () => {
-        navigate('/books');
+        navigate('/authors');
     };
 
     return (
         <div className="form-container">
-            <h1>{id ? "Edit Book" : "Add New Book"}</h1>
+            <h1>{id ? "Edit Author" : "Add New Author"}</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>
                         Name:
-                        <input type="text" name="name" value={book.name} onChange={handleChange} required/>
+                        <input type="text" name="name" value={author.name} onChange={handleChange} required/>
                     </label>
                 </div>
                 <div>
                     <label>
-                        Author Id:
-                        <input type="text" name="authorId" value={book.authorId} onChange={handleChange} required/>
+                        Country:
+                        <input type="text" name="country" value={author.country} onChange={handleChange} required/>
                     </label>
                 </div>
                 <div>
                     <label>
-                        Publish Date:
-                        <input type="date" name="publishDate" value={book.publishDate.toString()}
+                        Birth Date:
+                        <input type="date" name="birthDate" value={author.birthDate.toString()}
                                onChange={handleChange} required/>
                     </label>
                 </div>
@@ -84,4 +82,4 @@ const BookFormPage = () => {
         </div>
     );
 };
-export default BookFormPage;
+export default AuthorFormPage;

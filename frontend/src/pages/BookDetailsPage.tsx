@@ -1,6 +1,6 @@
 import {LoaderFunction, useLoaderData, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import "../assets/edit-book.css"
+import "../assets/edit-book-author.css"
 
 interface Book {
     id: number;
@@ -47,14 +47,13 @@ const BookDetailsPage = () => {
                 ...editedBook,
                 publishDate: new Date(editedBook.publishDate).toISOString()
             })
-        });
+        })
         if (response.ok) {
             const updatedBook = await response.json();
             setEditedBook(updatedBook);
             setIsEditing(false);
-        } else {
-            console.error("Failed to save book");
         }
+        navigate(`/books/${editedBook.id}`)
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,10 +72,12 @@ const BookDetailsPage = () => {
                     <input type="date" name="publishDate" value={editedBook.publishDate}
                            onChange={handleChange}/> : book.publishDate}
                 </p>
+                <hr/>
                 <p>
                     <strong>Name:</strong> {isEditing ?
                     <input type="text" name="name" value={editedBook.name} onChange={handleChange}/> : book.name}
                 </p>
+                <hr/>
 
                 {isEditing ? (
                     <div className="form-buttons">

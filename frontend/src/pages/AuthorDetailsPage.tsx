@@ -1,6 +1,6 @@
-import {LoaderFunction, useLoaderData, useNavigate} from "react-router-dom";
-import {useState} from "react";
-
+import {LoaderFunction, useLoaderData, useNavigate, useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
+import "../assets/add-new-book-author.css"
 
 interface Author {
     id: number;
@@ -9,101 +9,121 @@ interface Author {
     birthDate: string;
 }
 
-const loader: LoaderFunction = async function getAuthorDetails({params}) {
-    const response = await fetch(`/api/authors/${params.id}`);
-    if (!response.ok) {
-        throw new Error("Author not found");
+// Loader function to fetch author data for editing
+export const loader: LoaderFunction = async ({params}) => {
+    if (params.id) {
+        const response = await fetch(`/api/authors/${params.id}`);
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Failed to load author data");
+        }
     }
-    const author = await response.json();
-    author.birthDate = new Date(author.birthDate).toISOString().substring(0, 10);
-    return author;
-}
+    return null;
+};
 
 const AuthorDetailsPage = () => {
-    const author = useLoaderData() as Author;
     const navigate = useNavigate();
-    const [editedAuthor, setEditedAuthor] = useState<Author>(author);
-    const [isEditingMode, setIsEditingMode] = useState(false);
+    const {id} = useParams<{ id: string }>();
+    const loaderData = useLoaderData() as Author | null;
 
-    const handleDeleteAuthor = async () => {
-        await fetch(`/api/authors/${author.id}`, {
-            method: 'DELETE',
+    const [author, setAuthor] = useState<Author>(
+        loaderData || {
+            id: 0,
+            name: "",
+            country: "",
+            birthDate: new Date().toISOString().substring(0, 10),
+        }
+    );
+
+    const [isEditingMode, setIsEditingMode] = useState(!id);
+
+    useEffect(() => {
+        if (loaderData) {
+            setAuthor(loaderData);
+        }
+    }, [loaderData]);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = event.target;
+        setAuthor({...author, [name]: value});
+    };
+
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const url = id ? `/api/authors/${id}` : '/api/authors';
+        const method = id ? 'PUT' : 'POST';
+
+        await fetch(url, {
+            method,
             headers: {
                 'Content-Type': 'application/json',
             },
-        })
+            body: JSON.stringify(author),
+        });
+
         navigate('/authors');
-    }
+    };
+
+    const handleCancel = () => {
+        if (id) {
+            setIsEditingMode(false);
+        } else {
+            navigate('/authors');
+        }
+    };
 
     const handleEditAuthor = () => {
         setIsEditingMode(true);
     };
 
-    const handleSaveAuthor = async () => {
-        const response = await fetch(`/api/authors/${editedAuthor.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                ...editedAuthor,
-                birthDate: new Date(editedAuthor.birthDate).toISOString()
-            })
-        });
-        if (response.ok) {
-            const updatedAuthor = await response.json();
-            setEditedAuthor(updatedAuthor);
-            setIsEditingMode(false);
+    const handleDeleteAuthor = async () => {
+        if (id) {
+            await fetch(`/api/authors/${id}`, {
+                method: 'DELETE',
+            });
+            navigate('/authors');
         }
-        navigate(`/authors/${editedAuthor.id}`);
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = event.target;
-        setEditedAuthor({...editedAuthor, [name]: value});
-    };
-    const handleCancel = () => {
-        navigate('/authors');
-    };
 
     return (
         <div>
-            <div className="form-container2">
-
-                <p>
-                    <strong>Name:</strong> {isEditingMode ?
-                    <input type="text" name="name" value={editedAuthor.name}
-                           onChange={handleChange}/> : author.name}
-                </p>
-                <hr/>
-                <p>
-                    <strong>Publish Date:</strong> {isEditingMode ?
-                    <input type="date" name="publishDate" value={editedAuthor.birthDate}
-                           onChange={handleChange}/> : author.birthDate}
-                </p>
-                <hr/>
-                <p>
-                    <strong>Country:</strong> {isEditingMode ?
-                    <input type="text" name="country" value={editedAuthor.country}
-                           onChange={handleChange}/> : author.country}
-                </p>
-                <hr/>
-
-                {isEditingMode ? (
-                    <div className="form-buttons">
-                        <button className="btn btn-save" onClick={handleSaveAuthor}>Save</button>
-                        <button className="btn btn-cancel" onClick={handleCancel}>Cancel</button>
-                    </div>
-                ) : (
-                    <div className="form-buttons">
-                        <button className="btn btn-edit" onClick={handleEditAuthor}>Edit</button>
-                        <button className="btn btn-delete" onClick={handleDeleteAuthor}>Delete</button>
-                    </div>
-                )}
+            <div className="form-container">
+                <h1>Add new Author</h1>
+                <form onSubmit={handleSubmit}>
+                    <p>
+                        <strong>Name:</strong> {isEditingMode ?
+                        <input type="text" name="name" value={author.name} onChange={handleChange}
+                               required/> : author.name}
+                    </p>
+                    <p>
+                        <strong>Birth date:</strong> {isEditingMode ?
+                        <input type="date" name="birthDate" value={author.birthDate} onChange={handleChange}
+                               required/> : author.birthDate}
+                    </p>
+                    <p>
+                        <strong>Country:</strong> {isEditingMode ?
+                        <input type="text" name="country" value={author.country} onChange={handleChange}
+                               required/> : author.country}
+                    </p>
+                    {isEditingMode ? (
+                        <div className="form-buttons">
+                            <button className="btn btn-save" type="submit">Save</button>
+                            <button className="btn btn-cancel" type="button" onClick={handleCancel}>Cancel</button>
+                        </div>
+                    ) : (
+                        <div className="form-buttons">
+                            <button className="btn btn-edit" type="button" onClick={handleEditAuthor}>Edit</button>
+                            <button className="btn btn-delete" type="button" onClick={handleDeleteAuthor}>Delete
+                            </button>
+                        </div>
+                    )}
+                </form>
             </div>
         </div>
     );
 };
-
 AuthorDetailsPage.loader = loader;
 export default AuthorDetailsPage;

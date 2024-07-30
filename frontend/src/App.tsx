@@ -4,10 +4,8 @@ import RootLayout from "./components/RootLayout.tsx";
 import AuthorsListPage from "./pages/AuthorsListPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import BooksListPage from "./pages/BooksListPage.tsx";
-import BookFormPage from "./pages/BookFormPage.tsx";
 import BookDetailsPage from "./pages/BookDetailsPage.tsx";
 import AuthorDetailsPage from "./pages/AuthorDetailsPage.tsx";
-import AuthorFormPage from "./pages/AuthorFormPage.tsx";
 
 export default function App() {
 
@@ -31,7 +29,7 @@ export default function App() {
                         },
                         {
                             path: 'new',
-                            element: <AuthorFormPage/>
+                            element: <AuthorDetailsPage/>
                         },
                         {
                             path: ':id',
@@ -51,7 +49,7 @@ export default function App() {
                         },
                         {
                             path: 'new',
-                            element: <BookFormPage/>,
+                            element: <BookDetailsPage/>,
                         },
                         {
                             path: ':id',

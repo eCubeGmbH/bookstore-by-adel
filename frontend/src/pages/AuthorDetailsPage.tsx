@@ -1,55 +1,58 @@
 import {LoaderFunction, useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import "../assets/edit-book-author.css"
+import "../assets/add-new-book-author.css"
 
-interface Book {
+interface Author {
     id: number;
-    authorId: number;
     name: string;
-    publishDate: string;
-    authorName: string;
+    country: string;
+    birthDate: string;
 }
 
+// Loader function to fetch author data for editing
 export const loader: LoaderFunction = async ({params}) => {
     if (params.id) {
-        const response = await fetch(`/api/books/${params.id}`);
+        const response = await fetch(`/api/authors/${params.id}`);
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error("Failed to load book data");
+            throw new Error("Failed to load author data");
         }
     }
     return null;
 };
 
-const BookDetailsPage = () => {
+const AuthorDetailsPage = () => {
     const navigate = useNavigate();
-    const {id} = useParams();
-    const loaderData = useLoaderData() as Book;
-    const [book, setBook] = useState<Book>(
+    const {id} = useParams<{ id: string }>();
+    const loaderData = useLoaderData() as Author | null;
+
+    const [author, setAuthor] = useState<Author>(
         loaderData || {
             id: 0,
-            authorId: 0,
             name: "",
-            publishDate: new Date().toISOString().substring(0, 10),
+            country: "",
+            birthDate: new Date().toISOString().substring(0, 10),
         }
     );
+
     const [isEditingMode, setIsEditingMode] = useState(!id);
 
     useEffect(() => {
         if (loaderData) {
-            setBook(loaderData);
+            setAuthor(loaderData);
         }
     }, [loaderData]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
-        setBook({...book, [name]: value});
+        setAuthor({...author, [name]: value});
     };
+
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        const url = id ? `/api/books/${id}` : '/api/books';
+        const url = id ? `/api/authors/${id}` : '/api/authors';
         const method = id ? 'PUT' : 'POST';
 
         await fetch(url, {
@@ -57,30 +60,30 @@ const BookDetailsPage = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(book),
+            body: JSON.stringify(author),
         });
 
-        navigate('/books');
+        navigate('/authors');
     };
 
     const handleCancel = () => {
         if (id) {
             setIsEditingMode(false);
         } else {
-            navigate('/books');
+            navigate('/authors');
         }
     };
 
-    const handleEditBook = () => {
+    const handleEditAuthor = () => {
         setIsEditingMode(true);
     };
 
-    const handleDeleteBook = async () => {
+    const handleDeleteAuthor = async () => {
         if (id) {
-            await fetch(`/api/books/${id}`, {
+            await fetch(`/api/authors/${id}`, {
                 method: 'DELETE',
             });
-            navigate('/books');
+            navigate('/authors');
         }
     };
 
@@ -88,26 +91,23 @@ const BookDetailsPage = () => {
     return (
         <div>
             <div className="form-container">
-                <h1>Add new Book</h1>
+                <h1>Add new Author</h1>
                 <form onSubmit={handleSubmit}>
                     <p>
                         <strong>Name:</strong> {isEditingMode ?
-                        <input type="text" name="name" value={book.name} onChange={handleChange}
-                               required/> : book.name}
+                        <input type="text" name="name" value={author.name} onChange={handleChange}
+                               required/> : author.name}
                     </p>
                     <p>
-                        <strong>Publish Date:</strong> {isEditingMode ?
-                        <input type="date" name="birthDate" value={book.publishDate} onChange={handleChange}
-                               required/> : book.publishDate}
+                        <strong>Birth date:</strong> {isEditingMode ?
+                        <input type="date" name="birthDate" value={author.birthDate} onChange={handleChange}
+                               required/> : author.birthDate}
                     </p>
-                    {isEditingMode && (
-                        <p>
-                            <strong>Author ID:</strong>
-                            <input type="text" name="authorId" value={book.authorId} onChange={handleChange}
-                                   required/>
-                        </p>
-                    )}
-
+                    <p>
+                        <strong>Country:</strong> {isEditingMode ?
+                        <input type="text" name="country" value={author.country} onChange={handleChange}
+                               required/> : author.country}
+                    </p>
                     {isEditingMode ? (
                         <div className="form-buttons">
                             <button className="btn btn-save" type="submit">Save</button>
@@ -115,8 +115,8 @@ const BookDetailsPage = () => {
                         </div>
                     ) : (
                         <div className="form-buttons">
-                            <button className="btn btn-edit" type="button" onClick={handleEditBook}>Edit</button>
-                            <button className="btn btn-delete" type="button" onClick={handleDeleteBook}>Delete
+                            <button className="btn btn-edit" type="button" onClick={handleEditAuthor}>Edit</button>
+                            <button className="btn btn-delete" type="button" onClick={handleDeleteAuthor}>Delete
                             </button>
                         </div>
                     )}
@@ -125,6 +125,5 @@ const BookDetailsPage = () => {
         </div>
     );
 };
-
-BookDetailsPage.loader = loader;
-export default BookDetailsPage;
+AuthorDetailsPage.loader = loader;
+export default AuthorDetailsPage;
